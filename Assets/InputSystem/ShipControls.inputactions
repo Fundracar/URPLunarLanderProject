@@ -1,1 +1,87 @@
-{}
+{
+    "name": "ShipControls",
+    "maps": [
+        {
+            "name": "KeyboardKeys",
+            "id": "8418d466-c9ae-4174-b7d9-c7cb8da71b6b",
+            "actions": [
+                {
+                    "name": "UpThrust",
+                    "type": "Button",
+                    "id": "a17253a3-c2ea-43dc-9e5d-0ad607e14e0f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LateralThursters",
+                    "type": "Button",
+                    "id": "5b9a2502-c3b2-4f1d-a50a-d94a305572fa",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "deacb40c-14fc-4b83-aad8-d113ed707fdc",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UpThrust",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "positive",
+                    "id": "95795d15-c799-4a94-8911-b5a409bca34c",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UpThrust",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "09826086-734d-4446-9286-03324360c13e",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LateralThursters",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "24a75b8c-5f9b-4544-9c84-384518aa1146",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LateralThursters",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "b1f93bc9-31cf-40f6-887d-f12dae5d582e",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LateralThursters",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
