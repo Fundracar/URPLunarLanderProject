@@ -8,26 +8,25 @@ public class ShipController : MonoBehaviour
 {
 
     #region Variables
+    private Rigidbody2D shipRigidbody2D; //The body on which we applied the calculated speed and force.
 
+    [Header("Input-Linked Variables")]
 
-    private Rigidbody2D shipRigidbody2D;
-
-
-
-    [Header("Speed Variables")] // Those two values represent the X axis and Y axis input values. 
+    // The two following values represent the X axis and Y axis input values. They will be refered as the "Input Linked Variables".
     private float UpThurstInputValue; // Lerps toward 1 while Z is being pressed. Lerps toward 0 when its released
     private float LateralThrustInputValue; //Lerps toward -1 or 1 while Q or D are being pressed. Lerps toward 0 when they are released.
+    public float accelerationFactor = 2.5f; //Leave at 1 to cancel effect.
 
+    [Header("Coroutines")]
 
-
-    [Header("Coroutines")] //Variables used to store active coroutines to access them easily should it be needed.
-    private Coroutine ZaccelerationCoroutine;
-    private Coroutine LateralAccelerationCoroutine;
-
-
-
+    //Variables used to store active coroutines to access them easily should it be needed.
+    private Coroutine yThrustCoroutine;
+    private Coroutine xThrustCoroutine;
 
     #endregion
+
+
+    #region Init & Update
     void Awake()
     {
         shipRigidbody2D = GetComponent<Rigidbody2D>();
@@ -36,8 +35,10 @@ public class ShipController : MonoBehaviour
 
     void FixedUpdate()
     {
-
+        ManageShipSpeed();
     }
+
+    #endregion
 
 
 
@@ -46,39 +47,41 @@ public class ShipController : MonoBehaviour
     {
         if (context.performed)
         {
-            ZaccelerationCoroutine = StartCoroutine(ZThrustLerp(1));
+            yThrustCoroutine = StartCoroutine(ZThrustLerp(1));
 
-            Debug.Log("I am pressing Z");
+            // On Z being pressed, the Coroutine starts with 1 as parameter (meaning the x input-linked variable will tend toward 1)
         }
 
         if (context.canceled)
         {
-            StopCoroutine(ZaccelerationCoroutine);
+            StopCoroutine(yThrustCoroutine);  // On Z being pressed, the Coroutine starts.
 
-            ZaccelerationCoroutine = StartCoroutine(ZThrustLerp(0));
-
-
-            Debug.Log("I stopped pressing Z");
+            yThrustCoroutine = StartCoroutine(ZThrustLerp(0));  // It is restarted with 0 as parameter.            
         }
     }
 
     public void OnQDKeysPressed(InputAction.CallbackContext context)
     {
-
         if (context.performed)
         {
             float currentValue = context.ReadValue<float>();
 
             if (currentValue != 0)
             {
-                LateralAccelerationCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
+                xThrustCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
             }
         }
+
+
         if (context.canceled)
         {
-            StopCoroutine(LateralAccelerationCoroutine);
-            LateralAccelerationCoroutine = StartCoroutine(LateralThrustLerp(0));
+            StopCoroutine(xThrustCoroutine);
+
+            xThrustCoroutine = StartCoroutine(LateralThrustLerp(0));
+
         }
+
+
 
     }
 
@@ -139,5 +142,39 @@ public class ShipController : MonoBehaviour
     #endregion
 
 
+
+
+    private void ManageShipSpeed()
+    {
+        if (IsShipWithinBounds() == true)  UpdateShipSpeed();
+
+
+    }
+    private void UpdateShipSpeed()
+    {
+
+        float xSpeed = LateralThrustInputValue * accelerationFactor;
+
+        float ySpeed = UpThurstInputValue * accelerationFactor;
+
+        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
+
+    }
+
+    private bool IsShipWithinBounds()
+    {
+        if (this.transform.position.x > -30 && this.transform.position.x < 30 && !(this.transform.position.y > 20))
+        {
+            return true;
+        }
+
+        else
+        {
+            Debug.Log("Game Over ! Ship is outside of reach");
+            return false;
+        }
+
+
+    }
 
 }
