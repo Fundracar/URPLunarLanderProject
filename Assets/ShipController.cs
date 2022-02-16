@@ -32,15 +32,12 @@ public class ShipController : MonoBehaviour
         shipRigidbody2D = GetComponent<Rigidbody2D>();
     }
 
-
     void FixedUpdate()
     {
         ManageShipSpeed();
     }
 
     #endregion
-
-
 
     #region Input System Events
     public void OnZKeyPressed(InputAction.CallbackContext context)
@@ -71,7 +68,6 @@ public class ShipController : MonoBehaviour
                 xThrustCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
             }
         }
-
 
         if (context.canceled)
         {
@@ -143,24 +139,7 @@ public class ShipController : MonoBehaviour
 
 
 
-
-    private void ManageShipSpeed()
-    {
-        if (IsShipWithinBounds() == true)  UpdateShipSpeed();
-
-
-    }
-    private void UpdateShipSpeed()
-    {
-
-        float xSpeed = LateralThrustInputValue * accelerationFactor;
-
-        float ySpeed = UpThurstInputValue * accelerationFactor;
-
-        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
-
-    }
-
+    #region Speed and Position Methods
     private bool IsShipWithinBounds()
     {
         if (this.transform.position.x > -30 && this.transform.position.x < 30 && !(this.transform.position.y > 20))
@@ -176,5 +155,21 @@ public class ShipController : MonoBehaviour
 
 
     }
+    private void ManageShipSpeed()
+    {
+        if (IsShipWithinBounds() == true) UpdateShipSpeed();
+    }
+    private void UpdateShipSpeed()
+    {
+
+        float xSpeed = LateralThrustInputValue * accelerationFactor;
+
+        float ySpeed = UpThurstInputValue * accelerationFactor;
+
+        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
+
+    }
+
+    #endregion
 
 }
