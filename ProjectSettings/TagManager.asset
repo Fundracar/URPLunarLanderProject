@@ -6,6 +6,10 @@ TagManager:
   tags:
   - GameManager
   - MainMenuCanvas
+  - NewGameButton
+  - LoadGameButton
+  - OptionsButton
+  - QuitGameButton
   layers:
   - Default
   - TransparentFX
