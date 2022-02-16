@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
 
     #region Variables
 
-    enum GamePhase { Test, Setup, Menu, WaitingToStart, Playing, LostLevel, WonLevel };
+    public enum GamePhase { Setup, Menu, WaitingToStart, Playing, LostLevel, WonLevel };
     /* Phases definition:
 
         Setup : Specific initialisation behaviours are launched.
@@ -25,20 +26,20 @@ public class GameManager : MonoBehaviour
     */
 
 
-    private GamePhase currentGamePhase; //Variable in which the current state information will be stored.
+    public GamePhase currentGamePhase;  //Variable in which the current state information will be stored.
+    private Scene currentScene;
     public GameObject shipPrefab; //this is referenced by hand in the engine.
+    public GameObject instanciatedShip;
 
+    private Coroutine testCoroutine;
 
 
     #endregion
 
     #region Init & Update
-    void Awake()
+    void Start()
     {
-        currentGamePhase = GamePhase.Test;
-
         SwitchOnGamePhase(GamePhase.Setup);
-
     }
 
     void Update()
@@ -48,9 +49,11 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    private void SwitchOnGamePhase(GamePhase _gamePhaseToSet)
+    public void SwitchOnGamePhase(GamePhase _gamePhaseToSet)
     {
         currentGamePhase = _gamePhaseToSet;
+
+        Debug.Log("SWITCH :" + " " + currentGamePhase);
 
 
         switch (currentGamePhase)
@@ -60,13 +63,15 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GamePhase.Menu:
-                Menu();
+                InitializeMenu();
                 break;
 
             case GamePhase.WaitingToStart:
+                WaitingToStart();
                 break;
 
             case GamePhase.Playing:
+
                 break;
 
             case GamePhase.LostLevel:
@@ -82,24 +87,59 @@ public class GameManager : MonoBehaviour
 
     private void Setup()
     {
-        //This method will fire the "Setup Behavior"
-
-        Debug.Log("CurrentGamePhase is" + " " + currentGamePhase);
 
         DontDestroyOnLoad(this.gameObject); //The GameObject containing the "this" component should not be destroyed between scenes. 
 
-        Debug.Log("SETUP : The Game Manager's parent won't be destroyed on Load !");
+        currentScene = SceneManager.GetActiveScene();
 
         SwitchOnGamePhase(GamePhase.Menu); //Once the setup behavior is finished, this triggers the next game phase.
 
     }
 
-    private void Menu()
+    private void InitializeMenu()
     {
         //This is fired when the game state should be changed to 
 
-        Debug.Log("MENU : Game Phase is Menu");
+        Debug.Log("CurrentGamePhase is" + " " + currentGamePhase);
+
     }
 
+    private void WaitingToStart()
+    {
+        testCoroutine = StartCoroutine(WaitForSeconds());
+
+        Debug.Log("CurrentGamePhase is" + " " + currentGamePhase);
+        //Get the ship and prevent it to move
+    }
+
+    private void GameStarting()
+    {
+        Debug.Log("Game has started, current state is " + " " + currentGamePhase);
+    }
+
+
+    public void LaunchNewGame()
+    {
+
+        SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
+
+        SwitchOnGamePhase(GamePhase.WaitingToStart);
+    }
+
+    private void SpawnShipController()
+    {
+        Vector3 spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
+
+        instanciatedShip = Instantiate(shipPrefab) as GameObject;
+
+        instanciatedShip.transform.position = spawnPosition;
+    }
+
+
+    IEnumerator WaitForSeconds()
+    {
+        yield return new WaitForSeconds(1f);
+        SpawnShipController();
+    }
 
 }

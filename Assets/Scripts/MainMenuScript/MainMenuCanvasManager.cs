@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class MainMenuCanvasManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
 
+    private GameManager gameManagerRef;
+
+    void Awake()
+    {
+        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -20,32 +22,32 @@ public class MainMenuCanvasManager : MonoBehaviour
 
     public void ManageClickedButton(GameObject _buttonClicked)
     {
-        DefineClickedButton(_buttonClicked);
+        SwitchOnButtonClicked(_buttonClicked);
     }
-    private void DefineClickedButton(GameObject _buttonClicked)
+    private void SwitchOnButtonClicked(GameObject _buttonClicked)
 
-    {   
+    {
         //This will define which button was clicked and trigger the appropriate behavior
-        
+
         string tagToCheck = _buttonClicked.tag;
 
         switch (tagToCheck)
         {
             case "NewGameButton":
-                Debug.Log("NewGame Button was clicked");
+
+                gameManagerRef.LaunchNewGame(); //The game manager handle's the scene switch.
                 break;
 
             case "LoadGameButton":
-                Debug.Log("LoadGame Button was clicked");
-
+                
                 break;
 
             case "OptionsButton":
-                Debug.Log("OptionButton");
+                
                 break;
 
             case "QuitGameButton":
-                Debug.Log("QuitGameButton");
+                
                 break;
 
             default:

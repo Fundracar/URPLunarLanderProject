@@ -22,6 +22,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Start Game Key",
+                    "type": "Button",
+                    "id": "78637312-8c3e-4b85-9b9d-e786828c5176",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -79,6 +88,17 @@
                     "action": "LateralThursters",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "aa4654a4-8b73-4d58-8e7d-49ea7a928008",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Start Game Key",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

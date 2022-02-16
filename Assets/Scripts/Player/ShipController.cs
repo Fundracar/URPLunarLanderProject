@@ -8,14 +8,16 @@ public class ShipController : MonoBehaviour
 {
 
     #region Variables
-    private Rigidbody2D shipRigidbody2D; //The body on which we applied the calculated speed and force.
+    private Rigidbody2D shipRigidbody2D;
+
+    private GameManager gameManagerRef;
+    //The body on which we applied the calculated speed and force.
 
     [Header("Input-Linked Variables")]
 
     // The two following values represent the X axis and Y axis input values. They will be refered as the "Input Linked Variables".
-    private float UpThurstInputValue; // Lerps toward 1 while Z is being pressed. Lerps toward 0 when its released
-    private float LateralThrustInputValue; //Lerps toward -1 or 1 while Q or D are being pressed. Lerps toward 0 when they are released.
-    public float accelerationFactor = 2.5f; //Leave at 1 to cancel effect.
+    private float UpThurstInputValue, LateralThrustInputValue;
+    public float accelerationFactor = 2.5f; //Leave at 1 to cancel effect. 
 
     [Header("Coroutines")]
 
@@ -30,10 +32,12 @@ public class ShipController : MonoBehaviour
     void Awake()
     {
         shipRigidbody2D = GetComponent<Rigidbody2D>();
+        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     void FixedUpdate()
     {
+        ControlMovementAbility();
         ManageShipSpeed();
     }
 
@@ -82,6 +86,27 @@ public class ShipController : MonoBehaviour
     }
 
 
+    public void OnReadyKeyPressed(InputAction.CallbackContext context)
+    {
+        if(context.performed == true)
+        {
+            
+
+            switch(gameManagerRef.currentGamePhase)
+            {
+                case GameManager.GamePhase.WaitingToStart:
+
+                gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Playing);
+
+                break;
+
+                default:
+                break;
+            }
+        }
+    }
+
+
     #endregion
 
 
@@ -123,7 +148,8 @@ public class ShipController : MonoBehaviour
 
             LateralThrustInputValue = Mathf.Lerp(LateralThrustInputValue, _TempA, progress);
 
-            Debug.Log(LateralThrustInputValue);
+            
+
 
             yield return null;
         }
@@ -140,9 +166,9 @@ public class ShipController : MonoBehaviour
 
 
     #region Speed and Position Methods
-    private bool IsShipWithinBounds()
+    private bool IsShipPositionWithinBound()
     {
-        if (this.transform.position.x > -30 && this.transform.position.x < 30 && !(this.transform.position.y > 20))
+        if (this.transform.position.x > -3f && this.transform.position.x < 3f && !(this.transform.position.y > 2.8f))
         {
             return true;
         }
@@ -157,18 +183,29 @@ public class ShipController : MonoBehaviour
     }
     private void ManageShipSpeed()
     {
-        if (IsShipWithinBounds() == true) UpdateShipSpeed();
+        if (IsShipPositionWithinBound() == true) UpdateShipSpeed();
+    }
+
+      private void ControlMovementAbility()
+    {
+        if (gameManagerRef.currentGamePhase == GameManager.GamePhase.WaitingToStart)
+        {
+            shipRigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
+
+        } else shipRigidbody2D.constraints = RigidbodyConstraints2D.None;
     }
     private void UpdateShipSpeed()
     {
-
         float xSpeed = LateralThrustInputValue * accelerationFactor;
 
-        float ySpeed = UpThurstInputValue * accelerationFactor;
+        float ySpeed = UpThurstInputValue * (accelerationFactor*1.5f);
 
         shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
-
     }
+
+  
+
+
 
     #endregion
 
