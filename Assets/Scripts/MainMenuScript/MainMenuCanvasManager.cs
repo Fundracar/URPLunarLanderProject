@@ -16,12 +16,17 @@ public class MainMenuCanvasManager : MonoBehaviour
 
     }
 
-    public void DefineClickedButton(GameObject _buttonClicked)
 
+
+    public void ManageClickedButton(GameObject _buttonClicked)
     {
+        DefineClickedButton(_buttonClicked);
+    }
+    private void DefineClickedButton(GameObject _buttonClicked)
 
+    {   
         //This will define which button was clicked and trigger the appropriate behavior
-
+        
         string tagToCheck = _buttonClicked.tag;
 
         switch (tagToCheck)

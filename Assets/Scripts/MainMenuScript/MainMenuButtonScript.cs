@@ -23,6 +23,6 @@ public class MainMenuButtonScript : MonoBehaviour
     public void OnClickRegistered()
     {
         Debug.Log("I was clicked");
-        mainMenuCanvasManagerRef.DefineClickedButton(this.gameObject);
+        mainMenuCanvasManagerRef.ManageClickedButton(this.gameObject);
     }
 }
