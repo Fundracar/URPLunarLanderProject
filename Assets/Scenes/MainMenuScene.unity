@@ -205,9 +205,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1205599858}
     m_Modifications:
+    - target: {fileID: 6007288771035515771, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
+      propertyPath: m_Text
+      value: Leave
+      objectReference: {fileID: 0}
     - target: {fileID: 6007288772144337344, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
       propertyPath: m_Name
-      value: MainMenuButton (3)
+      value: LeaveGameButton
       objectReference: {fileID: 0}
     - target: {fileID: 6007288772144337344, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
       propertyPath: m_TagString
@@ -428,9 +432,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1205599858}
     m_Modifications:
+    - target: {fileID: 6007288771035515771, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
+      propertyPath: m_Text
+      value: Load Game
+      objectReference: {fileID: 0}
     - target: {fileID: 6007288772144337344, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
       propertyPath: m_Name
-      value: MainMenuButton (1)
+      value: LoadGameButton
       objectReference: {fileID: 0}
     - target: {fileID: 6007288772144337344, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
       propertyPath: m_TagString
@@ -534,9 +542,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1205599858}
     m_Modifications:
+    - target: {fileID: 6007288771035515771, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
+      propertyPath: m_Text
+      value: Options
+      objectReference: {fileID: 0}
     - target: {fileID: 6007288772144337344, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
       propertyPath: m_Name
-      value: MainMenuButton (2)
+      value: OptionsButton
       objectReference: {fileID: 0}
     - target: {fileID: 6007288772144337344, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
       propertyPath: m_TagString
@@ -862,6 +874,7 @@ MonoBehaviour:
   currentGamePhase: 0
   shipPrefab: {fileID: 6407882647684847688, guid: 3b0cebb0fccb8b243a053a9db74e9c6a, type: 3}
   instanciatedShip: {fileID: 0}
+  instanciatedRigidbody2D: {fileID: 0}
 --- !u!1001 &1624121849
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -869,9 +882,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1205599858}
     m_Modifications:
+    - target: {fileID: 6007288771035515771, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
+      propertyPath: m_Text
+      value: 'New Game
+
+'
+      objectReference: {fileID: 0}
     - target: {fileID: 6007288772144337344, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
       propertyPath: m_Name
-      value: MainMenuButton
+      value: NewGameButton
       objectReference: {fileID: 0}
     - target: {fileID: 6007288772144337344, guid: 4faf075b21e19cd43bc994d3f24929c7, type: 3}
       propertyPath: m_TagString

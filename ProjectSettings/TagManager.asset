@@ -10,6 +10,9 @@ TagManager:
   - LoadGameButton
   - OptionsButton
   - QuitGameButton
+  - VerticalSpeedTextBox
+  - HorizontalSpeedTextBox
+  - GameCanvas
   layers:
   - Default
   - TransparentFX

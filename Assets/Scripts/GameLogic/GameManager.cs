@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     private Coroutine testCoroutine;
     private Scene currentScene;
 
+    private GameObject inGameCanvasRef;
+
 
     [Header("Ship references variables")]
     public GameObject shipPrefab; //this is referenced by hand in the engine.
@@ -192,6 +194,13 @@ public class GameManager : MonoBehaviour
         shipControllerRef = instanciatedShip.GetComponent<ShipController>();
 
         instanciatedShip.transform.position = spawnPosition;
+
+        inGameCanvasRef = GameObject.FindGameObjectWithTag("GameCanvas");
+
+        InGameCanvas tempInGameCanvas = inGameCanvasRef.GetComponent<InGameCanvas>();
+
+        tempInGameCanvas.FindPlayerInScene();
+
     }
     IEnumerator SpawnPlayerAfterDelay()
     {
@@ -215,7 +224,7 @@ public class GameManager : MonoBehaviour
     {
         float xSpeed = shipControllerRef.LateralThrustInputValue * shipControllerRef.accelerationFactor;
 
-        float ySpeed = shipControllerRef.UpThurstInputValue * (shipControllerRef.accelerationFactor * 1.5f);
+        float ySpeed = shipControllerRef.UpThurstInputValue * (shipControllerRef.accelerationFactor * 3f);
 
         instanciatedRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
     }
