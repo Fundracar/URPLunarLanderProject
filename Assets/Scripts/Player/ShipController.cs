@@ -16,7 +16,7 @@ public class ShipController : MonoBehaviour
     [Header("Input-Linked Variables")]
 
     // The two following values represent the X axis and Y axis input values. They will be refered as the "Input Linked Variables".
-    private float UpThurstInputValue, LateralThrustInputValue;
+    public float UpThurstInputValue, LateralThrustInputValue;
     public float accelerationFactor = 2.5f; //Leave at 1 to cancel effect. 
 
     [Header("Coroutines")]
@@ -27,18 +27,11 @@ public class ShipController : MonoBehaviour
 
     #endregion
 
-
     #region Init & Update
     void Awake()
     {
         shipRigidbody2D = GetComponent<Rigidbody2D>();
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-    }
-
-    void FixedUpdate()
-    {
-        ControlMovementAbility();
-        ManageShipSpeed();
     }
 
     #endregion
@@ -81,36 +74,33 @@ public class ShipController : MonoBehaviour
 
         }
 
-
-
     }
-
-
     public void OnReadyKeyPressed(InputAction.CallbackContext context)
     {
-        if(context.performed == true)
+        if (context.performed == true)
         {
-            
 
-            switch(gameManagerRef.currentGamePhase)
+            switch (gameManagerRef.currentGamePhase)
             {
                 case GameManager.GamePhase.WaitingToStart:
 
-                gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Playing);
-
-                break;
+                    gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Playing);
+                    break;
 
                 default:
-                break;
+                    break;
             }
         }
     }
-
-
     #endregion
 
-
     #region Input Value Coroutines
+
+    //Both these coroutines could be merged into one. ()
+
+    //They are used to lerp the values of the movement input create a "thrust delay" on pressed and released
+    //Meaning : When you press Z, there is a delay before your ship gets at full thurst. When you release it,
+    //it takes the same time for the value to get back to 0.
     private IEnumerator ZThrustLerp(float _TempA)
     {
         float startMoveTime = Time.time;
@@ -148,63 +138,13 @@ public class ShipController : MonoBehaviour
 
             LateralThrustInputValue = Mathf.Lerp(LateralThrustInputValue, _TempA, progress);
 
-            
+
 
 
             yield return null;
         }
 
     }
-
-    //Both these coroutines could be merged into one. ()
-
-    //They are used to lerp the values of the movement input create a "thrust delay" on pressed and released
-    //Meaning : When you press Z, there is a delay before your ship gets at full thurst. When you release it,
-    //it takes the same time for the value to get back to 0.
-    #endregion
-
-
-
-    #region Speed and Position Methods
-    private bool IsShipPositionWithinBound()
-    {
-        if (this.transform.position.x > -3f && this.transform.position.x < 3f && !(this.transform.position.y > 2.8f))
-        {
-            return true;
-        }
-
-        else
-        {
-            Debug.Log("Game Over ! Ship is outside of reach");
-            return false;
-        }
-
-
-    }
-    private void ManageShipSpeed()
-    {
-        if (IsShipPositionWithinBound() == true) UpdateShipSpeed();
-    }
-
-      private void ControlMovementAbility()
-    {
-        if (gameManagerRef.currentGamePhase == GameManager.GamePhase.WaitingToStart)
-        {
-            shipRigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
-
-        } else shipRigidbody2D.constraints = RigidbodyConstraints2D.None;
-    }
-    private void UpdateShipSpeed()
-    {
-        float xSpeed = LateralThrustInputValue * accelerationFactor;
-
-        float ySpeed = UpThurstInputValue * (accelerationFactor*1.5f);
-
-        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
-    }
-
-  
-
 
 
     #endregion
