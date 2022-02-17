@@ -19,12 +19,13 @@ public class GameManager : MonoBehaviour
     */
 
     [Header("Phase & Scene Variables")]
+
+
     public GamePhase currentGamePhase;  //Variable in which the current "state" information will be stored.
-    public Scene currentScene;
+    public Scene currentScene; public InGameCanvas inGameCanvasComponent;
+    public LevelManager levelManagerRef;
     [SerializeField] Coroutine delayCoroutine;
     [SerializeField] GameObject inGameCanvasRef;
-    public InGameCanvas inGameCanvasComponent;
-    public LevelManager levelManagerRef;
 
     [Header("Ship references variables")]
     [SerializeField] GameObject shipPrefab; //this is referenced by hand in the engine.
@@ -99,6 +100,7 @@ public class GameManager : MonoBehaviour
             switch (currentGamePhase)
             {
                 case GamePhase.GameWaitingToStart when shipIsFrozen == true:
+                    ConstraintMovement(true);
                     break;
 
                 case GamePhase.GameWaitingToStart:
@@ -132,6 +134,10 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
+        else
+        {
+            Debug.Log("Character is Null");
+        }
     }
 
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
@@ -144,6 +150,7 @@ public class GameManager : MonoBehaviour
 
     private void GameWaitingToStart()
     {
+        SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
         delayCoroutine = StartCoroutine(PlacePlayerAfterDelay());
     }
     private void GamePlaying()
@@ -181,7 +188,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Game Over ! Ship is outside of reach");
             SwitchOnGamePhase(GamePhase.GameLost);
             return false;
         }
@@ -192,12 +198,12 @@ public class GameManager : MonoBehaviour
         if (_Instruction == true)
         {
             instanciatedRigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
-            shipIsFrozen = true;
+            shipIsFrozen = _Instruction;
         }
         else
         {
             instanciatedRigidbody2D.constraints = RigidbodyConstraints2D.None;
-            shipIsFrozen = false;
+            shipIsFrozen = _Instruction;
         }
     }
     #endregion
@@ -216,7 +222,6 @@ public class GameManager : MonoBehaviour
         {
             GetLevelManager();
         }
-
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
     }
     private void PlaceShipController()
@@ -237,6 +242,7 @@ public class GameManager : MonoBehaviour
         else //If it already exists, just re-place it at its spawn position.
         {
             instanciatedShip.transform.position = spawnPosition;
+            shipIsFrozen = false;
         }
     }
     private void GetLevelManager()

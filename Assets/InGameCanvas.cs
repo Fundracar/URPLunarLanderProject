@@ -63,7 +63,6 @@ public class InGameCanvas : MonoBehaviour
         if (playerReference != null)
         {
             verticalSpeedText.text = (playerRigidbodyReference.velocity.y * 100f).ToString();
-
             horizontalSpeedText.text = (playerRigidbodyReference.velocity.x * 100f).ToString();
         }
     }
@@ -119,7 +118,7 @@ public class InGameCanvas : MonoBehaviour
                 break;
 
             case GameManager.GamePhase.GamePlaying:
-            
+
                 mainPlayerMessageText.text = null;
                 secondaryPlayerMessageText.text = null;
                 playerInstructiontext.text = null;

@@ -99,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UpThurstInputValue: 0
   LateralThrustInputValue: 0
-  accelerationFactor: 1
+  accelerationFactor: 1.5
 --- !u!50 &-6530114516917799221
 Rigidbody2D:
   serializedVersion: 4

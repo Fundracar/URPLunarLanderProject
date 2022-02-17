@@ -79,7 +79,7 @@ public class ShipController : MonoBehaviour
                     break;
 
                 case GameManager.GamePhase.GameLost:
-                    gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameWaitingToStart);
+                    gameManagerRef.levelManagerRef.LaunchNewGame();
                     break;
 
                 case GameManager.GamePhase.GameWon:
@@ -129,7 +129,7 @@ public class ShipController : MonoBehaviour
     public void AddForceToShip()
     {
         float xSpeed = LateralThrustInputValue * accelerationFactor;
-        float ySpeed = UpThurstInputValue * accelerationFactor * 3f;
+        float ySpeed = UpThurstInputValue * accelerationFactor * 1.5f;
 
         shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
     }
