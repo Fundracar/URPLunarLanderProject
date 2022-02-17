@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuCanvasManager : MonoBehaviour
 {
 
-    private GameManager gameManagerRef;
-
+    [SerializeField] GameManager gameManagerRef;
     void Awake()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -35,7 +35,7 @@ public class MainMenuCanvasManager : MonoBehaviour
         {
             case "NewGameButton":
 
-                gameManagerRef.LaunchNewGame(); //The game manager handle's the scene switch.
+                gameManagerRef.levelManagerRef.LaunchNewGame(); //The game manager handle's the scene switch.
                 break;
 
             case "LoadGameButton":
@@ -56,4 +56,6 @@ public class MainMenuCanvasManager : MonoBehaviour
         }
 
     }
+
+    
 }

@@ -67,14 +67,11 @@ public class InGameCanvas : MonoBehaviour
             horizontalSpeedText.text = (playerRigidbodyReference.velocity.x * 100f).ToString();
         }
     }
-
     private void DisplayWaitingForGameToStar()
     {
 
 
     }
-
-
     private void InitializeInGameCanvas()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -92,7 +89,6 @@ public class InGameCanvas : MonoBehaviour
 
         gameManagerRef.inGameCanvasComponent = this;
     }
-
     public void DisplayMessageInfos(bool _instruct, GameManager.GamePhase gamePhase)
     {
         SetMessageToDisplay(gamePhase);
@@ -105,7 +101,7 @@ public class InGameCanvas : MonoBehaviour
         {
             case GameManager.GamePhase.GameWaitingToStart:
                 mainPlayerMessageText.text = "Station is ready";
-                secondaryPlayerMessageText.text = "Prepare for landing !";
+                secondaryPlayerMessageText.text = "Prepare for landing on the designated plateforms";
                 playerInstructiontext.text = "Press SPACE to start landing procedure";
                 break;
 
@@ -122,11 +118,18 @@ public class InGameCanvas : MonoBehaviour
                 playerInstructiontext.text = "Press SPACE to continue, or Escape to save & quit !";
                 break;
 
+            case GameManager.GamePhase.GamePlaying:
+            
+                mainPlayerMessageText.text = null;
+                secondaryPlayerMessageText.text = null;
+                playerInstructiontext.text = null;
+                break;
+
+
         }
 
 
     }
-
     private void EnableMessageDisplay(bool _instruction)
     {
         mainPlayerMessageContainer.SetActive(_instruction);

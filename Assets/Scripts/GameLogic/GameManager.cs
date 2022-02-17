@@ -7,45 +7,31 @@ public class GameManager : MonoBehaviour
 {
 
     #region Variables
-
-
-
     public enum GamePhase { Setup, Menu, GameWaitingToStart, GamePlaying, GameLost, GameWon };
 
     /* Phases definition:
-
         Setup : Specific initialisation behaviours are launched.
-        
         MainMenu = The player is inside a menu and not in game.
-
         GameWaitingToStart = The player is in a game level and is instructed to press a button for the game to start.
-
         Playing : The player is playing the game.
-
         LostLevel : The player crashed its ship and has to choose an option from here (restart level or leave)
-
         WonLevel : The player managed to land its ship and is being displayed its statistics.
-
     */
 
     [Header("Phase & Scene Variables")]
     public GamePhase currentGamePhase;  //Variable in which the current "state" information will be stored.
-    private Scene currentScene;
-    private Coroutine delayCoroutine;
-    private GameObject inGameCanvasRef;
+    public Scene currentScene;
+    [SerializeField] Coroutine delayCoroutine;
+    [SerializeField] GameObject inGameCanvasRef;
     public InGameCanvas inGameCanvasComponent;
-
+    public LevelManager levelManagerRef;
 
     [Header("Ship references variables")]
     [SerializeField] GameObject shipPrefab; //this is referenced by hand in the engine.
-    private GameObject instanciatedShip;
-    private Rigidbody2D instanciatedRigidbody2D;
-    private ShipController shipControllerRef;
-    private bool shipIsFrozen = false;
-
-
-
-
+    [SerializeField] GameObject instanciatedShip;
+    [SerializeField] Rigidbody2D instanciatedRigidbody2D;
+    [SerializeField] ShipController shipControllerRef;
+    [SerializeField] bool shipIsFrozen = false;
     #endregion
 
     #region 0 - Init & Update
@@ -72,19 +58,12 @@ public class GameManager : MonoBehaviour
         /*WHAT THIS DOES : This method is used to set the current game phase to the _parameter value
         Then, a switch statement is performed on this value to fire the appropriate behavior
         This function will be called when necessary to easily change the "game phase" */
-
         currentGamePhase = _gamePhaseToSet;
-
         Debug.Log("CurrentGamePhase is" + " " + currentGamePhase);
-
         switch (currentGamePhase)
         {
             case GamePhase.Setup:
                 Setup();
-                break;
-
-            case GamePhase.Menu:
-                InitializeMenu();
                 break;
 
             case GamePhase.GameWaitingToStart:
@@ -108,14 +87,11 @@ public class GameManager : MonoBehaviour
     }
     private void ManageShipState()
     {
-        /* WHAT THIS DOES : This methods conditions what behaviors are avalaible to the player's Ship 
-        according to the current game phase.
-
-        This should be called "OnFixedUpdate"
-        
-        Example : While "Playing", the ship's movement are not constrained ect.
-        
-        CASE GUARD : For each case this methods should check, we take into account when the "ConstraintMovement"
+        /* 
+        #WHAT THIS DOES : This methods conditions what behaviors are avalaible to the player's Ship according to the current game phase.
+        #This should be called "OnFixedUpdate"  
+        #Example : While "Playing", the ship's movement are not constrained ect.
+        #CASE GUARD : For each case this methods should check, we take into account when the "ConstraintMovement"
         has already been fired in order not to fire it everyframe. */
 
         if (instanciatedShip != null)
@@ -157,28 +133,22 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
         DontDestroyOnLoad(this.gameObject); //The GameObject containing the "this" component should not be destroyed between scenes. 
-        currentScene = SceneManager.GetActiveScene();
-        Debug.Log("SETUP : Current Scene is " + " " + currentScene);
-        SwitchOnGamePhase(GamePhase.Menu); //Once the setup behavior is finished, this triggers the next game phase.
+        GetLevelManager();
+        SetCurrentSceneValue();
     }
-    private void InitializeMenu()
-    {
 
-    }
     private void GameWaitingToStart()
     {
         delayCoroutine = StartCoroutine(PlacePlayerAfterDelay());
-
-
     }
     private void GamePlaying()
     {
         inGameCanvasComponent.DisplayMessageInfos(false, currentGamePhase);
-
     }
     private void GameLost()
     {
@@ -187,7 +157,6 @@ public class GameManager : MonoBehaviour
     private void GameWon()
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
-
     }
     #endregion
 
@@ -199,7 +168,6 @@ public class GameManager : MonoBehaviour
         //This checks wether the ship is within the defined constraints and if so, adds a calculated force to it.
         //If it's not, the game state is changed to "Lost". 
         //The BOTTOM limit is not considered by this method, as it will be represented by Terrain with its own rigidbody.
-
         if (IsShipPositionWithinBound() == true)
         {
             shipControllerRef.AddForceToShip();
@@ -231,59 +199,28 @@ public class GameManager : MonoBehaviour
             instanciatedRigidbody2D.constraints = RigidbodyConstraints2D.None;
             shipIsFrozen = false;
         }
-
     }
-
-    #endregion
-
-    #region 4 - Scene Management
-    //All of these can/should move to a Level Manager Script
-    public void LaunchNewGame()
-    {
-        SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
-
-        SwitchOnGamePhase(GamePhase.GameWaitingToStart);
-    }
-
-    public void RestartCurrentLevel()
-    {
-        SceneManager.LoadSceneAsync(currentScene.buildIndex);
-    }
-    public void LoadNextLevel()
-    {
-        if (!(SceneManager.GetSceneByBuildIndex(currentScene.buildIndex + 1) == null)) //If a "next level" exists
-        {
-            SceneManager.LoadSceneAsync(currentScene.buildIndex + 1);
-            //Get current scene
-            //Determine next scene from current scene.
-            //  
-        }
-
-    }
-    public void GoBackToMainMenu()
-    {
-        SceneManager.LoadSceneAsync(0);
-    }
-
     #endregion
 
     #region 5 - Tools & Misc
     //Various "tool" methods that can come of use.
     IEnumerator PlacePlayerAfterDelay()
     {
-
         /*WHAT THIS DOES : This methods will use "PlaceShipController()" after a delay of 1 second. */
 
         yield return new WaitForSeconds(1f);
         /*this delay is a necessary quick fix because the Instanciate method wasn't working properly 
         while performed during the loading of a new scene. */
         PlaceShipController();
-        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
+        if (levelManagerRef == null)
+        {
+            GetLevelManager();
+        }
 
+        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
     }
     private void PlaceShipController()
     {
-
         /*WHAT THIS DOES : This method either spawns or places the shipController in the scene depending on wether it exists or not. */
 
         Vector3 spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
@@ -301,6 +238,14 @@ public class GameManager : MonoBehaviour
         {
             instanciatedShip.transform.position = spawnPosition;
         }
+    }
+    private void GetLevelManager()
+    {
+        levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
+    }
+    private void SetCurrentSceneValue()
+    {
+        currentScene = SceneManager.GetActiveScene();
     }
     #endregion
 }

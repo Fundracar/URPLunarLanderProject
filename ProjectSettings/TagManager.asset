@@ -17,6 +17,7 @@ TagManager:
   - MainPlayerInfoTextBox
   - SecondaryPlayerInfoTextBox
   - PlayerInstructionsTextBox
+  - LevelManager
   layers:
   - Default
   - TransparentFX
