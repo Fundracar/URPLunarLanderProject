@@ -9,24 +9,19 @@ public class ShipController : MonoBehaviour
 
     #region Variables
     private Rigidbody2D shipRigidbody2D;
-
     private GameManager gameManagerRef;
-    //The body on which we applied the calculated speed and force.
 
     [Header("Input-Linked Variables")]
-
     // The two following values represent the X axis and Y axis input values. They will be refered as the "Input Linked Variables".
     public float UpThurstInputValue, LateralThrustInputValue;
     public float accelerationFactor = 2.5f; //Leave at 1 to cancel effect. 
 
     [Header("Coroutines")]
-
     //Variables used to store active coroutines to access them easily should it be needed.
     private Coroutine yThrustCoroutine;
     private Coroutine xThrustCoroutine;
 
     #endregion
-
     #region Init & Update
     void Awake()
     {
@@ -35,7 +30,6 @@ public class ShipController : MonoBehaviour
     }
 
     #endregion
-
     #region Input System Events
     public void OnZKeyPressed(InputAction.CallbackContext context)
     {
@@ -74,9 +68,7 @@ public class ShipController : MonoBehaviour
     }
     public void OnReadyKeyPressed(InputAction.CallbackContext context)
     {
-
         //Ready key (Spacebar) can be pressed on level start (to launch the game) and on Lost/Won level (to retry/Go to next Level)
-
         if (context.performed == true)
         {
             switch (gameManagerRef.currentGamePhase)
@@ -100,64 +92,46 @@ public class ShipController : MonoBehaviour
         }
     }
     #endregion
-
     #region Input Value Coroutines
-
-    //Both these coroutines could be merged into one. ()
-
-    //They are used to lerp the values of the movement input create a "thrust delay" on pressed and released
-    //Meaning : When you press Z, there is a delay before your ship gets at full thurst. When you release it,
-    //it takes the same time for the value to get back to 0.
+    /*
+    #Both these coroutines could be merged into one. ()
+    #They are used to lerp the values of the movement input create a "thrust delay" on pressed and released
+    #Meaning : When you press Z, there is a delay before your ship gets at full thurst. When you release it,
+    #it takes the same time for the value to get back to 0. */
     private IEnumerator ZThrustLerp(float _TempA)
     {
         float startMoveTime = Time.time;
-
         float duration = 2.0f;
-
         float targetTime = startMoveTime + duration;
 
         while (Time.time < targetTime)
         {
             float currentTime = Time.time - startMoveTime;
             float progress = currentTime / duration;
-
             UpThurstInputValue = Mathf.Lerp(UpThurstInputValue, _TempA, progress);
-
             yield return null;
         }
-
     }
-
     private IEnumerator LateralThrustLerp(float _TempA)
-
     {
         float startMoveTime = Time.time;
-
         float duration = 2.0f;
-
         float targetTime = startMoveTime + duration;
 
         while (Time.time < targetTime)
         {
             float currentTime = Time.time - startMoveTime;
-
             float progress = currentTime / duration;
-
             LateralThrustInputValue = Mathf.Lerp(LateralThrustInputValue, _TempA, progress);
-
             yield return null;
         }
-
     }
     public void AddForceToShip()
     {
         float xSpeed = LateralThrustInputValue * accelerationFactor;
-
         float ySpeed = UpThurstInputValue * accelerationFactor * 3f;
 
         shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
     }
-
     #endregion
-
 }
