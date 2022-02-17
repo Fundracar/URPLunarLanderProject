@@ -13,6 +13,10 @@ TagManager:
   - VerticalSpeedTextBox
   - HorizontalSpeedTextBox
   - GameCanvas
+  - FuelValueTextBox
+  - MainPlayerInfoTextBox
+  - SecondaryPlayerInfoTextBox
+  - PlayerInstructionsTextBox
   layers:
   - Default
   - TransparentFX

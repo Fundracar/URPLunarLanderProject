@@ -53,7 +53,6 @@ public class ShipController : MonoBehaviour
             yThrustCoroutine = StartCoroutine(ZThrustLerp(0));  // It is restarted with 0 as parameter.            
         }
     }
-
     public void OnQDKeysPressed(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -92,8 +91,8 @@ public class ShipController : MonoBehaviour
                     break;
 
                 case GameManager.GamePhase.GameWon:
-                //method go to next level in game manager
-                break;
+                    //method go to next level in game manager
+                    break;
 
                 default:
                     break;
@@ -150,7 +149,14 @@ public class ShipController : MonoBehaviour
         }
 
     }
+    public void AddForceToShip()
+    {
+        float xSpeed = LateralThrustInputValue * accelerationFactor;
 
+        float ySpeed = UpThurstInputValue * accelerationFactor * 3f;
+
+        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
+    }
 
     #endregion
 
