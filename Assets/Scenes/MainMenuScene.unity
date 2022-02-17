@@ -157,7 +157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 393}
+  m_AnchoredPosition: {x: 30, y: 377}
   m_SizeDelta: {x: 500, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &321427580
@@ -604,6 +604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16df6fa7969e8c940a2e4962316ca1c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManagerRef: {fileID: 0}
 --- !u!4 &916938105
 Transform:
   m_ObjectHideFlags: 0
@@ -988,6 +989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4a5299fe752d7147bd3cbfd1753b3a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManagerRef: {fileID: 0}
 --- !u!1 &1385117165
 GameObject:
   m_ObjectHideFlags: 0
@@ -1346,9 +1348,14 @@ MonoBehaviour:
   currentGamePhase: 0
   currentScene:
     m_Handle: 0
+  inGameCanvasRef: {fileID: 0}
   inGameCanvasComponent: {fileID: 0}
   levelManagerRef: {fileID: 0}
   shipPrefab: {fileID: 6407882647684847688, guid: 3b0cebb0fccb8b243a053a9db74e9c6a, type: 3}
+  instanciatedShip: {fileID: 0}
+  instanciatedRigidbody2D: {fileID: 0}
+  shipControllerRef: {fileID: 0}
+  shipIsFrozen: 0
 --- !u!4 &1808750647
 Transform:
   m_ObjectHideFlags: 0

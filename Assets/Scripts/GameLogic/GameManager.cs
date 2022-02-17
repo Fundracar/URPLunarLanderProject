@@ -19,15 +19,18 @@ public class GameManager : MonoBehaviour
     */
 
     [Header("Phase & Scene Variables")]
+
+
     public GamePhase currentGamePhase;  //Variable in which the current "state" information will be stored.
-    public Scene currentScene;
+    public Scene currentScene; public InGameCanvas inGameCanvasComponent;
+    public LevelManager levelManagerRef;
     [SerializeField] Coroutine delayCoroutine;
     [SerializeField] GameObject inGameCanvasRef;
-    public InGameCanvas inGameCanvasComponent;
-    public LevelManager levelManagerRef;
 
     [Header("Ship references variables")]
     [SerializeField] GameObject shipPrefab; //this is referenced by hand in the engine.
+
+    [SerializeField] Vector3 spawnPosition;
     [SerializeField] GameObject instanciatedShip;
     [SerializeField] Rigidbody2D instanciatedRigidbody2D;
     [SerializeField] ShipController shipControllerRef;
@@ -99,6 +102,7 @@ public class GameManager : MonoBehaviour
             switch (currentGamePhase)
             {
                 case GamePhase.GameWaitingToStart when shipIsFrozen == true:
+                    ConstraintMovement(true);
                     break;
 
                 case GamePhase.GameWaitingToStart:
@@ -132,6 +136,10 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
+        else
+        {
+            Debug.Log("Character is Null");
+        }
     }
 
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
@@ -140,10 +148,12 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); //The GameObject containing the "this" component should not be destroyed between scenes. 
         GetLevelManager();
         SetCurrentSceneValue();
+        spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
     }
 
     private void GameWaitingToStart()
     {
+        SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
         delayCoroutine = StartCoroutine(PlacePlayerAfterDelay());
     }
     private void GamePlaying()
@@ -181,7 +191,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Game Over ! Ship is outside of reach");
             SwitchOnGamePhase(GamePhase.GameLost);
             return false;
         }
@@ -192,12 +201,12 @@ public class GameManager : MonoBehaviour
         if (_Instruction == true)
         {
             instanciatedRigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
-            shipIsFrozen = true;
+            shipIsFrozen = _Instruction;
         }
         else
         {
             instanciatedRigidbody2D.constraints = RigidbodyConstraints2D.None;
-            shipIsFrozen = false;
+            shipIsFrozen = _Instruction;
         }
     }
     #endregion
@@ -211,37 +220,52 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         /*this delay is a necessary quick fix because the Instanciate method wasn't working properly 
         while performed during the loading of a new scene. */
-        PlaceShipController();
-        if (levelManagerRef == null)
+        PlaceShipController(new Vector3(-2.95f, 2.5f, 3f));
+
+        if (levelManagerRef == null) //This will be true if the coroutine was started for a scene change (and not a simple retry)
         {
             GetLevelManager();
         }
 
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
     }
-    private void PlaceShipController()
+    private void PlaceShipController(Vector3 _spawn)
     {
         /*WHAT THIS DOES : This method either spawns or places the shipController in the scene depending on wether it exists or not. */
 
-        Vector3 spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
+        spawnPosition = _spawn;
+
         if (instanciatedShip == null) //If the ship doesn't exist in the scene, spawns it and references its valuable components.
         {
-            instanciatedShip = Instantiate(shipPrefab, spawnPosition, Quaternion.identity);
-            instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
-            shipControllerRef = instanciatedShip.GetComponent<ShipController>();
-
-            inGameCanvasRef = GameObject.FindGameObjectWithTag("GameCanvas");
-            inGameCanvasComponent = inGameCanvasRef.GetComponent<InGameCanvas>();
+            InstantiateAndReferencePlayerShip();
+            GetInGameCanvas();
             inGameCanvasComponent.FindPlayerInScene();
         }
         else //If it already exists, just re-place it at its spawn position.
         {
-            instanciatedShip.transform.position = spawnPosition;
+            RestartShipInitialState();
         }
     }
+
     private void GetLevelManager()
     {
         levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
+    }
+    private void GetInGameCanvas()
+    {
+        inGameCanvasRef = GameObject.FindGameObjectWithTag("GameCanvas");
+        inGameCanvasComponent = inGameCanvasRef.GetComponent<InGameCanvas>();
+    }
+    private void InstantiateAndReferencePlayerShip()
+    {
+        instanciatedShip = Instantiate(shipPrefab, spawnPosition, Quaternion.identity);
+        instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
+        shipControllerRef = instanciatedShip.GetComponent<ShipController>();
+    }
+    private void RestartShipInitialState()
+    {
+        instanciatedShip.transform.position = spawnPosition;
+        shipIsFrozen = false;
     }
     private void SetCurrentSceneValue()
     {

@@ -11,14 +11,10 @@ public class LevelManager : MonoBehaviour
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
-
     public void LaunchNewGame()
     {
-        SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
-
         gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameWaitingToStart);
     }
-
     public void RestartCurrentLevel()
     {
         SceneManager.LoadSceneAsync(gameManagerRef.currentScene.buildIndex);
@@ -29,7 +25,6 @@ public class LevelManager : MonoBehaviour
         {
             SceneManager.LoadSceneAsync(gameManagerRef.currentScene.buildIndex + 1);
         }
-
     }
     public void GoBackToMainMenu()
     {

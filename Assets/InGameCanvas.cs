@@ -40,16 +40,12 @@ public class InGameCanvas : MonoBehaviour
         UpdateSpeedInfos();
     }
     public void FindPlayerInScene()
-
     {
         /*Since the player doesn't spawn right away on scene loading, 
    this methods encapsulates the behaviors that 'finds and references the player object in the scene' 
    in order to "fire" it at the right time.
-
    This prevents the script from trying to find an element that hasn't been spawned yet. */
-
         playerReference = GameObject.FindGameObjectWithTag("Player");
-
         playerRigidbodyReference = playerReference.GetComponent<Rigidbody2D>();
     }
 
@@ -59,11 +55,9 @@ public class InGameCanvas : MonoBehaviour
         /* Should this be done on Update or FixedUpdate ?
               I figured that since this script is supposed to track velocity values that are highly physics based, 
               it would be more accurate to track them 'OnFixedUpdate' */
-
         if (playerReference != null)
         {
             verticalSpeedText.text = (playerRigidbodyReference.velocity.y * 100f).ToString();
-
             horizontalSpeedText.text = (playerRigidbodyReference.velocity.x * 100f).ToString();
         }
     }
@@ -85,8 +79,6 @@ public class InGameCanvas : MonoBehaviour
         secondaryPlayerMessageText = secondaryPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
         playerInstructionMessageContainer = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox");
         playerInstructiontext = playerInstructionMessageContainer.GetComponent<TextMeshProUGUI>();
-
-
         gameManagerRef.inGameCanvasComponent = this;
     }
     public void DisplayMessageInfos(bool _instruct, GameManager.GamePhase gamePhase)
@@ -96,7 +88,6 @@ public class InGameCanvas : MonoBehaviour
     }
     private void SetMessageToDisplay(GameManager.GamePhase _currentGamePhase)
     {
-
         switch (_currentGamePhase)
         {
             case GameManager.GamePhase.GameWaitingToStart:
@@ -119,16 +110,12 @@ public class InGameCanvas : MonoBehaviour
                 break;
 
             case GameManager.GamePhase.GamePlaying:
-            
+
                 mainPlayerMessageText.text = null;
                 secondaryPlayerMessageText.text = null;
                 playerInstructiontext.text = null;
                 break;
-
-
         }
-
-
     }
     private void EnableMessageDisplay(bool _instruction)
     {
