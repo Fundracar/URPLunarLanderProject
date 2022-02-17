@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    public enum GamePhase { Setup, Menu, WaitingToStart, Playing, LostLevel, WonLevel };
+    public enum GamePhase { Setup, Menu, GameWaitingToStart, GamePlaying, GameLost, GameWon };
 
     /* Phases definition:
 
@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
         
         MainMenu = The player is inside a menu and not in game.
 
-        WaitingToStart = The player is in a game level and is instructed to press a button for the game to start.
+        GameWaitingToStart = The player is in a game level and is instructed to press a button for the game to start.
 
         Playing : The player is playing the game.
 
@@ -81,19 +81,20 @@ public class GameManager : MonoBehaviour
                 InitializeMenu();
                 break;
 
-            case GamePhase.WaitingToStart:
-                WaitingToStart();
+            case GamePhase.GameWaitingToStart:
+                GameWaitingToStart();
                 break;
 
-            case GamePhase.Playing:
+            case GamePhase.GamePlaying:
                 GamePlaying();
 
                 break;
 
-            case GamePhase.LostLevel:
+            case GamePhase.GameLost:
+                GameLost();
                 break;
 
-            case GamePhase.WonLevel:
+            case GamePhase.GameWon:
                 break;
 
             default:
@@ -109,42 +110,44 @@ public class GameManager : MonoBehaviour
 
         This should be called "OnFixedUpdate"
         
-        Example : While "Playing", the ship's movement are not constrained ect. */
+        Example : While "Playing", the ship's movement are not constrained ect.
+        
+        CASE GUARD : For each state this methods should check, we take into account the case when the "ConstraintMovement"
+        has already been fired in order not to fire it everyframe. */
 
-        switch (currentGamePhase)
+
+        if (instanciatedShip != null)
         {
-            case GamePhase.Setup:
-                break;
+            switch (currentGamePhase)
+            {
 
-            case GamePhase.Menu:
-                break;
+                case GamePhase.GameWaitingToStart when shipIsFrozen == true:
+                    break;
 
-            case GamePhase.Playing:
-                ConstraintMovement(false);
-                UpdateShipSpeed();
-                break;
+                case GamePhase.GameWaitingToStart:
+                    ConstraintMovement(true);
+                    break;
 
-            case GamePhase.WaitingToStart when shipIsFrozen == true:
-                break;
+                case GamePhase.GamePlaying when shipIsFrozen == false:
+                    UpdateShipSpeed();
+                    break;
 
-            case GamePhase.WaitingToStart:
-                ConstraintMovement(true);
-                break;
+                case GamePhase.GamePlaying:
+                    ConstraintMovement(false);
+                    UpdateShipSpeed();
+                    break;
 
-            case GamePhase.WonLevel when shipIsFrozen == true:
-                break;
+                case GamePhase.GameWon when shipIsFrozen == true:
+                    break;
 
-            case GamePhase.WonLevel:
-                ConstraintMovement(true);
-                break;
+                case GamePhase.GameWon:
+                    ConstraintMovement(true);
+                    break;
 
-            case GamePhase.LostLevel:
-                break;
-
-            default:
-                break;
+                default:
+                    break;
+            }
         }
-
     }
 
     #endregion
@@ -162,7 +165,7 @@ public class GameManager : MonoBehaviour
     {
         //This is fired when the game state should be changed to 
     }
-    private void WaitingToStart()
+    private void GameWaitingToStart()
     {
         testCoroutine = StartCoroutine(SpawnPlayerAfterDelay());
     }
@@ -170,7 +173,10 @@ public class GameManager : MonoBehaviour
     {
 
     }
-
+    private void GameLost()
+    {
+        Object.Destroy(instanciatedShip);
+    }
     #endregion
 
     #region Tools
@@ -181,7 +187,7 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
 
-        SwitchOnGamePhase(GamePhase.WaitingToStart);
+        SwitchOnGamePhase(GamePhase.GameWaitingToStart);
     }
     private void SpawnShipController()
     {
@@ -195,6 +201,8 @@ public class GameManager : MonoBehaviour
 
         instanciatedShip.transform.position = spawnPosition;
 
+
+
         inGameCanvasRef = GameObject.FindGameObjectWithTag("GameCanvas");
 
         InGameCanvas tempInGameCanvas = inGameCanvasRef.GetComponent<InGameCanvas>();
@@ -204,9 +212,22 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator SpawnPlayerAfterDelay()
     {
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(1f);
         //this is because the Instanciate method wasn't working properly while performed during the loading of a new scene.
         SpawnShipController();
+    }
+
+
+    public void GoToNextLevel()
+    {
+        //Get current scene
+        //Determine next scene from current scene.
+        //
+    }
+
+    public void GoBackToMainMenu()
+    {
+
     }
 
     #endregion
@@ -238,6 +259,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("Game Over ! Ship is outside of reach");
+            SwitchOnGamePhase(GamePhase.GameLost);
             return false;
         }
     }

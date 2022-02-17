@@ -71,21 +71,29 @@ public class ShipController : MonoBehaviour
             StopCoroutine(xThrustCoroutine);
 
             xThrustCoroutine = StartCoroutine(LateralThrustLerp(0));
-
         }
-
     }
     public void OnReadyKeyPressed(InputAction.CallbackContext context)
     {
+
+        //Ready key (Spacebar) can be pressed on level start (to launch the game) and on Lost/Won level (to retry/Go to next Level)
+
         if (context.performed == true)
         {
-
             switch (gameManagerRef.currentGamePhase)
             {
-                case GameManager.GamePhase.WaitingToStart:
+                case GameManager.GamePhase.GameWaitingToStart:
 
-                    gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Playing);
+                    gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GamePlaying);
                     break;
+
+                case GameManager.GamePhase.GameLost:
+                    gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameWaitingToStart);
+                    break;
+
+                case GameManager.GamePhase.GameWon:
+                //method go to next level in game manager
+                break;
 
                 default:
                     break;
@@ -137,9 +145,6 @@ public class ShipController : MonoBehaviour
             float progress = currentTime / duration;
 
             LateralThrustInputValue = Mathf.Lerp(LateralThrustInputValue, _TempA, progress);
-
-
-
 
             yield return null;
         }

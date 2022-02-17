@@ -1,43 +1,63 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
+
 
 public class InGameCanvas : MonoBehaviour
 {
 
-    public GameObject playerReference;
-    public Rigidbody2D playerRigidbodyReference;
-    private GameObject textVerticalSpeedContainer;
-    private Text verticalSpeedText;
-    private GameObject textHorizontalSpeedContainer;
+#region  Variables
 
-    private Text horizontalSpeedText;
-    // Start is called before the first frame update
+    [Header ("Player Object & Components References")]
+    private GameObject playerReference;
+    private Rigidbody2D playerRigidbodyReference;
+
+    [Header("Text Objects & Components")]
+    private GameObject textVerticalSpeedContainer;
+    private TextMeshProUGUI verticalSpeedText;
+    private GameObject textHorizontalSpeedContainer;
+    private TextMeshProUGUI horizontalSpeedText;
+
+    #endregion
     void Start()
     {
-    
+        //Script Initialization : Every valuable object/information is looked for by tag and referenced.
+
         textVerticalSpeedContainer = GameObject.FindGameObjectWithTag("VerticalSpeedTextBox");
-        verticalSpeedText = textVerticalSpeedContainer.GetComponent<Text>();
+
+        verticalSpeedText = textVerticalSpeedContainer.GetComponent<TextMeshProUGUI>();
 
         textHorizontalSpeedContainer = GameObject.FindGameObjectWithTag("HorizontalSpeedTextBox");
-        horizontalSpeedText = textHorizontalSpeedContainer.GetComponent<Text>();
+
+        horizontalSpeedText = textHorizontalSpeedContainer.GetComponent<TextMeshProUGUI>();
 
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        /* Should this be done on Update or FixedUpdate ?
+        I figured that since this script is supposed to track velocity values that are highly physics based, 
+        it would be more accurate to track them 'OnFixedUpdate' */
+
         if (playerReference != null)
         {
-            verticalSpeedText.text = playerRigidbodyReference.velocity.x.ToString();
-            horizontalSpeedText.text = playerRigidbodyReference.velocity.y.ToString();
-        }
+            verticalSpeedText.text = (playerRigidbodyReference.velocity.y * 100f).ToString();
 
+            horizontalSpeedText.text = (playerRigidbodyReference.velocity.x * 100f).ToString();
+        }
     }
     public void FindPlayerInScene()
+
     {
+        /*Since the player doesn't spawn right away on scene loading, 
+   this methods encapsulates the behaviors that 'finds and references the player object in the scene' 
+   in order to "fire" it at the right time.
+
+   This prevents the script from trying to find an element that hasn't been spawned yet. */
+
         playerReference = GameObject.FindGameObjectWithTag("Player");
+
         playerRigidbodyReference = playerReference.GetComponent<Rigidbody2D>();
     }
 }
