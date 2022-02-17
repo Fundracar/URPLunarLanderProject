@@ -128,7 +128,7 @@ public class ShipController : MonoBehaviour
     }
     public void AddForceToShip()
     {
-        float xSpeed = LateralThrustInputValue * accelerationFactor;
+        float xSpeed = LateralThrustInputValue * accelerationFactor * 1.5f;
         float ySpeed = UpThurstInputValue * accelerationFactor * 1.5f;
 
         shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
