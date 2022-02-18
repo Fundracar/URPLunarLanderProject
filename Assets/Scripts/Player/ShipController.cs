@@ -33,39 +33,44 @@ public class ShipController : MonoBehaviour
     #region Input System Events
     public void OnZKeyPressed(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (shipRigidbody2D.gameObject.activeInHierarchy == true)
         {
-            yThrustCoroutine = StartCoroutine(ZThrustLerp(1));
-            // On Z being pressed, the Coroutine starts with 1 as parameter (meaning the x input-linked variable will tend toward 1)
-        }
+            if (context.performed)
+            {
+                yThrustCoroutine = StartCoroutine(ZThrustLerp(1));
+                // On Z being pressed, the Coroutine starts with 1 as parameter (meaning the x input-linked variable will tend toward 1)
+            }
 
-        if (context.canceled)
-        {
-            StopCoroutine(yThrustCoroutine);  // On Z being pressed, the Coroutine starts.
+            if (context.canceled)
+            {
+                StopCoroutine(yThrustCoroutine);  // On Z being pressed, the Coroutine starts.
 
-            yThrustCoroutine = StartCoroutine(ZThrustLerp(0));  // It is restarted with 0 as parameter.            
+                yThrustCoroutine = StartCoroutine(ZThrustLerp(0));  // It is restarted with 0 as parameter.            
+            }
         }
     }
-
-    
     public void OnQDKeysPressed(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (shipRigidbody2D.gameObject.activeInHierarchy == true)
         {
-            float currentValue = context.ReadValue<float>();
-
-            if (currentValue != 0)
+            if (context.performed)
             {
-                xThrustCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
+                float currentValue = context.ReadValue<float>();
+
+                if (currentValue != 0)
+                {
+                    xThrustCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
+                }
+            }
+
+            if (context.canceled)
+            {
+                StopCoroutine(xThrustCoroutine);
+
+                xThrustCoroutine = StartCoroutine(LateralThrustLerp(0));
             }
         }
 
-        if (context.canceled)
-        {
-            StopCoroutine(xThrustCoroutine);
-
-            xThrustCoroutine = StartCoroutine(LateralThrustLerp(0));
-        }
     }
     public void OnReadyKeyPressed(InputAction.CallbackContext context)
     {
@@ -80,7 +85,8 @@ public class ShipController : MonoBehaviour
                     break;
 
                 case GameManager.GamePhase.GameLost:
-                    gameManagerRef.levelManagerRef.LaunchNewGame();
+                
+                    gameManagerRef.levelManagerRef.RestartCurrentLevel();
                     break;
 
                 case GameManager.GamePhase.GameWon:
@@ -132,12 +138,12 @@ public class ShipController : MonoBehaviour
         float xSpeed = LateralThrustInputValue * accelerationFactor * 1.5f;
         float ySpeed = UpThurstInputValue * accelerationFactor * 1.5f;
 
-        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed),ForceMode2D.Force);
+        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed), ForceMode2D.Force);
     }
 
     public void OnCollisionEnter2D(Collision2D col)
     {
-        if(col.gameObject.tag == "Terrain")
+        if (col.gameObject.tag == "Terrain")
         {
             Debug.Log("Terrain");
             gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameLost);

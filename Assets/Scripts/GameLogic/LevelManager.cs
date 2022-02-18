@@ -13,7 +13,7 @@ public class LevelManager : MonoBehaviour
     }
     public void LaunchNewGame()
     {
-        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameWaitingToStart);
+         SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
     }
     public void RestartCurrentLevel()
     {

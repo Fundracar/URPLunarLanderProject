@@ -30,7 +30,7 @@ public class InGameCanvas : MonoBehaviour
     [SerializeField] TextMeshProUGUI playerInstructiontext;
 
     #endregion
-    void Start()
+    void Awake()
     {
         InitializeInGameCanvas();
     }
@@ -78,7 +78,6 @@ public class InGameCanvas : MonoBehaviour
         secondaryPlayerMessageText = secondaryPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
         playerInstructionMessageContainer = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox");
         playerInstructiontext = playerInstructionMessageContainer.GetComponent<TextMeshProUGUI>();
-        gameManagerRef.inGameCanvasComponent = this;
     }
     public void DisplayMessageInfos(bool _instruct, GameManager.GamePhase gamePhase)
     {

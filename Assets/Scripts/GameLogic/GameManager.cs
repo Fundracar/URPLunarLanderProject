@@ -5,10 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
     #region Variables
     public enum GamePhase { Setup, Menu, GameWaitingToStart, GamePlaying, GameLost, GameWon };
-
     /* Phases definition:
         Setup : Specific initialisation behaviours are launched.
         MainMenu = The player is inside a menu and not in game.
@@ -17,44 +15,34 @@ public class GameManager : MonoBehaviour
         LostLevel : The player crashed its ship and has to choose an option from here (restart level or leave)
         WonLevel : The player managed to land its ship and is being displayed its statistics.
     */
-
     [Header("Phase & Scene Variables")]
-
-
     public GamePhase currentGamePhase;  //Variable in which the current "state" information will be stored.
-    public Scene currentScene; public InGameCanvas inGameCanvasComponent;
+    public Scene currentScene; 
+    public InGameCanvas inGameCanvasComponent; 
     public LevelManager levelManagerRef;
-    [SerializeField] Coroutine delayCoroutine;
     [SerializeField] GameObject inGameCanvasRef;
+    [SerializeField] Coroutine delayCoroutine;
 
     [Header("Ship references variables")]
-    [SerializeField] GameObject shipPrefab; //this is referenced by hand in the engine.
     [SerializeField] Vector3 spawnPosition;
+    [SerializeField] GameObject shipPrefab; //this is referenced by hand in the engine.
     [SerializeField] GameObject instanciatedShip;
     [SerializeField] Rigidbody2D instanciatedRigidbody2D;
     [SerializeField] ShipController shipControllerRef;
     [SerializeField] BoxCollider2D instanciatedShipCollider;
     [SerializeField] bool shipIsFrozen = false;
-
-
     #endregion
-
-    #region 0 - Init & Update
-    void Awake()
+    #region Init & Update
+    void Start()
     {
         SwitchOnGamePhase(GamePhase.Setup);
     }
     void FixedUpdate()
     {
-        if (instanciatedShip != null) //The "ManageShipState() method should not fire if there are not instanciated ship yet.
-        {
-            ManageShipState();
-        }
+        if (instanciatedShip != null) ManageShipState();//The "ManageShipState() method should not fire if there are not instanciated ship yet.   
     }
     #endregion
-
-    #region 1 - Core Functions
-
+    #region Core Functions
     /*There are two core functions in the GameManager
     One that manages the game logic through the use of a "Game Phase" enum.
     Another that manages the player's ship in function of the player input values tracked in the "ShipController.cs" */
@@ -96,7 +84,7 @@ public class GameManager : MonoBehaviour
         #WHAT THIS DOES : This methods conditions what behaviors are avalaible to the player's Ship according to the current game phase.
         #This should be called "OnFixedUpdate"  
         #Example : While "Playing", the ship's movement are not constrained ect.
-        #CASE GUARD : For each case this methods should check, we take into account when the "ConstraintMovement"
+        #CASE GUARD : For each case this methods should check, we take into account when the "ConstraintShipMovements"
         has already been fired in order not to fire it everyframe. */
 
         if (instanciatedShip != null)
@@ -104,11 +92,11 @@ public class GameManager : MonoBehaviour
             switch (currentGamePhase)
             {
                 case GamePhase.GameWaitingToStart when shipIsFrozen == true:
-                    ConstraintMovement(true);
+                    ConstraintShipMovements(true);
                     break;
 
                 case GamePhase.GameWaitingToStart:
-                    ConstraintMovement(true);
+                    ConstraintShipMovements(true);
                     break;
 
                 case GamePhase.GamePlaying when shipIsFrozen == false:
@@ -116,7 +104,7 @@ public class GameManager : MonoBehaviour
                     break;
 
                 case GamePhase.GamePlaying:
-                    ConstraintMovement(false);
+                    ConstraintShipMovements(false);
                     UpdateShipSpeed();
                     break;
 
@@ -124,14 +112,14 @@ public class GameManager : MonoBehaviour
                     break;
 
                 case GamePhase.GameWon:
-                    ConstraintMovement(true);
+                    ConstraintShipMovements(true);
                     break;
 
                 case GamePhase.GameLost when shipIsFrozen == true:
                     break;
 
                 case GamePhase.GameLost:
-                    ConstraintMovement(true);
+                    ConstraintShipMovements(true);
                     break;
 
                 default:
@@ -143,20 +131,22 @@ public class GameManager : MonoBehaviour
             Debug.Log("Character is Null");
         }
     }
-
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
         SetCurrentSceneValue();
-        DontDestroyOnLoad(this.gameObject); //The GameObject containing the "this" component should not be destroyed between scenes. 
         GetLevelManager();
-        spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
+        if (currentScene.buildIndex != 0)
+        {
+            spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
+            GetInGameCanvas();
+            SwitchOnGamePhase(GamePhase.GameWaitingToStart);
+        }
     }
-
     private void GameWaitingToStart()
     {
-        SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
-        delayCoroutine = StartCoroutine(SetGameReady());
+        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
+        PlaceShipController(new Vector3(-2.95f, 2.5f, 3f));
     }
     private void GamePlaying()
     {
@@ -171,18 +161,12 @@ public class GameManager : MonoBehaviour
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
     }
     #endregion
-
-    #region 3 - Ship Management
-
-
-
-
+    #region Ship Management
     //The following methods combine each other and are tools for the ship controller supervision.
     private void UpdateShipSpeed()
     {
-        //This checks wether the ship is within the defined constraints and if so, adds a calculated force to it.
-        //If it's not, the game state is changed to "Lost". 
-        //The BOTTOM limit is not considered by this method, as it will be represented by Terrain with its own rigidbody.
+        /*This checks wether the ship is within the defined constraints and if so, adds a calculated force to it.
+        The BOTTOM limit is not considered by this method, as it will be represented by Terrain with its own rigidbody. */
         if (IsShipPositionWithinBound() == true)
         {
             shipControllerRef.AddForceToShip();
@@ -200,8 +184,7 @@ public class GameManager : MonoBehaviour
             return false;
         }
     }
-
-    private void ConstraintMovement(bool _Instruction)
+    private void ConstraintShipMovements(bool _Instruction)
     {
         //This methods freezes or unfreezes the rigidbody2D constraints at will.
         if (_Instruction == true)
@@ -215,40 +198,16 @@ public class GameManager : MonoBehaviour
             shipIsFrozen = _Instruction;
         }
     }
-
-
     #endregion
-
-    #region 5 - Tools & Misc
+    #region Tools & Misc
     //Various "tool" methods that can come of use.
-    IEnumerator SetGameReady()
-    {
-        /*WHAT THIS DOES : This methods will use "PlaceShipController()" after a delay of 1 second. */
-
-        yield return new WaitForSeconds(1f);
-        /*this delay is a necessary quick fix because the Instanciate method wasn't working properly 
-        while performed during the loading of a new scene. */
-
-
-        PlaceShipController(new Vector3(-2.95f, 2.5f, 3f));
-
-        if (levelManagerRef == null) //This will be true if the coroutine was started for a scene change (and not a simple retry)
-        {
-            GetLevelManager();
-        }
-
-        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
-    }
     private void PlaceShipController(Vector3 _spawn)
     {
         /*WHAT THIS DOES : This method either spawns or places the shipController in the scene depending on wether it exists or not. */
-
         spawnPosition = _spawn;
-
         if (instanciatedShip == null) //If the ship doesn't exist in the scene, spawns it and references its valuable components.
         {
             InstantiateAndReferencePlayerShip();
-            GetInGameCanvas();
             inGameCanvasComponent.FindPlayerInScene();
         }
         else //If it already exists, just re-place it at its spawn position.
@@ -256,7 +215,6 @@ public class GameManager : MonoBehaviour
             RestartShipInitialState();
         }
     }
-
     private void GetLevelManager()
     {
         levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
@@ -282,7 +240,5 @@ public class GameManager : MonoBehaviour
     {
         currentScene = SceneManager.GetActiveScene();
     }
-
     #endregion
 }
-
