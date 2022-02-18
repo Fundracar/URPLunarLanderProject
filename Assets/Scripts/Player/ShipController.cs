@@ -11,6 +11,9 @@ public class ShipController : MonoBehaviour
     private Rigidbody2D shipRigidbody2D;
     private GameManager gameManagerRef;
 
+    public enum CauseOfDeath { WentAway, Terrain, Speed }
+    public CauseOfDeath causeOfDeath;
+
     [Header("Input-Linked Variables")]
     // The two following values represent the X axis and Y axis input values. They will be refered as the "Input Linked Variables".
     public float UpThurstInputValue, LateralThrustInputValue;
@@ -40,11 +43,9 @@ public class ShipController : MonoBehaviour
                 yThrustCoroutine = StartCoroutine(ZThrustLerp(1));
                 // On Z being pressed, the Coroutine starts with 1 as parameter (meaning the x input-linked variable will tend toward 1)
             }
-
             if (context.canceled)
             {
                 StopCoroutine(yThrustCoroutine);  // On Z being pressed, the Coroutine starts.
-
                 yThrustCoroutine = StartCoroutine(ZThrustLerp(0));  // It is restarted with 0 as parameter.            
             }
         }
@@ -56,17 +57,12 @@ public class ShipController : MonoBehaviour
             if (context.performed)
             {
                 float currentValue = context.ReadValue<float>();
-
-                if (currentValue != 0)
-                {
-                    xThrustCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
-                }
+                if (currentValue != 0) xThrustCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
             }
 
             if (context.canceled)
             {
                 StopCoroutine(xThrustCoroutine);
-
                 xThrustCoroutine = StartCoroutine(LateralThrustLerp(0));
             }
         }
@@ -80,12 +76,10 @@ public class ShipController : MonoBehaviour
             switch (gameManagerRef.currentGamePhase)
             {
                 case GameManager.GamePhase.GameWaitingToStart:
-
                     gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GamePlaying);
                     break;
 
                 case GameManager.GamePhase.GameLost:
-                
                     gameManagerRef.levelManagerRef.RestartCurrentLevel();
                     break;
 
@@ -137,16 +131,27 @@ public class ShipController : MonoBehaviour
     {
         float xSpeed = LateralThrustInputValue * accelerationFactor * 1.5f;
         float ySpeed = UpThurstInputValue * accelerationFactor * 1.5f;
-
         shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed), ForceMode2D.Force);
     }
 
     public void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.tag == "Terrain")
+        string coltag = col.gameObject.tag;
+        switch (coltag)
         {
-            Debug.Log("Terrain");
-            gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
+            case "Terrain":
+                Debug.Log("Terrain");
+                causeOfDeath = CauseOfDeath.Terrain;
+                gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
+                break;
+            case "Plateform":
+                Debug.Log("I collided a plateform");
+                //Method to check player speed this instant
+                // and switch on the right game phase
+                break;
+
+            default:
+                break;
         }
     }
     #endregion

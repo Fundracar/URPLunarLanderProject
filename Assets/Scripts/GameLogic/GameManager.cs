@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     public GamePhase currentGamePhase;  //Variable in which the current "state" information will be stored.
     public Scene currentScene; 
     public InGameCanvas inGameCanvasComponent; 
-    public LevelManager levelManagerRef;
+    public LevelManager levelManagerRef { get; set; }
     [SerializeField] GameObject inGameCanvasRef;
     [SerializeField] Coroutine delayCoroutine;
 
@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject shipPrefab; //this is referenced by hand in the engine.
     [SerializeField] GameObject instanciatedShip;
     [SerializeField] Rigidbody2D instanciatedRigidbody2D;
-    [SerializeField] ShipController shipControllerRef;
+    public ShipController shipControllerRef { get; private set; }
     [SerializeField] BoxCollider2D instanciatedShipCollider;
     [SerializeField] bool shipIsFrozen = false;
     #endregion

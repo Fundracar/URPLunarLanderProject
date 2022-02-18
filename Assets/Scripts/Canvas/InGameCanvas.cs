@@ -6,9 +6,7 @@ using TMPro;
 
 public class InGameCanvas : MonoBehaviour
 {
-
     #region  Variables
-
     [SerializeField] GameManager gameManagerRef;
 
     [Header("Player Object & Components References")]
@@ -28,7 +26,6 @@ public class InGameCanvas : MonoBehaviour
     [SerializeField] TextMeshProUGUI secondaryPlayerMessageText;
     [SerializeField] GameObject playerInstructionMessageContainer;
     [SerializeField] TextMeshProUGUI playerInstructiontext;
-
     #endregion
     void Awake()
     {
@@ -60,11 +57,7 @@ public class InGameCanvas : MonoBehaviour
             horizontalSpeedText.text = (playerRigidbodyReference.velocity.x * 100f).ToString();
         }
     }
-    private void DisplayWaitingForGameToStar()
-    {
 
-
-    }
     private void InitializeInGameCanvas()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -78,6 +71,8 @@ public class InGameCanvas : MonoBehaviour
         secondaryPlayerMessageText = secondaryPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
         playerInstructionMessageContainer = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox");
         playerInstructiontext = playerInstructionMessageContainer.GetComponent<TextMeshProUGUI>();
+
+        //All of those variables come of use in the "SetMessageToDisplay()" & "EnableMessageToDisplay()" methods.
     }
     public void DisplayMessageInfos(bool _instruct, GameManager.GamePhase gamePhase)
     {
@@ -89,26 +84,33 @@ public class InGameCanvas : MonoBehaviour
         switch (_currentGamePhase)
         {
             case GameManager.GamePhase.GameWaitingToStart:
-                mainPlayerMessageText.text = "Station is ready";
-                secondaryPlayerMessageText.text = "Prepare for landing on the designated plateforms";
+                mainPlayerMessageText.text = "Prepare for landing";
+                secondaryPlayerMessageText.text = "Place the ship on a designated area and wait for instructions";
                 playerInstructiontext.text = "Press SPACE to start landing procedure";
                 break;
 
             case GameManager.GamePhase.GameLost:
+
                 mainPlayerMessageText.text = "Landing Failed";
-                secondaryPlayerMessageText.text = "No further reasons displayed.";
-                playerInstructiontext.text = "Press SPACE to try again, or Escape to save and quit !";
+
+                playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
+
+                if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.WentAway) secondaryPlayerMessageText.text = "Station Control lost your ship, as a result landing procedure was denied.";
+
+                else if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Terrain) secondaryPlayerMessageText.text = "You crashed the ship into terrain";
+
+                else if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Speed) secondaryPlayerMessageText.text = "Your speed was too high, as a result the ship crashed on landing.";
 
                 break;
 
             case GameManager.GamePhase.GameWon:
                 mainPlayerMessageText.text = "Landing Successful !";
                 secondaryPlayerMessageText.text = "You managed to land the ship without incident";
-                playerInstructiontext.text = "Press SPACE to continue, or Escape to save & quit !";
+                playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
                 break;
 
             case GameManager.GamePhase.GamePlaying:
-
+            //No text should be displayed when the game phase equals "GamePlaying"
                 mainPlayerMessageText.text = null;
                 secondaryPlayerMessageText.text = null;
                 playerInstructiontext.text = null;
