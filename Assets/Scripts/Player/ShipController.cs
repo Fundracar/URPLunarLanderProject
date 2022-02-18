@@ -131,7 +131,12 @@ public class ShipController : MonoBehaviour
         float xSpeed = LateralThrustInputValue * accelerationFactor * 1.5f;
         float ySpeed = UpThurstInputValue * accelerationFactor * 1.5f;
 
-        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed));
+        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed),ForceMode2D.Force);
+    }
+
+    public void OnTerrainCollision()
+    {
+        
     }
     #endregion
 }

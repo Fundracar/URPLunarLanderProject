@@ -34,7 +34,6 @@ public class InGameCanvas : MonoBehaviour
     {
         InitializeInGameCanvas();
     }
-
     void FixedUpdate()
     {
         UpdateSpeedInfos();

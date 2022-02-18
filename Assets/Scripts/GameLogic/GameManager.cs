@@ -29,12 +29,14 @@ public class GameManager : MonoBehaviour
 
     [Header("Ship references variables")]
     [SerializeField] GameObject shipPrefab; //this is referenced by hand in the engine.
-
     [SerializeField] Vector3 spawnPosition;
     [SerializeField] GameObject instanciatedShip;
     [SerializeField] Rigidbody2D instanciatedRigidbody2D;
     [SerializeField] ShipController shipControllerRef;
+    [SerializeField] BoxCollider2D instanciatedShipCollider;
     [SerializeField] bool shipIsFrozen = false;
+
+    
     #endregion
 
     #region 0 - Init & Update
@@ -195,6 +197,7 @@ public class GameManager : MonoBehaviour
             return false;
         }
     }
+
     private void ConstraintMovement(bool _Instruction)
     {
         //This methods freezes or unfreezes the rigidbody2D constraints at will.
@@ -260,6 +263,7 @@ public class GameManager : MonoBehaviour
     {
         instanciatedShip = Instantiate(shipPrefab, spawnPosition, Quaternion.identity);
         instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
+        instanciatedShipCollider = instanciatedShip.GetComponent<BoxCollider2D>();
         shipControllerRef = instanciatedShip.GetComponent<ShipController>();
     }
     private void RestartShipInitialState()

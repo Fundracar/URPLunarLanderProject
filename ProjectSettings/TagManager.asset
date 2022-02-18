@@ -18,6 +18,7 @@ TagManager:
   - SecondaryPlayerInfoTextBox
   - PlayerInstructionsTextBox
   - LevelManager
+  - Terrain
   layers:
   - Default
   - TransparentFX
