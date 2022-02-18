@@ -36,7 +36,6 @@ public class ShipController : MonoBehaviour
         if (context.performed)
         {
             yThrustCoroutine = StartCoroutine(ZThrustLerp(1));
-
             // On Z being pressed, the Coroutine starts with 1 as parameter (meaning the x input-linked variable will tend toward 1)
         }
 
@@ -47,6 +46,8 @@ public class ShipController : MonoBehaviour
             yThrustCoroutine = StartCoroutine(ZThrustLerp(0));  // It is restarted with 0 as parameter.            
         }
     }
+
+    
     public void OnQDKeysPressed(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -134,9 +135,13 @@ public class ShipController : MonoBehaviour
         shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed),ForceMode2D.Force);
     }
 
-    public void OnTerrainCollision()
+    public void OnCollisionEnter2D(Collision2D col)
     {
-        
+        if(col.gameObject.tag == "Terrain")
+        {
+            Debug.Log("Terrain");
+            gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
+        }
     }
     #endregion
 }

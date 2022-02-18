@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -9171515752684085251}
   - component: {fileID: -6530114516917799221}
   - component: {fileID: 6212789732582816901}
-  - component: {fileID: 8846798623297998683}
+  - component: {fileID: 5316584498460962499}
   m_Layer: 0
   m_Name: ShipPrefab
   m_TagString: Player
@@ -115,13 +115,13 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 1
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0.05
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &6212789732582816901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_DefaultActionMap: KeyboardKeys
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!61 &8846798623297998683
+--- !u!61 &5316584498460962499
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

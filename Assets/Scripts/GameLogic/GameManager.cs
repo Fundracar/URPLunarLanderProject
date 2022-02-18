@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] BoxCollider2D instanciatedShipCollider;
     [SerializeField] bool shipIsFrozen = false;
 
-    
+
     #endregion
 
     #region 0 - Init & Update
@@ -147,16 +147,16 @@ public class GameManager : MonoBehaviour
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
+        SetCurrentSceneValue();
         DontDestroyOnLoad(this.gameObject); //The GameObject containing the "this" component should not be destroyed between scenes. 
         GetLevelManager();
-        SetCurrentSceneValue();
         spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
     }
 
     private void GameWaitingToStart()
     {
         SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
-        delayCoroutine = StartCoroutine(PlacePlayerAfterDelay());
+        delayCoroutine = StartCoroutine(SetGameReady());
     }
     private void GamePlaying()
     {
@@ -173,6 +173,9 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region 3 - Ship Management
+
+
+
 
     //The following methods combine each other and are tools for the ship controller supervision.
     private void UpdateShipSpeed()
@@ -212,17 +215,21 @@ public class GameManager : MonoBehaviour
             shipIsFrozen = _Instruction;
         }
     }
+
+
     #endregion
 
     #region 5 - Tools & Misc
     //Various "tool" methods that can come of use.
-    IEnumerator PlacePlayerAfterDelay()
+    IEnumerator SetGameReady()
     {
         /*WHAT THIS DOES : This methods will use "PlaceShipController()" after a delay of 1 second. */
 
         yield return new WaitForSeconds(1f);
         /*this delay is a necessary quick fix because the Instanciate method wasn't working properly 
         while performed during the loading of a new scene. */
+
+
         PlaceShipController(new Vector3(-2.95f, 2.5f, 3f));
 
         if (levelManagerRef == null) //This will be true if the coroutine was started for a scene change (and not a simple retry)
@@ -275,6 +282,7 @@ public class GameManager : MonoBehaviour
     {
         currentScene = SceneManager.GetActiveScene();
     }
+
     #endregion
 }
 
