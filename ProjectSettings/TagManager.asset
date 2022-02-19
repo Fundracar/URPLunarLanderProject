@@ -20,6 +20,7 @@ TagManager:
   - LevelManager
   - Terrain
   - Plateform
+  - TimeTracker
   layers:
   - Default
   - TransparentFX

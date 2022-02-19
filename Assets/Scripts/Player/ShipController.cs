@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
+
 
 public class ShipController : MonoBehaviour
 {
 
     #region Variables
-    private Rigidbody2D shipRigidbody2D;
-    private GameManager gameManagerRef;
 
+    [Header("Game Manager & Other components of interest")]
+    private GameManager gameManagerRef;
+    public Rigidbody2D shipRigidbody2D { get; private set; }
     public enum CauseOfDeath { WentAway, Terrain, Speed }
     public CauseOfDeath causeOfDeath;
 
@@ -24,12 +25,20 @@ public class ShipController : MonoBehaviour
     private Coroutine yThrustCoroutine;
     private Coroutine xThrustCoroutine;
 
+    public float accelerationDuration { get; set; }
+
     #endregion
     #region Init & Update
     void Awake()
     {
         shipRigidbody2D = GetComponent<Rigidbody2D>();
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        accelerationDuration = 0.5f;
+    }
+
+    void FixedUpdate()
+    {
+
     }
 
     #endregion
@@ -83,7 +92,9 @@ public class ShipController : MonoBehaviour
                     break;
 
                 case GameManager.GamePhase.GameWon:
-                    //method go to next level in game manager
+                    Debug.Log("NoNextLevelForNow!! Restarting Current Level");
+                    gameManagerRef.levelManagerRef.RestartCurrentLevel();
+
                     break;
 
                 default:
@@ -101,13 +112,12 @@ public class ShipController : MonoBehaviour
     private IEnumerator ZThrustLerp(float _TempA)
     {
         float startMoveTime = Time.time;
-        float duration = 2.0f;
-        float targetTime = startMoveTime + duration;
+        float targetTime = startMoveTime + accelerationDuration;
 
         while (Time.time < targetTime)
         {
             float currentTime = Time.time - startMoveTime;
-            float progress = currentTime / duration;
+            float progress = currentTime / accelerationDuration;
             UpThurstInputValue = Mathf.Lerp(UpThurstInputValue, _TempA, progress);
             yield return null;
         }
@@ -115,13 +125,12 @@ public class ShipController : MonoBehaviour
     private IEnumerator LateralThrustLerp(float _TempA)
     {
         float startMoveTime = Time.time;
-        float duration = 2.0f;
-        float targetTime = startMoveTime + duration;
+        float targetTime = startMoveTime + accelerationDuration;
 
         while (Time.time < targetTime)
         {
             float currentTime = Time.time - startMoveTime;
-            float progress = currentTime / duration;
+            float progress = currentTime / accelerationDuration;
             LateralThrustInputValue = Mathf.Lerp(LateralThrustInputValue, _TempA, progress);
             yield return null;
         }
@@ -145,6 +154,7 @@ public class ShipController : MonoBehaviour
                 break;
             case "Plateform":
                 Debug.Log("I collided a plateform");
+                gameManagerRef.VerifyShipSpeedOnLanding();
                 //Method to check player speed this instant
                 // and switch on the right game phase
                 break;

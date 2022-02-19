@@ -15,13 +15,13 @@ public class GameManager : MonoBehaviour
         LostLevel : The player crashed its ship and has to choose an option from here (restart level or leave)
         WonLevel : The player managed to land its ship and is being displayed its statistics.
     */
-    [Header("Phase & Scene Variables")]
-    public GamePhase currentGamePhase;  //Variable in which the current "state" information will be stored.
-    public Scene currentScene; 
-    public InGameCanvas inGameCanvasComponent; 
-    public LevelManager levelManagerRef { get; set; }
+
+    public GamePhase currentGamePhase { get; private set; }  //Variable in which the current "state" information will be stored.
+    public Scene currentScene { get; private set; }
+    public LevelManager levelManagerRef { get; private set; }
+    public InGameCanvas inGameCanvasComponent { get; private set; }
     [SerializeField] GameObject inGameCanvasRef;
-    [SerializeField] Coroutine delayCoroutine;
+    [SerializeField] Coroutine timeCoroutine;
 
     [Header("Ship references variables")]
     [SerializeField] Vector3 spawnPosition;
@@ -151,18 +151,39 @@ public class GameManager : MonoBehaviour
     private void GamePlaying()
     {
         inGameCanvasComponent.DisplayMessageInfos(false, currentGamePhase);
+        timeCoroutine = StartCoroutine(inGameCanvasComponent.TrackAndDisplayGameTime());
     }
     private void GameLost()
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
+        StopCoroutine(timeCoroutine);// ""
     }
     private void GameWon()
     {
-        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
+        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);// ""
+        StopCoroutine(timeCoroutine);
     }
     #endregion
     #region Ship Management
+
+
+
     //The following methods combine each other and are tools for the ship controller supervision.
+
+    public void VerifyShipSpeedOnLanding()
+    {
+        if (shipControllerRef.shipRigidbody2D.velocity.y * 10f < 0.02 && shipControllerRef.shipRigidbody2D.velocity.y * 10f > -0.02)
+        {
+            SwitchOnGamePhase(GamePhase.GameWon);
+        }
+        else
+        {
+            shipControllerRef.causeOfDeath = ShipController.CauseOfDeath.Speed;
+            SwitchOnGamePhase(GamePhase.GameLost);
+        }
+        //In the case of a collision with a landing plateform, this method will be performed to verify the ship of the speed.
+        //This will help us determine 
+    }
     private void UpdateShipSpeed()
     {
         /*This checks wether the ship is within the defined constraints and if so, adds a calculated force to it.
@@ -199,7 +220,7 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
-    #region Tools & Misc
+    #region Reference Setting Tools
     //Various "tool" methods that can come of use.
     private void PlaceShipController(Vector3 _spawn)
     {
@@ -240,5 +261,6 @@ public class GameManager : MonoBehaviour
     {
         currentScene = SceneManager.GetActiveScene();
     }
+
     #endregion
 }

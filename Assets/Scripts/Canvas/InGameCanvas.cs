@@ -26,6 +26,17 @@ public class InGameCanvas : MonoBehaviour
     [SerializeField] TextMeshProUGUI secondaryPlayerMessageText;
     [SerializeField] GameObject playerInstructionMessageContainer;
     [SerializeField] TextMeshProUGUI playerInstructiontext;
+
+    [Header("Time Tracker")]
+
+    float miliseconds;
+    float seconds;
+    float minutes;
+
+    [SerializeField] GameObject TimeTrackerObject;
+    [SerializeField] TextMeshProUGUI TimeTrackerText;
+
+
     #endregion
     void Awake()
     {
@@ -34,16 +45,9 @@ public class InGameCanvas : MonoBehaviour
     void FixedUpdate()
     {
         UpdateSpeedInfos();
+        
     }
-    public void FindPlayerInScene()
-    {
-        /*Since the player doesn't spawn right away on scene loading, 
-   this methods encapsulates the behaviors that 'finds and references the player object in the scene' 
-   in order to "fire" it at the right time.
-   This prevents the script from trying to find an element that hasn't been spawned yet. */
-        playerReference = GameObject.FindGameObjectWithTag("Player");
-        playerRigidbodyReference = playerReference.GetComponent<Rigidbody2D>();
-    }
+   
 
     #region Updating Infos
     private void UpdateSpeedInfos()
@@ -53,37 +57,74 @@ public class InGameCanvas : MonoBehaviour
               it would be more accurate to track them 'OnFixedUpdate' */
         if (playerReference != null)
         {
-            verticalSpeedText.text = (playerRigidbodyReference.velocity.y * 10f).ToString();
-            horizontalSpeedText.text = (playerRigidbodyReference.velocity.x * 10f).ToString();
-            
-            if (verticalSpeedText.text.Length - 6 > 0 && horizontalSpeedText.text.Length - 6 > 0)
-            {
-                verticalSpeedText.text.Substring(verticalSpeedText.text.Length - 6);
-                horizontalSpeedText.text.Substring(horizontalSpeedText.text.Length - 6);
-            }
+            verticalSpeedText.text = (Mathf.Abs(playerRigidbodyReference.velocity.y * 10f)).ToString();
+            horizontalSpeedText.text = (Mathf.Abs(playerRigidbodyReference.velocity.x * 10f)).ToString();
 
+            /*  if (verticalSpeedText.text.Length - 6 > 0 && horizontalSpeedText.text.Length - 6 > 0)
+              {
+                  verticalSpeedText.text.Substring(verticalSpeedText.text.Length - 6);
+                  horizontalSpeedText.text.Substring(horizontalSpeedText.text.Length - 6);
+              } */
         }
     }
 
+    public IEnumerator TrackAndDisplayGameTime()
+    {
+        while (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
+        {
+            if (miliseconds <= 99)
+            {
+                miliseconds += 01f;
+            }
+            else //A second has passed.
+            {
+                miliseconds = 0;
+                seconds += 1f;
+
+                if (!(seconds <= 59))
+                {
+                    seconds = 0;
+                    minutes += 1f;
+                }
+            }
+            DisplayTimeTracker();
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
+ public void FindPlayerInScene()
+    {
+        /*Since the player doesn't spawn right away on scene loading, 
+   this methods encapsulates the behaviors that 'finds and references the player object in the scene' 
+   in order to "fire" it at the right time.
+   This prevents the script from trying to find an element that hasn't been spawned yet. */
+        playerReference = GameObject.FindGameObjectWithTag("Player");
+        playerRigidbodyReference = playerReference.GetComponent<Rigidbody2D>();
+    }
     private void InitializeInGameCanvas()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
+        //All of those variables come of use in the "SetMessageToDisplay()" & "EnableMessageToDisplay()" methods.
+
         textVerticalSpeedContainer = GameObject.FindGameObjectWithTag("VerticalSpeedTextBox");
         verticalSpeedText = textVerticalSpeedContainer.GetComponent<TextMeshProUGUI>();
+
         textHorizontalSpeedContainer = GameObject.FindGameObjectWithTag("HorizontalSpeedTextBox");
         horizontalSpeedText = textHorizontalSpeedContainer.GetComponent<TextMeshProUGUI>();
+
         mainPlayerMessageContainer = GameObject.FindGameObjectWithTag("MainPlayerInfoTextBox");
         mainPlayerMessageText = mainPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
+
         secondaryPlayerMessageContainer = GameObject.FindGameObjectWithTag("SecondaryPlayerInfoTextBox");
         secondaryPlayerMessageText = secondaryPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
+
         playerInstructionMessageContainer = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox");
         playerInstructiontext = playerInstructionMessageContainer.GetComponent<TextMeshProUGUI>();
 
-        verticalSpeedText.maxVisibleCharacters = 4;
-        horizontalSpeedText.maxVisibleCharacters = 4;
+        TimeTrackerObject = GameObject.FindGameObjectWithTag("TimeTracker");
+        TimeTrackerText = TimeTrackerObject.GetComponent<TextMeshProUGUI>();
 
-        //All of those variables come of use in the "SetMessageToDisplay()" & "EnableMessageToDisplay()" methods.
     }
     public void DisplayMessageInfos(bool _instruct, GameManager.GamePhase gamePhase)
     {
@@ -133,6 +174,16 @@ public class InGameCanvas : MonoBehaviour
         mainPlayerMessageContainer.SetActive(_instruction);
         secondaryPlayerMessageContainer.SetActive(_instruction);
         playerInstructionMessageContainer.SetActive(_instruction);
+    }
+    private void DisplayTimeTracker()
+    {
+        TimeTrackerText.text = minutes + ":" + seconds + ":" + miliseconds;
+    }
+    private float CalculateTimeInSecondsFromTimeTracker()
+    {
+        float timeInSecond = minutes * 60 + seconds;
+        float modulo = miliseconds;
+        return timeInSecond;
     }
     #endregion
 }
