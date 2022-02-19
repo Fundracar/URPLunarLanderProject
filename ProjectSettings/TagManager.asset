@@ -19,6 +19,7 @@ TagManager:
   - PlayerInstructionsTextBox
   - LevelManager
   - Terrain
+  - Plateform
   layers:
   - Default
   - TransparentFX

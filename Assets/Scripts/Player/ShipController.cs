@@ -59,7 +59,6 @@ public class ShipController : MonoBehaviour
                 float currentValue = context.ReadValue<float>();
                 if (currentValue != 0) xThrustCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
             }
-
             if (context.canceled)
             {
                 StopCoroutine(xThrustCoroutine);
