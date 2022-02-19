@@ -53,14 +53,22 @@ public class InGameCanvas : MonoBehaviour
               it would be more accurate to track them 'OnFixedUpdate' */
         if (playerReference != null)
         {
-            verticalSpeedText.text = (playerRigidbodyReference.velocity.y * 100f).ToString();
-            horizontalSpeedText.text = (playerRigidbodyReference.velocity.x * 100f).ToString();
+            verticalSpeedText.text = (playerRigidbodyReference.velocity.y * 10f).ToString();
+            horizontalSpeedText.text = (playerRigidbodyReference.velocity.x * 10f).ToString();
+            
+            if (verticalSpeedText.text.Length - 6 > 0 && horizontalSpeedText.text.Length - 6 > 0)
+            {
+                verticalSpeedText.text.Substring(verticalSpeedText.text.Length - 6);
+                horizontalSpeedText.text.Substring(horizontalSpeedText.text.Length - 6);
+            }
+
         }
     }
 
     private void InitializeInGameCanvas()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+
         textVerticalSpeedContainer = GameObject.FindGameObjectWithTag("VerticalSpeedTextBox");
         verticalSpeedText = textVerticalSpeedContainer.GetComponent<TextMeshProUGUI>();
         textHorizontalSpeedContainer = GameObject.FindGameObjectWithTag("HorizontalSpeedTextBox");
@@ -71,6 +79,9 @@ public class InGameCanvas : MonoBehaviour
         secondaryPlayerMessageText = secondaryPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
         playerInstructionMessageContainer = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox");
         playerInstructiontext = playerInstructionMessageContainer.GetComponent<TextMeshProUGUI>();
+
+        verticalSpeedText.maxVisibleCharacters = 4;
+        horizontalSpeedText.maxVisibleCharacters = 4;
 
         //All of those variables come of use in the "SetMessageToDisplay()" & "EnableMessageToDisplay()" methods.
     }
@@ -85,7 +96,7 @@ public class InGameCanvas : MonoBehaviour
         {
             case GameManager.GamePhase.GameWaitingToStart:
                 mainPlayerMessageText.text = "Prepare for landing";
-                secondaryPlayerMessageText.text = "Place the ship on a designated area and wait for instructions";
+                secondaryPlayerMessageText.text = "";
                 playerInstructiontext.text = "Press SPACE to start landing procedure";
                 break;
 
@@ -110,7 +121,7 @@ public class InGameCanvas : MonoBehaviour
                 break;
 
             case GameManager.GamePhase.GamePlaying:
-            //No text should be displayed when the game phase equals "GamePlaying"
+                //No text should be displayed when the game phase equals "GamePlaying"
                 mainPlayerMessageText.text = null;
                 secondaryPlayerMessageText.text = null;
                 playerInstructiontext.text = null;
