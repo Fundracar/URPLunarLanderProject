@@ -1389,7 +1389,7 @@ GameObject:
   - component: {fileID: 1631469312}
   m_Layer: 5
   m_Name: FuelValue
-  m_TagString: Untagged
+  m_TagString: FuelValueTextBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2056,6 +2056,7 @@ GameObject:
   - component: {fileID: 1863797611}
   - component: {fileID: 1863797610}
   - component: {fileID: 1863797613}
+  - component: {fileID: 1863797614}
   m_Layer: 5
   m_Name: GameCanvas
   m_TagString: GameCanvas
@@ -2157,9 +2158,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3a8cd0f40b66844388ddf96dd9ffbd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManagerRef: {fileID: 0}
   playerReference: {fileID: 0}
   playerRigidbodyReference: {fileID: 0}
+  playerShipController: {fileID: 0}
   textVerticalSpeedContainer: {fileID: 0}
   verticalSpeedText: {fileID: 0}
   textHorizontalSpeedContainer: {fileID: 0}
@@ -2170,6 +2171,20 @@ MonoBehaviour:
   secondaryPlayerMessageText: {fileID: 0}
   playerInstructionMessageContainer: {fileID: 0}
   playerInstructiontext: {fileID: 0}
+  fuelTextContainer: {fileID: 0}
+  fuelText: {fileID: 0}
+--- !u!114 &1863797614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863797608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b34a0dfa965c7ad4896c3f78e07037ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   TimeTrackerObject: {fileID: 0}
   TimeTrackerText: {fileID: 0}
 --- !u!1 &1909282062
@@ -2417,7 +2432,7 @@ GameObject:
   - component: {fileID: 2081382652}
   - component: {fileID: 2081382651}
   m_Layer: 5
-  m_Name: TimeTracker
+  m_Name: TimeTrackerTextBox
   m_TagString: TimeTracker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

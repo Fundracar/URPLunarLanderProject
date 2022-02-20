@@ -15,11 +15,11 @@ public class GameManager : MonoBehaviour
         LostLevel : The player crashed its ship and has to choose an option from here (restart level or leave)
         WonLevel : The player managed to land its ship and is being displayed its statistics.
     */
-
     public GamePhase currentGamePhase { get; private set; }  //Variable in which the current "state" information will be stored.
     public Scene currentScene { get; private set; }
     public LevelManager levelManagerRef { get; private set; }
     public InGameCanvas inGameCanvasComponent { get; private set; }
+    public TimeTracker timeTrackerComponent { get; private set; }
     [SerializeField] GameObject inGameCanvasRef;
     [SerializeField] Coroutine timeCoroutine;
 
@@ -30,7 +30,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] Rigidbody2D instanciatedRigidbody2D;
     public ShipController shipControllerRef { get; private set; }
     [SerializeField] BoxCollider2D instanciatedShipCollider;
-    [SerializeField] bool shipIsFrozen = false;
+    [SerializeField] bool shipIsFrozen = false; //This isn't declared in the Ship because it is the game manager that "freezes" or "unfreezes" the controller.
+    //The "ship" doesn't know what "being frozen" means in this context.ss
+
     #endregion
     #region Init & Update
     void Start()
@@ -72,6 +74,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GamePhase.GameWon:
+                GameWon();
                 break;
 
             default:
@@ -131,6 +134,9 @@ public class GameManager : MonoBehaviour
             Debug.Log("Character is Null");
         }
     }
+    #endregion
+    #region Game State linked methods.
+
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
@@ -151,12 +157,13 @@ public class GameManager : MonoBehaviour
     private void GamePlaying()
     {
         inGameCanvasComponent.DisplayMessageInfos(false, currentGamePhase);
-        timeCoroutine = StartCoroutine(inGameCanvasComponent.TrackAndDisplayGameTime());
+        timeCoroutine = StartCoroutine(timeTrackerComponent.TrackAndDisplayGameTime());
+        shipControllerRef.shipConsumptionCoroutine = StartCoroutine(shipControllerRef.ShipFuelConsumptionCoroutine());
     }
     private void GameLost()
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
-        StopCoroutine(timeCoroutine);// ""
+        StopCoroutine(timeCoroutine); StopCoroutine(shipControllerRef.shipConsumptionCoroutine);
     }
     private void GameWon()
     {
@@ -165,13 +172,10 @@ public class GameManager : MonoBehaviour
     }
     #endregion
     #region Ship Management
-
-
-
     //The following methods combine each other and are tools for the ship controller supervision.
-
     public void VerifyShipSpeedOnLanding()
     {
+        //OBSELETE : The velocity of the ship is already close to 0 when this event is fired (since, by definition, a collision occured)
         if (shipControllerRef.shipRigidbody2D.velocity.y * 10f < 0.02 && shipControllerRef.shipRigidbody2D.velocity.y * 10f > -0.02)
         {
             SwitchOnGamePhase(GamePhase.GameWon);
@@ -244,6 +248,8 @@ public class GameManager : MonoBehaviour
     {
         inGameCanvasRef = GameObject.FindGameObjectWithTag("GameCanvas");
         inGameCanvasComponent = inGameCanvasRef.GetComponent<InGameCanvas>();
+        timeTrackerComponent = inGameCanvasComponent.GetComponent<TimeTracker>();
+
     }
     private void InstantiateAndReferencePlayerShip()
     {
@@ -251,11 +257,13 @@ public class GameManager : MonoBehaviour
         instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
         instanciatedShipCollider = instanciatedShip.GetComponent<BoxCollider2D>();
         shipControllerRef = instanciatedShip.GetComponent<ShipController>();
+        shipControllerRef.fuelValue = 500f;
     }
     private void RestartShipInitialState()
     {
         instanciatedShip.transform.position = spawnPosition;
         shipIsFrozen = false;
+        shipControllerRef.fuelValue = 500f;
     }
     private void SetCurrentSceneValue()
     {

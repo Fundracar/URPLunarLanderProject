@@ -20,10 +20,13 @@ public class ShipController : MonoBehaviour
     public float UpThurstInputValue, LateralThrustInputValue;
     public float accelerationFactor = 2.5f; //Leave at 1 to cancel effect. 
 
+    public float fuelValue;
+
     [Header("Coroutines")]
     //Variables used to store active coroutines to access them easily should it be needed.
     private Coroutine yThrustCoroutine;
     private Coroutine xThrustCoroutine;
+    public Coroutine shipConsumptionCoroutine;
 
     public float accelerationDuration { get; set; }
 
@@ -35,19 +38,13 @@ public class ShipController : MonoBehaviour
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         accelerationDuration = 0.5f;
     }
-
-    void FixedUpdate()
-    {
-
-    }
-
     #endregion
     #region Input System Events
     public void OnZKeyPressed(InputAction.CallbackContext context)
     {
         if (shipRigidbody2D.gameObject.activeInHierarchy == true)
         {
-            if (context.performed)
+            if (context.performed && fuelValue > 0)
             {
                 yThrustCoroutine = StartCoroutine(ZThrustLerp(1));
                 // On Z being pressed, the Coroutine starts with 1 as parameter (meaning the x input-linked variable will tend toward 1)
@@ -63,7 +60,7 @@ public class ShipController : MonoBehaviour
     {
         if (shipRigidbody2D.gameObject.activeInHierarchy == true)
         {
-            if (context.performed)
+            if (context.performed && fuelValue > 0)
             {
                 float currentValue = context.ReadValue<float>();
                 if (currentValue != 0) xThrustCoroutine = StartCoroutine(LateralThrustLerp(currentValue));
@@ -94,7 +91,6 @@ public class ShipController : MonoBehaviour
                 case GameManager.GamePhase.GameWon:
                     Debug.Log("NoNextLevelForNow!! Restarting Current Level");
                     gameManagerRef.levelManagerRef.RestartCurrentLevel();
-
                     break;
 
                 default:
@@ -141,7 +137,6 @@ public class ShipController : MonoBehaviour
         float ySpeed = UpThurstInputValue * accelerationFactor * 1.5f;
         shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed), ForceMode2D.Force);
     }
-
     public void OnCollisionEnter2D(Collision2D col)
     {
         string coltag = col.gameObject.tag;
@@ -162,6 +157,27 @@ public class ShipController : MonoBehaviour
             default:
                 break;
         }
+    }
+
+#endregion
+#region Fuel Consumption
+    public IEnumerator ShipFuelConsumptionCoroutine()
+    {
+        while (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
+        {
+            ConsumeFuel();
+            yield return new WaitForSeconds(1f);
+        }
+    }
+    private void ConsumeFuel()
+    {
+        float fuelToConsume = ((LateralThrustInputValue + UpThurstInputValue) / 2) * 10;
+
+        fuelValue -= Mathf.Abs(fuelToConsume); //Mathf.Abs() is used to keep the operation from becoming an addition.
+
+        Debug.Log(fuelValue);
+
+        if (fuelValue < 0) fuelValue = 0;
     }
     #endregion
 }
