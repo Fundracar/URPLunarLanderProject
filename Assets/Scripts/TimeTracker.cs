@@ -40,7 +40,19 @@ public class TimeTracker : MonoBehaviour
     }
     private void DisplayTimeTracker()
     {
-        TimeTrackerText.text = minutes + ":" + seconds + ":" + miliseconds;
+        switch (seconds)
+        {
+            case <= 9 when minutes <= 9:
+                TimeTrackerText.text = "0" + minutes + ":" + "0" + seconds + ":" + miliseconds;
+                break;
+            case <= 9:
+                TimeTrackerText.text = minutes + ":" + "0" + seconds + ":" + miliseconds;
+                break;
+
+            case > 9 when minutes >= 9:
+                TimeTrackerText.text = minutes + ":" + +seconds + ":" + miliseconds;
+                break;
+        }
     }
     private float CalculateTimeInSecondsFromTimeTracker()
     {

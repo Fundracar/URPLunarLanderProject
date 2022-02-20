@@ -20,6 +20,9 @@ public class FuelConsumption : MonoBehaviour
         shipControllerRef = this.gameObject.GetComponent<ShipController>();
     }
 
+
+
+
     public IEnumerator ShipFuelConsumptionCoroutine()
     {
         while (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)

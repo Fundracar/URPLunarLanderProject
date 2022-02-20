@@ -69,7 +69,6 @@ public class InGameCanvas : MonoBehaviour
     }
     private void InitializeInGameCanvas()
     {
-        /*Ugly but useful : All the meaningful references are found and set here */
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         textVerticalSpeedContainer = GameObject.FindGameObjectWithTag("VerticalSpeedTextBox");
         verticalSpeedText = textVerticalSpeedContainer.GetComponent<TextMeshProUGUI>();
