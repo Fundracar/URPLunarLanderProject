@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,19 +41,21 @@ public class TimeTracker : MonoBehaviour
     }
     private void DisplayTimeTracker()
     {
-        switch (seconds)
+        if (seconds <= 9)
         {
-            case <= 9 when minutes <= 9:
+            if (minutes <= 9)
+            {
                 TimeTrackerText.text = "0" + minutes + ":" + "0" + seconds + ":" + miliseconds;
-                break;
-            case <= 9:
-                TimeTrackerText.text = minutes + ":" + "0" + seconds + ":" + miliseconds;
-                break;
 
-            case > 9 when minutes >= 9:
-                TimeTrackerText.text = minutes + ":" + +seconds + ":" + miliseconds;
-                break;
+            }
+            else TimeTrackerText.text = minutes + ":" + "0" + seconds + ":" + miliseconds;
         }
+        else if (minutes <= 9 && seconds > 9)
+        {
+            TimeTrackerText.text = "0" + minutes + ":" + seconds + ":" + miliseconds;
+        }
+        /*This conditions the appearance of a raw "0" string besides the values, in regard of wether they are composed of two numbers of one.
+        If "minutes" or "seconds" are composed of only 1 number, "0" will appear besides them in the UI. It will not otherwise. */
     }
     private float CalculateTimeInSecondsFromTimeTracker()
     {

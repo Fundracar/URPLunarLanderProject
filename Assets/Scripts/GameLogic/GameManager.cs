@@ -259,18 +259,17 @@ public class GameManager : MonoBehaviour
         instanciatedShipCollider = instanciatedShip.GetComponent<BoxCollider2D>();
         shipControllerRef = instanciatedShip.GetComponent<ShipController>();
         fuelConsumptionComponent = instanciatedShip.GetComponent<FuelConsumption>();
-        shipControllerRef.fuelValue = 100f;
+        shipControllerRef.fuelValue = 10000f;
     }
     private void RestartShipInitialState()
     {
         instanciatedShip.transform.position = spawnPosition;
         shipIsFrozen = false;
-        shipControllerRef.fuelValue = 100f;
+        shipControllerRef.fuelValue = 10000f;
     }
     private void SetCurrentSceneValue()
     {
         currentScene = SceneManager.GetActiveScene();
     }
-
     #endregion
 }
