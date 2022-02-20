@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8399871315273900728}
   - component: {fileID: 8123938641622738826}
-  - component: {fileID: -9171515752684085251}
-  - component: {fileID: -6530114516917799221}
   - component: {fileID: 6212789732582816901}
+  - component: {fileID: -6530114516917799221}
   - component: {fileID: 5316584498460962499}
+  - component: {fileID: -9171515752684085251}
+  - component: {fileID: 497122707520532225}
   m_Layer: 0
   m_Name: ShipPrefab
   m_TagString: Player
@@ -86,43 +87,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-9171515752684085251
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6407882647684847688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b7fb5d912aad0649b6cd1671cbcb9bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  causeOfDeath: 0
-  UpThurstInputValue: 0
-  LateralThrustInputValue: 0
-  accelerationFactor: 1.5
---- !u!50 &-6530114516917799221
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6407882647684847688}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0.75
-  m_AngularDrag: 0
-  m_GravityScale: 0.1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 4
 --- !u!114 &6212789732582816901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +165,27 @@ MonoBehaviour:
   m_DefaultActionMap: KeyboardKeys
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!50 &-6530114516917799221
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407882647684847688}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0.75
+  m_AngularDrag: 0
+  m_GravityScale: 0.1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!61 &5316584498460962499
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -227,3 +212,32 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.09839956, y: 0.10408574}
   m_EdgeRadius: 0
+--- !u!114 &-9171515752684085251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407882647684847688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b7fb5d912aad0649b6cd1671cbcb9bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  causeOfDeath: 0
+  UpThurstInputValue: 0
+  LateralThrustInputValue: 0
+  accelerationFactor: 1.5
+  fuelValue: 0
+--- !u!114 &497122707520532225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407882647684847688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fbbbed8345c79845a10ed4779b0a3e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

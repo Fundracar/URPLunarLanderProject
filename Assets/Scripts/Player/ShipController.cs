@@ -10,7 +10,7 @@ public class ShipController : MonoBehaviour
     #region Variables
 
     [Header("Game Manager & Other components of interest")]
-    private GameManager gameManagerRef;
+    public GameManager gameManagerRef;
     public Rigidbody2D shipRigidbody2D { get; private set; }
     public enum CauseOfDeath { WentAway, Terrain, Speed }
     public CauseOfDeath causeOfDeath;
@@ -26,10 +26,7 @@ public class ShipController : MonoBehaviour
     //Variables used to store active coroutines to access them easily should it be needed.
     private Coroutine yThrustCoroutine;
     private Coroutine xThrustCoroutine;
-    public Coroutine shipConsumptionCoroutine;
-
     public float accelerationDuration { get; set; }
-
     #endregion
     #region Init & Update
     void Awake()
@@ -160,24 +157,4 @@ public class ShipController : MonoBehaviour
     }
 
 #endregion
-#region Fuel Consumption
-    public IEnumerator ShipFuelConsumptionCoroutine()
-    {
-        while (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
-        {
-            ConsumeFuel();
-            yield return new WaitForSeconds(1f);
-        }
-    }
-    private void ConsumeFuel()
-    {
-        float fuelToConsume = ((LateralThrustInputValue + UpThurstInputValue) / 2) * 10;
-
-        fuelValue -= Mathf.Abs(fuelToConsume); //Mathf.Abs() is used to keep the operation from becoming an addition.
-
-        Debug.Log(fuelValue);
-
-        if (fuelValue < 0) fuelValue = 0;
-    }
-    #endregion
 }

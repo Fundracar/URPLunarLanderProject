@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public LevelManager levelManagerRef { get; private set; }
     public InGameCanvas inGameCanvasComponent { get; private set; }
     public TimeTracker timeTrackerComponent { get; private set; }
+
+    public FuelConsumption fuelConsumptionComponent;
     [SerializeField] GameObject inGameCanvasRef;
     [SerializeField] Coroutine timeCoroutine;
 
@@ -158,12 +160,12 @@ public class GameManager : MonoBehaviour
     {
         inGameCanvasComponent.DisplayMessageInfos(false, currentGamePhase);
         timeCoroutine = StartCoroutine(timeTrackerComponent.TrackAndDisplayGameTime());
-        shipControllerRef.shipConsumptionCoroutine = StartCoroutine(shipControllerRef.ShipFuelConsumptionCoroutine());
+        fuelConsumptionComponent.shipConsumptionCoroutine = StartCoroutine(fuelConsumptionComponent.ShipFuelConsumptionCoroutine());
     }
     private void GameLost()
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
-        StopCoroutine(timeCoroutine); StopCoroutine(shipControllerRef.shipConsumptionCoroutine);
+        StopCoroutine(timeCoroutine); StopCoroutine(fuelConsumptionComponent.shipConsumptionCoroutine);
     }
     private void GameWon()
     {
@@ -249,7 +251,6 @@ public class GameManager : MonoBehaviour
         inGameCanvasRef = GameObject.FindGameObjectWithTag("GameCanvas");
         inGameCanvasComponent = inGameCanvasRef.GetComponent<InGameCanvas>();
         timeTrackerComponent = inGameCanvasComponent.GetComponent<TimeTracker>();
-
     }
     private void InstantiateAndReferencePlayerShip()
     {
@@ -257,13 +258,14 @@ public class GameManager : MonoBehaviour
         instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
         instanciatedShipCollider = instanciatedShip.GetComponent<BoxCollider2D>();
         shipControllerRef = instanciatedShip.GetComponent<ShipController>();
-        shipControllerRef.fuelValue = 500f;
+        fuelConsumptionComponent = instanciatedShip.GetComponent<FuelConsumption>();
+        shipControllerRef.fuelValue = 100f;
     }
     private void RestartShipInitialState()
     {
         instanciatedShip.transform.position = spawnPosition;
         shipIsFrozen = false;
-        shipControllerRef.fuelValue = 500f;
+        shipControllerRef.fuelValue = 100f;
     }
     private void SetCurrentSceneValue()
     {
