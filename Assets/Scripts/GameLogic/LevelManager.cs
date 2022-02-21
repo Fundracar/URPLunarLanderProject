@@ -4,8 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-
     [SerializeField] GameManager gameManagerRef;
+
+    public Scene currentScene { get; set; }
+
 
     void Awake()
     {
@@ -13,22 +15,32 @@ public class LevelManager : MonoBehaviour
     }
     public void LaunchNewGame()
     {
-         SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
+        SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
     }
     public void RestartCurrentLevel()
     {
-        SceneManager.LoadSceneAsync(gameManagerRef.currentScene.buildIndex);
+        SceneManager.LoadSceneAsync(currentScene.buildIndex);
     }
     public void LoadNextLevel()
     {
-        if (!(SceneManager.GetSceneByBuildIndex((gameManagerRef.currentScene.buildIndex + 1)) == null)) //If a "next level" exists
+        if (!(SceneManager.GetSceneByBuildIndex((currentScene.buildIndex + 1)) == null)) //If a "next level" exists
         {
-            SceneManager.LoadSceneAsync(gameManagerRef.currentScene.buildIndex + 1);
+            SceneManager.LoadSceneAsync(currentScene.buildIndex + 1);
+        }
+        else
+        {
+            GoBackToMainMenu();
+            Debug.Log("No next scene, going back to main menu.");
         }
     }
     public void GoBackToMainMenu()
     {
         SceneManager.LoadSceneAsync(0);
+    }
+
+    public void SetCurrentSceneValue()
+    {
+        currentScene = SceneManager.GetActiveScene();
     }
 
 }

@@ -86,8 +86,7 @@ public class ShipController : MonoBehaviour
                     break;
 
                 case GameManager.GamePhase.GameWon:
-                    Debug.Log("NoNextLevelForNow!! Restarting Current Level");
-                    gameManagerRef.levelManagerRef.RestartCurrentLevel();
+                    gameManagerRef.levelManagerRef.LoadNextLevel();
                     break;
 
                 default:
@@ -156,5 +155,5 @@ public class ShipController : MonoBehaviour
         }
     }
 
-#endregion
+    #endregion
 }

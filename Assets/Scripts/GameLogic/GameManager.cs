@@ -16,11 +16,9 @@ public class GameManager : MonoBehaviour
         WonLevel : The player managed to land its ship and is being displayed its statistics.
     */
     public GamePhase currentGamePhase { get; private set; }  //Variable in which the current "state" information will be stored.
-    public Scene currentScene { get; private set; }
     public LevelManager levelManagerRef { get; private set; }
     public InGameCanvas inGameCanvasComponent { get; private set; }
     public TimeTracker timeTrackerComponent { get; private set; }
-
     public FuelConsumption fuelConsumptionComponent;
     [SerializeField] GameObject inGameCanvasRef;
     [SerializeField] Coroutine timeCoroutine;
@@ -142,9 +140,12 @@ public class GameManager : MonoBehaviour
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
-        SetCurrentSceneValue();
+
         GetLevelManager();
-        if (currentScene.buildIndex != 0)
+
+        levelManagerRef.SetCurrentSceneValue();
+
+        if (levelManagerRef.currentScene.buildIndex != 0)
         {
             spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
             GetInGameCanvas();
@@ -165,13 +166,16 @@ public class GameManager : MonoBehaviour
     private void GameLost()
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
-        StopCoroutine(timeCoroutine); StopCoroutine(fuelConsumptionComponent.shipConsumptionCoroutine);
+        StopInGameCoroutines();
     }
-    private void GameWon()
+    public void GameWon()
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);// ""
-        StopCoroutine(timeCoroutine);
+        StopInGameCoroutines();
+
     }
+
+
     #endregion
     #region Ship Management
     //The following methods combine each other and are tools for the ship controller supervision.
@@ -267,9 +271,11 @@ public class GameManager : MonoBehaviour
         shipIsFrozen = false;
         shipControllerRef.fuelValue = 10000f;
     }
-    private void SetCurrentSceneValue()
+
+    private void StopInGameCoroutines()
     {
-        currentScene = SceneManager.GetActiveScene();
+        StopCoroutine(timeCoroutine);
+        StopCoroutine(fuelConsumptionComponent.shipConsumptionCoroutine);
     }
     #endregion
 }
