@@ -16,21 +16,14 @@ public class InGameCanvas : MonoBehaviour
     [SerializeField] ShipController playerShipController;
 
     [Header("Text Objects & Components for the ship")]
-    [SerializeField] GameObject textVerticalSpeedContainer;
     [SerializeField] TextMeshProUGUI verticalSpeedText;
-    [SerializeField] GameObject textHorizontalSpeedContainer;
     [SerializeField] TextMeshProUGUI horizontalSpeedText;
-    [SerializeField] GameObject fuelTextContainer;
     [SerializeField] TextMeshProUGUI fuelText;
-    [SerializeField] GameObject levelTextContainer;
     [SerializeField] TextMeshProUGUI levelText;
 
     [Header("Text Objects & Components for the player")]
-    [SerializeField] GameObject mainPlayerMessageContainer;
     [SerializeField] TextMeshProUGUI mainPlayerMessageText;
-    [SerializeField] GameObject secondaryPlayerMessageContainer;
     [SerializeField] TextMeshProUGUI secondaryPlayerMessageText;
-    [SerializeField] GameObject playerInstructionMessageContainer;
     [SerializeField] TextMeshProUGUI playerInstructiontext;
 
     #endregion
@@ -47,7 +40,6 @@ public class InGameCanvas : MonoBehaviour
             UpdateSpeedInfos();
             UpdateFuelInfos();
         }
-
     }
     #endregion 
     #region Tools 
@@ -56,12 +48,12 @@ public class InGameCanvas : MonoBehaviour
         /* Should this be done on Update or FixedUpdate ?
               I figured that since this script is supposed to track velocity values that are highly physics based, 
               it would be more accurate to track them 'OnFixedUpdate' */
-        verticalSpeedText.text = (Mathf.Abs(playerRigidbodyReference.velocity.y * 10f)).ToString();
-        horizontalSpeedText.text = (Mathf.Abs(playerRigidbodyReference.velocity.x * 10f)).ToString();
+        verticalSpeedText.text = "Vertical Speed" + " " + (Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.y * 10f))).ToString();
+        horizontalSpeedText.text = "Horizontal Speed" + " " +(Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.x * 10f))).ToString();
     }
     private void UpdateFuelInfos()
     {
-        fuelText.text = playerShipController.fuelValue.ToString();
+        fuelText.text = "FUEL" + " " + Mathf.Round(playerShipController.fuelValue).ToString();
     }
     private void SetCurrentLevelInfo()
     {
@@ -76,27 +68,13 @@ public class InGameCanvas : MonoBehaviour
     private void InitializeInGameCanvas()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-
-        textVerticalSpeedContainer = GameObject.FindGameObjectWithTag("VerticalSpeedTextBox");
-        verticalSpeedText = textVerticalSpeedContainer.GetComponent<TextMeshProUGUI>();
-
-        textHorizontalSpeedContainer = GameObject.FindGameObjectWithTag("HorizontalSpeedTextBox");
-        horizontalSpeedText = textHorizontalSpeedContainer.GetComponent<TextMeshProUGUI>();
-
-        mainPlayerMessageContainer = GameObject.FindGameObjectWithTag("MainPlayerInfoTextBox");
-        mainPlayerMessageText = mainPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
-
-        secondaryPlayerMessageContainer = GameObject.FindGameObjectWithTag("SecondaryPlayerInfoTextBox");
-        secondaryPlayerMessageText = secondaryPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
-
-        playerInstructionMessageContainer = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox");
-        playerInstructiontext = playerInstructionMessageContainer.GetComponent<TextMeshProUGUI>();
-
-        fuelTextContainer = GameObject.FindGameObjectWithTag("FuelValueTextBox");
-        fuelText = fuelTextContainer.GetComponent<TextMeshProUGUI>();
-
-        levelTextContainer = GameObject.FindGameObjectWithTag("CurrentLevelTextBox");
-        levelText = levelTextContainer.GetComponent<TextMeshProUGUI>();
+        verticalSpeedText = GameObject.FindGameObjectWithTag("VerticalSpeedTextBox").GetComponent<TextMeshProUGUI>();
+        horizontalSpeedText = GameObject.FindGameObjectWithTag("HorizontalSpeedTextBox").GetComponent<TextMeshProUGUI>();
+        mainPlayerMessageText = GameObject.FindGameObjectWithTag("MainPlayerInfoTextBox").GetComponent<TextMeshProUGUI>();
+        secondaryPlayerMessageText = GameObject.FindGameObjectWithTag("SecondaryPlayerInfoTextBox").GetComponent<TextMeshProUGUI>();
+        playerInstructiontext = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox").GetComponent<TextMeshProUGUI>();
+        fuelText = GameObject.FindGameObjectWithTag("FuelValueTextBox").GetComponent<TextMeshProUGUI>();
+        levelText = GameObject.FindGameObjectWithTag("CurrentLevelTextBox").GetComponent<TextMeshProUGUI>();
     }
     #endregion
     #region UI Message display
@@ -150,9 +128,9 @@ public class InGameCanvas : MonoBehaviour
     }
     private void EnableMessageDisplay(bool _instruction)
     {
-        mainPlayerMessageContainer.SetActive(_instruction);
-        secondaryPlayerMessageContainer.SetActive(_instruction);
-        playerInstructionMessageContainer.SetActive(_instruction);
+        mainPlayerMessageText.gameObject.SetActive(_instruction);
+        secondaryPlayerMessageText.gameObject.SetActive(_instruction);
+        playerInstructiontext.gameObject.SetActive(_instruction);
     }
     #endregion
 }

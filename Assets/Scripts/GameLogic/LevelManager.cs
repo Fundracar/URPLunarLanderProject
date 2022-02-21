@@ -12,6 +12,7 @@ public class LevelManager : MonoBehaviour
     void Awake()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        SetCurrentSceneValue();
     }
     public void LaunchNewGame()
     {
@@ -23,23 +24,16 @@ public class LevelManager : MonoBehaviour
     }
     public void LoadNextLevel()
     {
-      Debug.Log(SceneManager.sceneCountInBuildSettings);
-        
         if (SceneManager.sceneCountInBuildSettings > (currentScene.buildIndex + 1)) //If a "next level" exists
         {
             SceneManager.LoadSceneAsync(currentScene.buildIndex + 1);
         }
-        else
-        {
-            GoBackToMainMenu();
-            Debug.Log("No next scene, going back to main menu.");
-        }
+        else GoBackToMainMenu();
     }
     public void GoBackToMainMenu()
     {
         SceneManager.LoadSceneAsync(0);
     }
-
     public void SetCurrentSceneValue()
     {
         currentScene = SceneManager.GetActiveScene();
