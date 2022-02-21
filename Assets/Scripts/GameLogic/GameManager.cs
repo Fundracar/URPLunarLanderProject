@@ -6,33 +6,23 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     #region Variables
-    public enum GamePhase { Setup, Menu, GameWaitingToStart, GamePlaying, GameLost, GameWon };
-    /* Phases definition:
-        Setup : Specific initialisation behaviours are launched.
-        MainMenu = The player is inside a menu and not in game.
-        GameWaitingToStart = The player is in a game level and is instructed to press a button for the game to start.
-        Playing : The player is playing the game.
-        LostLevel : The player crashed its ship and has to choose an option from here (restart level or leave)
-        WonLevel : The player managed to land its ship and is being displayed its statistics.
-    */
-    public GamePhase currentGamePhase { get; private set; }  //Variable in which the current "state" information will be stored.
-    public LevelManager levelManagerRef { get; private set; }
-    public InGameCanvas inGameCanvasComponent { get; private set; }
-    public TimeTracker timeTrackerComponent { get; private set; }
-    public FuelConsumption fuelConsumptionComponent;
-    [SerializeField] GameObject inGameCanvasRef;
-    [SerializeField] Coroutine timeCoroutine;
+    public enum GamePhase { Setup,GameWaitingToStart, GamePlaying, GameLost, GameWon };
+    public GamePhase currentGamePhase { get; private set; }                 //The current "state" enum value.
+    public LevelManager levelManagerRef { get; private set; }               //The "Level Manager" object's component reference.
+    public InGameCanvas inGameCanvasComponent { get; private set; }         //The "InGameCanvas" object's component reference.
+    public TimeTracker timeTrackerComponent { get; private set; }           //The Time tracker object's component reference.
+    [SerializeField] GameObject inGameCanvasRef;                            //The "InGameCanvas" Object's reference.
+    [SerializeField] Coroutine timeCoroutine;                               //The tracking and display of the time spent in game.
 
     [Header("Ship references variables")]
-    [SerializeField] Vector3 spawnPosition;
-    [SerializeField] GameObject shipPrefab; //this is referenced by hand in the engine.
-    [SerializeField] GameObject instanciatedShip;
-    [SerializeField] Rigidbody2D instanciatedRigidbody2D;
-    public ShipController shipControllerRef { get; private set; }
-    [SerializeField] BoxCollider2D instanciatedShipCollider;
-    [SerializeField] bool shipIsFrozen = false; //This isn't declared in the Ship because it is the game manager that "freezes" or "unfreezes" the controller.
-    //The "ship" doesn't know what "being frozen" means in this context.ss
-
+    [SerializeField] GameObject shipPrefab;                                 //Prefab from which the ship will be instanciated.
+    [SerializeField] Vector3 spawnPosition;                                 //Represent the spawn position of the ship.
+    [SerializeField] GameObject instanciatedShip;                           //The spawned instance of the ship.
+    [SerializeField] Rigidbody2D instanciatedRigidbody2D;                   //The Rigidbody of the instanciated ship.
+    public ShipController shipControllerRef { get; private set; }           //The ShipController component of the ship.
+    [SerializeField] BoxCollider2D instanciatedShipCollider;                //The BoxCollider2D of the ship.
+    public FuelConsumption fuelConsumptionComponent;                        //The "FuelConsumption" object's component reference.
+    [SerializeField] bool shipIsFrozen = false;                             //Conditions wether or not the ship's movements should be frozen or not.
     #endregion
     #region Init & Update
     void Start()
@@ -140,11 +130,8 @@ public class GameManager : MonoBehaviour
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
-
         GetLevelManager();
-
         levelManagerRef.SetCurrentSceneValue();
-
         if (levelManagerRef.currentScene.buildIndex != 0)
         {
             spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
@@ -172,10 +159,7 @@ public class GameManager : MonoBehaviour
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);// ""
         StopInGameCoroutines();
-
     }
-
-
     #endregion
     #region Ship Management
     //The following methods combine each other and are tools for the ship controller supervision.

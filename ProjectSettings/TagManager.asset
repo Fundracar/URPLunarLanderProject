@@ -21,6 +21,7 @@ TagManager:
   - Terrain
   - Plateform
   - TimeTracker
+  - CurrentLevelTextBox
   layers:
   - Default
   - TransparentFX

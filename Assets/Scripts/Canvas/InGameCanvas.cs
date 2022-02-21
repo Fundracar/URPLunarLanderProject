@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 
@@ -19,6 +20,10 @@ public class InGameCanvas : MonoBehaviour
     [SerializeField] TextMeshProUGUI verticalSpeedText;
     [SerializeField] GameObject textHorizontalSpeedContainer;
     [SerializeField] TextMeshProUGUI horizontalSpeedText;
+    [SerializeField] GameObject fuelTextContainer;
+    [SerializeField] TextMeshProUGUI fuelText;
+    [SerializeField] GameObject levelTextContainer;
+    [SerializeField] TextMeshProUGUI levelText;
 
     [Header("Text Objects & Components for the player")]
     [SerializeField] GameObject mainPlayerMessageContainer;
@@ -27,18 +32,22 @@ public class InGameCanvas : MonoBehaviour
     [SerializeField] TextMeshProUGUI secondaryPlayerMessageText;
     [SerializeField] GameObject playerInstructionMessageContainer;
     [SerializeField] TextMeshProUGUI playerInstructiontext;
-    [SerializeField] GameObject fuelTextContainer;
-    [SerializeField] TextMeshProUGUI fuelText;
+
     #endregion
     #region Init&Update
-    void Awake()
+    void Start()
     {
         InitializeInGameCanvas();
+        SetCurrentLevelInfo();
     }
     void FixedUpdate()
     {
-        UpdateSpeedInfos(); 
-        UpdateFuelInfos();
+        if (playerReference != null)
+        {
+            UpdateSpeedInfos();
+            UpdateFuelInfos();
+        }
+
     }
     #endregion 
     #region Tools 
@@ -47,19 +56,16 @@ public class InGameCanvas : MonoBehaviour
         /* Should this be done on Update or FixedUpdate ?
               I figured that since this script is supposed to track velocity values that are highly physics based, 
               it would be more accurate to track them 'OnFixedUpdate' */
-
-        if (playerReference != null)
-        {
-            verticalSpeedText.text = (Mathf.Abs(playerRigidbodyReference.velocity.y * 10f)).ToString();
-            horizontalSpeedText.text = (Mathf.Abs(playerRigidbodyReference.velocity.x * 10f)).ToString();
-        }
+        verticalSpeedText.text = (Mathf.Abs(playerRigidbodyReference.velocity.y * 10f)).ToString();
+        horizontalSpeedText.text = (Mathf.Abs(playerRigidbodyReference.velocity.x * 10f)).ToString();
     }
     private void UpdateFuelInfos()
     {
-        if (playerReference != null)
-        {
-            fuelText.text = playerShipController.fuelValue.ToString();
-        }
+        fuelText.text = playerShipController.fuelValue.ToString();
+    }
+    private void SetCurrentLevelInfo()
+    {
+        levelText.text = "Level" + " " + SceneManager.GetActiveScene().buildIndex.ToString();
     }
     public void FindPlayerInScene()
     {
@@ -70,18 +76,27 @@ public class InGameCanvas : MonoBehaviour
     private void InitializeInGameCanvas()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+
         textVerticalSpeedContainer = GameObject.FindGameObjectWithTag("VerticalSpeedTextBox");
         verticalSpeedText = textVerticalSpeedContainer.GetComponent<TextMeshProUGUI>();
+
         textHorizontalSpeedContainer = GameObject.FindGameObjectWithTag("HorizontalSpeedTextBox");
         horizontalSpeedText = textHorizontalSpeedContainer.GetComponent<TextMeshProUGUI>();
+
         mainPlayerMessageContainer = GameObject.FindGameObjectWithTag("MainPlayerInfoTextBox");
         mainPlayerMessageText = mainPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
+
         secondaryPlayerMessageContainer = GameObject.FindGameObjectWithTag("SecondaryPlayerInfoTextBox");
         secondaryPlayerMessageText = secondaryPlayerMessageContainer.GetComponent<TextMeshProUGUI>();
+
         playerInstructionMessageContainer = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox");
         playerInstructiontext = playerInstructionMessageContainer.GetComponent<TextMeshProUGUI>();
+
         fuelTextContainer = GameObject.FindGameObjectWithTag("FuelValueTextBox");
         fuelText = fuelTextContainer.GetComponent<TextMeshProUGUI>();
+
+        levelTextContainer = GameObject.FindGameObjectWithTag("CurrentLevelTextBox");
+        levelText = levelTextContainer.GetComponent<TextMeshProUGUI>();
     }
     #endregion
     #region UI Message display
@@ -118,6 +133,11 @@ public class InGameCanvas : MonoBehaviour
                 mainPlayerMessageText.text = "Landing Successful !";
                 secondaryPlayerMessageText.text = "You managed to land the ship without incident";
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
+                if (SceneManager.sceneCountInBuildSettings > (gameManagerRef.levelManagerRef.currentScene.buildIndex + 1))
+                {
+                    playerInstructiontext.text = "Space to go back to Main menu !";
+                    secondaryPlayerMessageText.text = "You completed all the landings ! Congratulations";
+                }
                 break;
 
             case GameManager.GamePhase.GamePlaying:

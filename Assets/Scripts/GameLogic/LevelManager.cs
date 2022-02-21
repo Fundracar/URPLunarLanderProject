@@ -23,7 +23,9 @@ public class LevelManager : MonoBehaviour
     }
     public void LoadNextLevel()
     {
-        if (!(SceneManager.GetSceneByBuildIndex((currentScene.buildIndex + 1)) == null)) //If a "next level" exists
+      Debug.Log(SceneManager.sceneCountInBuildSettings);
+        
+        if (SceneManager.sceneCountInBuildSettings > (currentScene.buildIndex + 1)) //If a "next level" exists
         {
             SceneManager.LoadSceneAsync(currentScene.buildIndex + 1);
         }

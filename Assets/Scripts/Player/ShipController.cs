@@ -80,15 +80,12 @@ public class ShipController : MonoBehaviour
                 case GameManager.GamePhase.GameWaitingToStart:
                     gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GamePlaying);
                     break;
-
                 case GameManager.GamePhase.GameLost:
                     gameManagerRef.levelManagerRef.RestartCurrentLevel();
                     break;
-
                 case GameManager.GamePhase.GameWon:
                     gameManagerRef.levelManagerRef.LoadNextLevel();
                     break;
-
                 default:
                     break;
             }
