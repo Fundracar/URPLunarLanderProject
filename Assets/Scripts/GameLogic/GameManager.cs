@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     #region Variables
-    public enum GamePhase { Setup,GameWaitingToStart, GamePlaying, GameLost, GameWon };
+    public enum GamePhase { Setup, GameWaitingToStart, GamePlaying, GameLost, GameWon };
     public GamePhase currentGamePhase { get; private set; }                 //The current "state" enum value.
     public LevelManager levelManagerRef { get; private set; }               //The "Level Manager" object's component reference.
     public InGameCanvas inGameCanvasComponent { get; private set; }         //The "InGameCanvas" object's component reference.
@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
     {
         GetLevelManager();
         levelManagerRef.SetCurrentSceneValue();
-        if (levelManagerRef.currentScene.buildIndex != 0)
+        if (levelManagerRef.currentScene.buildIndex > 0)
         {
             spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
             GetInGameCanvas();

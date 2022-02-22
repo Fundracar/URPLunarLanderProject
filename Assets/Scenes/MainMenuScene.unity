@@ -1377,18 +1377,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56bf44445eb3c994fa0b39dc2d49bdbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentGamePhase: 0
-  currentScene:
-    m_Handle: 0
-  inGameCanvasComponent: {fileID: 0}
-  levelManagerRef: {fileID: 0}
   inGameCanvasRef: {fileID: 0}
-  spawnPosition: {x: 0, y: 0, z: 0}
   shipPrefab: {fileID: 6407882647684847688, guid: 3b0cebb0fccb8b243a053a9db74e9c6a, type: 3}
+  spawnPosition: {x: 0, y: 0, z: 0}
   instanciatedShip: {fileID: 0}
   instanciatedRigidbody2D: {fileID: 0}
-  shipControllerRef: {fileID: 0}
   instanciatedShipCollider: {fileID: 0}
+  fuelConsumptionComponent: {fileID: 0}
   shipIsFrozen: 0
 --- !u!4 &1808750647
 Transform:
