@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject instanciatedShip;                           //The spawned instance of the ship.
     [SerializeField] Rigidbody2D instanciatedRigidbody2D;                   //The Rigidbody of the instanciated ship.
     public ShipController shipControllerRef { get; private set; }           //The ShipController component of the ship.
-    [SerializeField] BoxCollider2D instanciatedShipCollider;                //The BoxCollider2D of the ship.
+    [SerializeField] EdgeCollider2D instanciatedShipCollider;                //The BoxCollider2D of the ship.
     public FuelConsumption fuelConsumptionComponent;                        //The "FuelConsumption" object's component reference.
     [SerializeField] bool shipIsFrozen = false;                             //Conditions wether or not the ship's movements should be frozen or not.
     #endregion
@@ -249,7 +249,7 @@ public class GameManager : MonoBehaviour
     {
         instanciatedShip = Instantiate(shipPrefab, spawnPosition, Quaternion.identity);
         instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
-        instanciatedShipCollider = instanciatedShip.GetComponent<BoxCollider2D>();
+        instanciatedShipCollider = instanciatedShip.GetComponent<EdgeCollider2D>();
         shipControllerRef = instanciatedShip.GetComponent<ShipController>();
         fuelConsumptionComponent = instanciatedShip.GetComponent<FuelConsumption>();
         shipControllerRef.fuelValue = 10000f;

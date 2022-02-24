@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 8123938641622738826}
   - component: {fileID: 6212789732582816901}
   - component: {fileID: -6530114516917799221}
-  - component: {fileID: 5316584498460962499}
   - component: {fileID: -9171515752684085251}
   - component: {fileID: 497122707520532225}
   - component: {fileID: 646979972575839809}
   - component: {fileID: 2568829935525252826}
+  - component: {fileID: 7465058645903035532}
   m_Layer: 0
   m_Name: ShipPrefab
   m_TagString: Player
@@ -189,32 +189,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!61 &5316584498460962499
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6407882647684847688}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.039908126, y: 0.0010155439}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 6.57, y: 11.34}
-    newSize: {x: 0.16, y: 0.16}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.28611556, y: 1.5602705}
-  m_EdgeRadius: 0
 --- !u!114 &-9171515752684085251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,6 +253,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipControllerRef: {fileID: 0}
   shipAnimatorRef: {fileID: 0}
+--- !u!68 &7465058645903035532
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407882647684847688}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 0.09520769, y: 0.10451938}
+  - {x: -0.022756763, y: 0.7554561}
+  - {x: 0.09518474, y: 0.05668641}
+  - {x: 0.095100485, y: -0.118711725}
+  - {x: 0.086856365, y: -0.16230966}
+  - {x: 0.08517071, y: -0.17773367}
+  - {x: 0.13683614, y: -0.24799803}
+  - {x: 0.15414001, y: -0.21727374}
+  - {x: 0.16400526, y: -0.22353128}
+  - {x: 0.18223004, y: -0.3350878}
+  - {x: 0.16763152, y: -0.3819123}
+  - {x: 0.12644668, y: -0.3946262}
+  - {x: 0.10116699, y: -0.72889286}
+  - {x: 0.09154417, y: -0.76539266}
+  - {x: -0.017039374, y: -0.7895886}
+  - {x: -0.1318407, y: -0.7773682}
+  - {x: -0.15685645, y: -0.68116647}
+  - {x: -0.15325592, y: -0.45226628}
+  - {x: -0.13608822, y: -0.39932853}
+  - {x: -0.14419967, y: -0.33922175}
+  - {x: -0.16019933, y: -0.19737795}
+  - {x: -0.17355774, y: -0.19896963}
+  - {x: -0.17905729, y: 0.069130905}
+  - {x: -0.022411037, y: 0.751109}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &9132848316113883810
 GameObject:
   m_ObjectHideFlags: 0
