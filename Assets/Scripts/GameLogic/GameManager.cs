@@ -31,7 +31,12 @@ public class GameManager : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (instanciatedShip != null) ManageShipState();//The "ManageShipState() method should not fire if there are not instanciated ship yet.   
+        if (instanciatedShip != null)
+        {
+            ManageShipState();
+        
+        }//The "ManageShipState() method should not fire if there are not instanciated ship yet. 
+
     }
     #endregion
     #region Core Functions

@@ -19,7 +19,6 @@ public class ShipController : MonoBehaviour
     // The two following values represent the X axis and Y axis input values. They will be refered as the "Input Linked Variables".
     public float UpThurstInputValue, LateralThrustInputValue;
     public float accelerationFactor = 2.5f; //Leave at 1 to cancel effect. 
-
     public float fuelValue;
 
     [Header("Coroutines")]
@@ -98,7 +97,7 @@ public class ShipController : MonoBehaviour
     #They are used to lerp the values of the movement input create a "thrust delay" on pressed and released
     #Meaning : When you press Z, there is a delay before your ship gets at full thurst. When you release it,
     #it takes the same time for the value to get back to 0. */
-    private IEnumerator ZThrustLerp(float _TempA)
+    private IEnumerator ZThrustLerp(float _ValueToLerpTo)
     {
         float startMoveTime = Time.time;
         float targetTime = startMoveTime + accelerationDuration;
@@ -107,7 +106,7 @@ public class ShipController : MonoBehaviour
         {
             float currentTime = Time.time - startMoveTime;
             float progress = currentTime / accelerationDuration;
-            UpThurstInputValue = Mathf.Lerp(UpThurstInputValue, _TempA, progress);
+            UpThurstInputValue = Mathf.Lerp(UpThurstInputValue, _ValueToLerpTo, progress);
             yield return null;
         }
     }
