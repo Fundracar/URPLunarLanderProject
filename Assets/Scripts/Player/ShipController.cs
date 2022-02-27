@@ -15,24 +15,17 @@ public class ShipController : MonoBehaviour
     public enum CauseOfDeath { WentAway, Terrain, Speed }
     public CauseOfDeath causeOfDeath;
 
-    [Header("Input-Linked Variables")]
-    // The two following values represent the X axis and Y axis input values. They will be refered as the "Input Linked Variables".
-    public float UpThurstInputValue, LateralThrustInputValue;
-    public float accelerationFactor = 2.5f; //Leave at 1 to cancel effect. 
-    public float fuelValue;
-
-    [Header("Coroutines")]
-    //Variables used to store active coroutines to access them easily should it be needed.
-    private Coroutine yThrustCoroutine;
-    private Coroutine xThrustCoroutine;
-    public float accelerationDuration { get; set; }
+    [Header("Movement Variables")]
+    public float UpThurstInputValue, LateralThrustInputValue, accelerationFactor, UpAccelerationDuration, LatAccelerationDuration, fuelValue;
+    private Coroutine yThrustCoroutine, xThrustCoroutine;
     #endregion
     #region Init & Update
     void Awake()
     {
         shipRigidbody2D = GetComponent<Rigidbody2D>();
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-        accelerationDuration = 0.5f;
+        UpAccelerationDuration = 0.5f;
+        LatAccelerationDuration = UpAccelerationDuration * 2f; ;
     }
     #endregion
     #region Input System Events
@@ -47,8 +40,8 @@ public class ShipController : MonoBehaviour
             }
             if (context.canceled)
             {
-                StopCoroutine(yThrustCoroutine);  // On Z being pressed, the Coroutine starts.
-                yThrustCoroutine = StartCoroutine(ZThrustLerp(0));  // It is restarted with 0 as parameter.            
+                StopCoroutine(yThrustCoroutine);  // On Z being released, the previous coroutine is stopped.
+                yThrustCoroutine = StartCoroutine(ZThrustLerp(0));  // It is restarted with 0 as parameter for the opposite effect.         
             }
         }
     }
@@ -100,12 +93,12 @@ public class ShipController : MonoBehaviour
     private IEnumerator ZThrustLerp(float _ValueToLerpTo)
     {
         float startMoveTime = Time.time;
-        float targetTime = startMoveTime + accelerationDuration;
+        float targetTime = startMoveTime + UpAccelerationDuration;
 
         while (Time.time < targetTime)
         {
             float currentTime = Time.time - startMoveTime;
-            float progress = currentTime / accelerationDuration;
+            float progress = currentTime / UpAccelerationDuration;
             UpThurstInputValue = Mathf.Lerp(UpThurstInputValue, _ValueToLerpTo, progress);
             yield return null;
         }
@@ -113,12 +106,12 @@ public class ShipController : MonoBehaviour
     private IEnumerator LateralThrustLerp(float _TempA)
     {
         float startMoveTime = Time.time;
-        float targetTime = startMoveTime + accelerationDuration;
+        float targetTime = startMoveTime + LatAccelerationDuration;
 
         while (Time.time < targetTime)
         {
             float currentTime = Time.time - startMoveTime;
-            float progress = currentTime / accelerationDuration;
+            float progress = currentTime / LatAccelerationDuration;
             LateralThrustInputValue = Mathf.Lerp(LateralThrustInputValue, _TempA, progress);
             yield return null;
         }

@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 8123938641622738826}
   - component: {fileID: 6212789732582816901}
   - component: {fileID: -6530114516917799221}
+  - component: {fileID: 7465058645903035532}
+  - component: {fileID: 646979972575839809}
   - component: {fileID: -9171515752684085251}
   - component: {fileID: 497122707520532225}
-  - component: {fileID: 646979972575839809}
   - component: {fileID: 2568829935525252826}
-  - component: {fileID: 7465058645903035532}
   m_Layer: 0
   m_Name: ShipPrefab
   m_TagString: Player
@@ -181,7 +181,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0.75
+  m_LinearDrag: 0.5
   m_AngularDrag: 0
   m_GravityScale: 0.1
   m_Material: {fileID: 0}
@@ -189,70 +189,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &-9171515752684085251
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6407882647684847688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b7fb5d912aad0649b6cd1671cbcb9bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManagerRef: {fileID: 0}
-  causeOfDeath: 0
-  UpThurstInputValue: 0
-  LateralThrustInputValue: 0
-  accelerationFactor: 1.5
-  fuelValue: 0
---- !u!114 &497122707520532225
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6407882647684847688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fbbbed8345c79845a10ed4779b0a3e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManagerRef: {fileID: 0}
---- !u!95 &646979972575839809
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6407882647684847688}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c0b1e9ec4b3bfda488b188ac2f63af6f, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2568829935525252826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6407882647684847688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bd495fd7a7278541aafcfb9d3c41940, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shipControllerRef: {fileID: 0}
-  shipAnimatorRef: {fileID: 0}
 --- !u!68 &7465058645903035532
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -297,6 +233,70 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
+--- !u!95 &646979972575839809
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407882647684847688}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c0b1e9ec4b3bfda488b188ac2f63af6f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-9171515752684085251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407882647684847688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b7fb5d912aad0649b6cd1671cbcb9bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManagerRef: {fileID: 0}
+  causeOfDeath: 0
+  UpThurstInputValue: 0
+  LateralThrustInputValue: 0
+  accelerationFactor: 1
+  fuelValue: 1000
+--- !u!114 &497122707520532225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407882647684847688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fbbbed8345c79845a10ed4779b0a3e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManagerRef: {fileID: 0}
+--- !u!114 &2568829935525252826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6407882647684847688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bd495fd7a7278541aafcfb9d3c41940, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shipControllerRef: {fileID: 0}
+  shipAnimatorRef: {fileID: 0}
 --- !u!1 &9132848316113883810
 GameObject:
   m_ObjectHideFlags: 0

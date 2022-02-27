@@ -6,23 +6,24 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     #region Variables
-    public enum GamePhase { Setup, GameWaitingToStart, GamePlaying, GameLost, GameWon };
-    public GamePhase currentGamePhase { get; private set; }                 //The current "state" enum value.
-    public LevelManager levelManagerRef { get; private set; }               //The "Level Manager" object's component reference.
-    public InGameCanvas inGameCanvasComponent { get; private set; }         //The "InGameCanvas" object's component reference.
-    public TimeTracker timeTrackerComponent { get; private set; }           //The Time tracker object's component reference.
-    [SerializeField] GameObject inGameCanvasRef;                            //The "InGameCanvas" Object's reference.
-    [SerializeField] Coroutine timeCoroutine;                               //The tracking and display of the time spent in game.
 
-    [Header("Ship references variables")]
-    [SerializeField] GameObject shipPrefab;                                 //Prefab from which the ship will be instanciated.
-    [SerializeField] Vector3 spawnPosition;                                 //Represent the spawn position of the ship.
-    [SerializeField] GameObject instanciatedShip;                           //The spawned instance of the ship.
-    [SerializeField] Rigidbody2D instanciatedRigidbody2D;                   //The Rigidbody of the instanciated ship.
-    public ShipController shipControllerRef { get; private set; }           //The ShipController component of the ship.
-    [SerializeField] EdgeCollider2D instanciatedShipCollider;                //The BoxCollider2D of the ship.
-    public FuelConsumption fuelConsumptionComponent;                        //The "FuelConsumption" object's component reference.
-    [SerializeField] bool shipIsFrozen = false;                             //Conditions wether or not the ship's movements should be frozen or not.
+    public enum GamePhase { Setup, GameWaitingToStart, GamePlaying, GameLost, GameWon };
+    public GamePhase currentGamePhase { get; private set; }          
+    public LevelManager levelManagerRef { get; private set; }
+    public InGameCanvas inGameCanvasComponent { get; private set; }
+    public TimeTracker timeTrackerComponent { get; private set; }
+    private ScoreCalculator scoreCalculatorRef;
+    private Coroutine timeCoroutine;
+
+    [Header("Ship Data")]
+    [SerializeField] GameObject shipPrefab, instanciatedShip;                             
+    private Vector3 spawnPosition;                              
+    public Rigidbody2D instanciatedRigidbody2D { get; set; }
+    public ShipController shipControllerRef { get; private set; }
+    public EdgeCollider2D instanciatedShipCollider { get; set; }
+    public FuelConsumption fuelConsumptionComponent { get; set; }
+    private bool shipIsFrozen = false;
+
     #endregion
     #region Init & Update
     void Start()
@@ -34,20 +35,20 @@ public class GameManager : MonoBehaviour
         if (instanciatedShip != null)
         {
             ManageShipState();
-        
-        }//The "ManageShipState() method should not fire if there are not instanciated ship yet. 
-
+        }
     }
     #endregion
     #region Core Functions
-    /*There are two core functions in the GameManager
-    One that manages the game logic through the use of a "Game Phase" enum.
-    Another that manages the player's ship in function of the player input values tracked in the "ShipController.cs" */
+    /*
+    #There are two core functions in the GameManager
+    #One that manages the game logic through the use of a "Game Phase" enum.
+    #Another that manages the player's ship in function of the player input values tracked in the "ShipController.cs" */
     public void SwitchOnGamePhase(GamePhase _gamePhaseToSet)
     {
-        /*WHAT THIS DOES : This method is used to set the current game phase to the _parameter value
-        Then, a switch statement is performed on this value to fire the appropriate behavior
-        This function will be called when necessary to easily change the "game phase" */
+        /*
+        #This method is used to set the current game phase enum value to the _parameter value
+        #Then, a switch statement is performed on said value to fire the appropriate behavior depending on the matching case. */
+
         currentGamePhase = _gamePhaseToSet;
         Debug.Log("CurrentGamePhase is" + " " + currentGamePhase);
         switch (currentGamePhase)
@@ -84,49 +85,41 @@ public class GameManager : MonoBehaviour
         #Example : While "Playing", the ship's movement are not constrained ect.
         #CASE GUARD : For each case this methods should check, we take into account when the "ConstraintShipMovements"
         has already been fired in order not to fire it everyframe. */
-
-        if (instanciatedShip != null)
+        switch (currentGamePhase)
         {
-            switch (currentGamePhase)
-            {
-                case GamePhase.GameWaitingToStart when shipIsFrozen == true:
-                    ConstraintShipMovements(true);
-                    break;
+            case GamePhase.GameWaitingToStart when shipIsFrozen == true:
+                ConstraintShipMovements(true);
+                break;
 
-                case GamePhase.GameWaitingToStart:
-                    ConstraintShipMovements(true);
-                    break;
+            case GamePhase.GameWaitingToStart:
+                ConstraintShipMovements(true);
+                break;
 
-                case GamePhase.GamePlaying when shipIsFrozen == false:
-                    UpdateShipSpeed();
-                    break;
+            case GamePhase.GamePlaying when shipIsFrozen == false:
+                UpdateShipSpeed();
+                break;
 
-                case GamePhase.GamePlaying:
-                    ConstraintShipMovements(false);
-                    UpdateShipSpeed();
-                    break;
+            case GamePhase.GamePlaying:
+                ConstraintShipMovements(false);
+                UpdateShipSpeed();
+                break;
 
-                case GamePhase.GameWon when shipIsFrozen == true:
-                    break;
+            case GamePhase.GameWon when shipIsFrozen == true:
+                break;
 
-                case GamePhase.GameWon:
-                    ConstraintShipMovements(true);
-                    break;
+            case GamePhase.GameWon:
+                ConstraintShipMovements(true);
+                break;
 
-                case GamePhase.GameLost when shipIsFrozen == true:
-                    break;
+            case GamePhase.GameLost when shipIsFrozen == true:
+                break;
 
-                case GamePhase.GameLost:
-                    ConstraintShipMovements(true);
-                    break;
+            case GamePhase.GameLost:
+                ConstraintShipMovements(true);
+                break;
 
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            Debug.Log("Character is Null");
+            default:
+                break;
         }
     }
     #endregion
@@ -135,19 +128,22 @@ public class GameManager : MonoBehaviour
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
-        GetLevelManager();
+        GetLevelManagerComponent();
         levelManagerRef.SetCurrentSceneValue();
+
         if (levelManagerRef.currentScene.buildIndex > 0)
         {
-            spawnPosition = new Vector3(-2.95f, 2.5f, 3f);
-            GetInGameCanvas();
+            spawnPosition = new Vector3(-2.5f, 2.5f, 2.5f);
+            GetInGameCanvasComponent();
+            GetScoreCalculatorComponent();
+            GetTimeTrackerComponent();
             SwitchOnGamePhase(GamePhase.GameWaitingToStart);
         }
     }
     private void GameWaitingToStart()
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
-        PlaceShipController(new Vector3(-2.95f, 2.5f, 3f));
+        PlaceShipController();
     }
     private void GamePlaying()
     {
@@ -162,8 +158,16 @@ public class GameManager : MonoBehaviour
     }
     public void GameWon()
     {
-        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);// ""
+        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
         StopInGameCoroutines();
+        ScoreUpdateRoutine();
+    }
+    private void ScoreUpdateRoutine()
+    {
+        float calculatedTimeInSeconds = timeTrackerComponent.CalculateTimeInSecondsFromTimeTracker();
+        float fuelLeft = shipControllerRef.fuelValue;
+        // + way to get the plateforme bonus hit
+        float calculatedScore = scoreCalculatorRef.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft, 1f /* hitplateform bonus */);
     }
     #endregion
     #region Ship Management
@@ -221,29 +225,32 @@ public class GameManager : MonoBehaviour
     #endregion
     #region Reference Setting Tools
     //Various "tool" methods that can come of use.
-    private void PlaceShipController(Vector3 _spawn)
+    private void PlaceShipController()
     {
-        /*WHAT THIS DOES : This method either spawns or places the shipController in the scene depending on wether it exists or not. */
-        spawnPosition = _spawn;
+        /*This method either spawns or places the shipController in the scene depending on wether it exists or not. */
         if (instanciatedShip == null) //If the ship doesn't exist in the scene, spawns it and references its valuable components.
         {
             InstantiateAndReferencePlayerShip();
             inGameCanvasComponent.FindPlayerInScene();
         }
-        else //If it already exists, just re-place it at its spawn position.
-        {
-            RestartShipInitialState();
-        }
+        else RestartShipInitialState();
+
     }
-    private void GetLevelManager()
+    private void GetLevelManagerComponent()
     {
         levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
     }
-    private void GetInGameCanvas()
+    private void GetInGameCanvasComponent()
     {
-        inGameCanvasRef = GameObject.FindGameObjectWithTag("GameCanvas");
-        inGameCanvasComponent = inGameCanvasRef.GetComponent<InGameCanvas>();
-        timeTrackerComponent = inGameCanvasComponent.GetComponent<TimeTracker>();
+        inGameCanvasComponent = GameObject.FindGameObjectWithTag("GameCanvas").GetComponent<InGameCanvas>();
+    }
+    private void GetScoreCalculatorComponent()
+    {
+        scoreCalculatorRef = GetComponent<ScoreCalculator>();
+    }
+    private void GetTimeTrackerComponent()
+    {
+        timeTrackerComponent = GetComponent<TimeTracker>();
     }
     private void InstantiateAndReferencePlayerShip()
     {
@@ -252,13 +259,13 @@ public class GameManager : MonoBehaviour
         instanciatedShipCollider = instanciatedShip.GetComponent<EdgeCollider2D>();
         shipControllerRef = instanciatedShip.GetComponent<ShipController>();
         fuelConsumptionComponent = instanciatedShip.GetComponent<FuelConsumption>();
-        shipControllerRef.fuelValue = 10000f;
+        shipControllerRef.fuelValue = 1000f;
     }
     private void RestartShipInitialState()
     {
         instanciatedShip.transform.position = spawnPosition;
         shipIsFrozen = false;
-        shipControllerRef.fuelValue = 10000f;
+        shipControllerRef.fuelValue = 1000f;
     }
 
     private void StopInGameCoroutines()

@@ -14,10 +14,8 @@ public class Rotator : MonoBehaviour
 
     void FixedUpdate()
     {
-        shipAnimatorRef.SetFloat(shipAnimatorRef.GetParameter(0).name, shipControllerRef.LateralThrustInputValue );
+        shipAnimatorRef.SetFloat(shipAnimatorRef.GetParameter(0).name, shipControllerRef.LateralThrustInputValue);
         shipAnimatorRef.SetFloat(shipAnimatorRef.GetParameter(1).name, shipControllerRef.UpThurstInputValue);
-        Debug.Log(shipAnimatorRef.GetFloat(shipAnimatorRef.GetParameter(0).name));
-        Debug.Log(shipAnimatorRef.GetFloat(shipAnimatorRef.GetParameter(1).name));
     }
 
     private void InitializeRotator()

@@ -1,24 +1,27 @@
 
 using System.Collections;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class TimeTracker : MonoBehaviour
 {
-    [SerializeField] GameObject TimeTrackerObject;
-    [SerializeField] TextMeshProUGUI TimeTrackerText;
+    private GameObject TimeTrackerTextObject;
+    private TextMeshProUGUI TimeTrackerText;
 
     float miliseconds, seconds, minutes;
 
     void Awake()
     {
-        TimeTrackerObject = GameObject.FindGameObjectWithTag("TimeTracker");
-        TimeTrackerText = TimeTrackerObject.GetComponent<TextMeshProUGUI>();
+        if (!(SceneManager.GetActiveScene().buildIndex == 0))
+        {
+            TimeTrackerText = GameObject.FindGameObjectWithTag("TimeTracker").GetComponent<TextMeshProUGUI>();
+        }
     }
     public IEnumerator TrackAndDisplayGameTime()
     {
-        while (this.gameObject.GetComponent<InGameCanvas>().gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
+        while (this.gameObject.GetComponent<GameManager>().currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             if (miliseconds <= 99)
             {
@@ -57,10 +60,10 @@ public class TimeTracker : MonoBehaviour
         /*This conditions the appearance of a raw "0" string besides the values, in regard of wether they are composed of two numbers of one.
         If "minutes" or "seconds" are composed of only 1 number, "0" will appear besides them in the UI. It will not otherwise. */
     }
-    private float CalculateTimeInSecondsFromTimeTracker()
+    public float CalculateTimeInSecondsFromTimeTracker()
     {
-        float timeInSecond = minutes * 60 + seconds;
-        float modulo = miliseconds;
+        float timeInSecond = (((minutes * 60) + seconds + (miliseconds / 100)));
+        Debug.Log("TIME TRACKER : Conversion in seconds = " + " " + timeInSecond);
         return timeInSecond;
     }
 }
