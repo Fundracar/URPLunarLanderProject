@@ -8,16 +8,17 @@ public class GameManager : MonoBehaviour
     #region Variables
 
     public enum GamePhase { Setup, GameWaitingToStart, GamePlaying, GameLost, GameWon };
-    public GamePhase currentGamePhase { get; private set; }          
+    public GamePhase currentGamePhase { get; private set; }
     public LevelManager levelManagerRef { get; private set; }
     public InGameCanvas inGameCanvasComponent { get; private set; }
     public TimeTracker timeTrackerComponent { get; private set; }
     private ScoreCalculator scoreCalculatorRef;
     private Coroutine timeCoroutine;
+    private Coroutine windCoroutine;
 
     [Header("Ship Data")]
-    [SerializeField] GameObject shipPrefab, instanciatedShip;                             
-    private Vector3 spawnPosition;                              
+    [SerializeField] GameObject shipPrefab, instanciatedShip;
+    private Vector3 spawnPosition;
     public Rigidbody2D instanciatedRigidbody2D { get; set; }
     public ShipController shipControllerRef { get; private set; }
     public EdgeCollider2D instanciatedShipCollider { get; set; }
@@ -124,16 +125,13 @@ public class GameManager : MonoBehaviour
     }
     #endregion
     #region Game State linked methods.
-
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
+        spawnPosition = new Vector3(-2.5f, 2.2f, 3f);
         GetLevelManagerComponent();
-        levelManagerRef.SetCurrentSceneValue();
-
         if (levelManagerRef.currentScene.buildIndex > 0)
         {
-            spawnPosition = new Vector3(-2.5f, 2.5f, 2.5f);
             GetInGameCanvasComponent();
             GetScoreCalculatorComponent();
             GetTimeTrackerComponent();
@@ -144,11 +142,18 @@ public class GameManager : MonoBehaviour
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
         PlaceShipController();
+        levelManagerRef.DefaultLevelSetupRoutine();
+        //The switch to "GamePlaying" is made by the player on ReadyKeyPressed (shipcontroller.cs)
     }
     private void GamePlaying()
     {
         inGameCanvasComponent.DisplayMessageInfos(false, currentGamePhase);
         timeCoroutine = StartCoroutine(timeTrackerComponent.TrackAndDisplayGameTime());
+
+        if (!(levelManagerRef.levelConditionnerRef.windManagerRef.windForceValue == 0))
+        {
+            windCoroutine = StartCoroutine(levelManagerRef.levelConditionnerRef.windManagerRef.WindforceCoroutine(shipControllerRef, levelManagerRef.levelConditionnerRef.windManagerRef.windForceValue));
+        }
         fuelConsumptionComponent.shipConsumptionCoroutine = StartCoroutine(fuelConsumptionComponent.ShipFuelConsumptionCoroutine());
     }
     private void GameLost()
@@ -170,12 +175,51 @@ public class GameManager : MonoBehaviour
         float calculatedScore = scoreCalculatorRef.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft, 1f /* hitplateform bonus */);
     }
     #endregion
-    #region Ship Management
+
+    #region Ship Instantiation
+    private void InstantiateAndReferencePlayerShip()
+    {
+        instanciatedShip = Instantiate(shipPrefab, spawnPosition, Quaternion.identity);
+        instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
+        instanciatedShipCollider = instanciatedShip.GetComponent<EdgeCollider2D>();
+        shipControllerRef = instanciatedShip.GetComponent<ShipController>();
+        fuelConsumptionComponent = instanciatedShip.GetComponent<FuelConsumption>();
+        shipControllerRef.fuelValue = 1000f;
+    }
+    private void PlaceShipController()
+    {
+        /*This method either spawns or places the shipController in the scene depending on wether it exists or not. */
+        if (instanciatedShip == null) //If the ship doesn't exist in the scene, spawns it and references its valuable components.
+        {
+            InstantiateAndReferencePlayerShip();
+            inGameCanvasComponent.FindPlayerInScene();
+        }
+        else RestartShipInitialState();
+
+    }
+    private void RestartShipInitialState()
+    {
+        instanciatedShip.transform.position = spawnPosition;
+        shipIsFrozen = false;
+        shipControllerRef.fuelValue = 1000f;
+    }
+
+    private void StopInGameCoroutines()
+    {
+        StopCoroutine(timeCoroutine);
+        StopCoroutine(fuelConsumptionComponent.shipConsumptionCoroutine);
+        StopCoroutine(windCoroutine);
+    }
+
+
+    #endregion
+    #region Ship Instance Management
     //The following methods combine each other and are tools for the ship controller supervision.
     public void VerifyShipSpeedOnLanding()
     {
         //OBSELETE : The velocity of the ship is already close to 0 when this event is fired (since, by definition, a collision occured)
-        if (shipControllerRef.shipRigidbody2D.velocity.y * 10f < 0.02 && shipControllerRef.shipRigidbody2D.velocity.y * 10f > -0.02)
+
+        if (shipControllerRef.shipRigidbody2D.velocity.y * 100f < 50f && shipControllerRef.shipRigidbody2D.velocity.y * 10f > -50f)
         {
             SwitchOnGamePhase(GamePhase.GameWon);
         }
@@ -223,19 +267,7 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
-    #region Reference Setting Tools
-    //Various "tool" methods that can come of use.
-    private void PlaceShipController()
-    {
-        /*This method either spawns or places the shipController in the scene depending on wether it exists or not. */
-        if (instanciatedShip == null) //If the ship doesn't exist in the scene, spawns it and references its valuable components.
-        {
-            InstantiateAndReferencePlayerShip();
-            inGameCanvasComponent.FindPlayerInScene();
-        }
-        else RestartShipInitialState();
-
-    }
+    #region Valuable Components Tools
     private void GetLevelManagerComponent()
     {
         levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
@@ -251,27 +283,6 @@ public class GameManager : MonoBehaviour
     private void GetTimeTrackerComponent()
     {
         timeTrackerComponent = GetComponent<TimeTracker>();
-    }
-    private void InstantiateAndReferencePlayerShip()
-    {
-        instanciatedShip = Instantiate(shipPrefab, spawnPosition, Quaternion.identity);
-        instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
-        instanciatedShipCollider = instanciatedShip.GetComponent<EdgeCollider2D>();
-        shipControllerRef = instanciatedShip.GetComponent<ShipController>();
-        fuelConsumptionComponent = instanciatedShip.GetComponent<FuelConsumption>();
-        shipControllerRef.fuelValue = 1000f;
-    }
-    private void RestartShipInitialState()
-    {
-        instanciatedShip.transform.position = spawnPosition;
-        shipIsFrozen = false;
-        shipControllerRef.fuelValue = 1000f;
-    }
-
-    private void StopInGameCoroutines()
-    {
-        StopCoroutine(timeCoroutine);
-        StopCoroutine(fuelConsumptionComponent.shipConsumptionCoroutine);
     }
     #endregion
 }

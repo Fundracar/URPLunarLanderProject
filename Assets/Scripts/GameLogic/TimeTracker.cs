@@ -66,4 +66,10 @@ public class TimeTracker : MonoBehaviour
         Debug.Log("TIME TRACKER : Conversion in seconds = " + " " + timeInSecond);
         return timeInSecond;
     }
+
+    public void RegisterLevelGameTime()
+    {
+        float timeInSeconds = CalculateTimeInSecondsFromTimeTracker();
+        //Method to save in a file the value.
+    }
 }

@@ -12,6 +12,8 @@ public class ShipController : MonoBehaviour
     [Header("Game Manager & Other components of interest")]
     public GameManager gameManagerRef;
     public Rigidbody2D shipRigidbody2D { get; private set; }
+
+
     public enum CauseOfDeath { WentAway, Terrain, Speed }
     public CauseOfDeath causeOfDeath;
 
@@ -25,7 +27,7 @@ public class ShipController : MonoBehaviour
         shipRigidbody2D = GetComponent<Rigidbody2D>();
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         UpAccelerationDuration = 0.5f;
-        LatAccelerationDuration = UpAccelerationDuration * 2f; ;
+        LatAccelerationDuration = UpAccelerationDuration;
     }
     #endregion
     #region Input System Events
@@ -71,6 +73,10 @@ public class ShipController : MonoBehaviour
             {
                 case GameManager.GamePhase.GameWaitingToStart:
                     gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GamePlaying);
+                    break;
+
+                case GameManager.GamePhase.GamePlaying:
+                    this.GetComponent<EPropulsor>().PropellShip();
                     break;
                 case GameManager.GamePhase.GameLost:
                     gameManagerRef.levelManagerRef.RestartCurrentLevel();
@@ -118,29 +124,32 @@ public class ShipController : MonoBehaviour
     }
     public void AddForceToShip()
     {
-        float xSpeed = LateralThrustInputValue * accelerationFactor * 1.5f;
-        float ySpeed = UpThurstInputValue * accelerationFactor * 1.5f;
+        float xSpeed = LateralThrustInputValue * accelerationFactor;
+        float ySpeed = UpThurstInputValue * accelerationFactor;
+
         shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed), ForceMode2D.Force);
     }
+
     public void OnCollisionEnter2D(Collision2D col)
     {
-        string coltag = col.gameObject.tag;
-        switch (coltag)
+        if (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
-            case "Terrain":
-                Debug.Log("Terrain");
-                causeOfDeath = CauseOfDeath.Terrain;
-                gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
-                break;
-            case "Plateform":
-                Debug.Log("I collided a plateform");
-                gameManagerRef.VerifyShipSpeedOnLanding();
-                //Method to check player speed this instant
-                // and switch on the right game phase
-                break;
+            string coltag = col.gameObject.tag;
+            switch (coltag)
+            {
+                case "Terrain":
+                    Debug.Log("Terrain");
+                    causeOfDeath = CauseOfDeath.Terrain;
+                    gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
+                    break;
+                case "Plateform":
+                    Debug.Log("I collided a plateform");
+                    gameManagerRef.VerifyShipSpeedOnLanding();
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
     }
 

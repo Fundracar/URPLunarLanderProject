@@ -22,6 +22,7 @@ TagManager:
   - Plateform
   - TimeTracker
   - CurrentLevelTextBox
+  - LevelConditionManager
   layers:
   - Default
   - TransparentFX

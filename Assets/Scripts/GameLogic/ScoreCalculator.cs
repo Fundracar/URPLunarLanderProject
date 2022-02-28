@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class ScoreCalculator : MonoBehaviour
 {
-
     public float CalculateScoreForCurrentLevel(float _TimeElapsedInSeconds, float _FuelLeft, float _PlateformBonus)
     {
-        float calculatedScore  = (_FuelLeft * _PlateformBonus) / _TimeElapsedInSeconds;
-
+        float calculatedScore = ((_FuelLeft * 5) * _PlateformBonus) / _TimeElapsedInSeconds;
         Debug.Log(calculatedScore);
         return calculatedScore;
     }

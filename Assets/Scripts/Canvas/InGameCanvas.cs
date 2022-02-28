@@ -11,20 +11,15 @@ public class InGameCanvas : MonoBehaviour
     public GameManager gameManagerRef { get; private set; }
 
     [Header("Player Object & Components References")]
-    [SerializeField] GameObject playerReference;
+    private GameObject playerReference;
     [SerializeField] Rigidbody2D playerRigidbodyReference;
     [SerializeField] ShipController playerShipController;
 
     [Header("Text Objects & Components for the ship")]
-    [SerializeField] TextMeshProUGUI verticalSpeedText;
-    [SerializeField] TextMeshProUGUI horizontalSpeedText;
-    [SerializeField] TextMeshProUGUI fuelText;
-    [SerializeField] TextMeshProUGUI levelText;
+    [SerializeField] TextMeshProUGUI verticalSpeedText, horizontalSpeedText, fuelText, levelText;
 
     [Header("Text Objects & Components for the player")]
-    [SerializeField] TextMeshProUGUI mainPlayerMessageText;
-    [SerializeField] TextMeshProUGUI secondaryPlayerMessageText;
-    [SerializeField] TextMeshProUGUI playerInstructiontext;
+    [SerializeField] TextMeshProUGUI mainPlayerMessageText, secondaryPlayerMessageText, playerInstructiontext;
 
     #endregion
     #region Init&Update
@@ -48,8 +43,8 @@ public class InGameCanvas : MonoBehaviour
         /* Should this be done on Update or FixedUpdate ?
               I figured that since this script is supposed to track velocity values that are highly physics based, 
               it would be more accurate to track them 'OnFixedUpdate' */
-        verticalSpeedText.text = "Vertical Speed" + " " + (Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.y * 10f))).ToString();
-        horizontalSpeedText.text = "Horizontal Speed" + " " +(Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.x * 10f))).ToString();
+        verticalSpeedText.text = "Vertical Speed" + " " + (Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.y * 100f))).ToString();
+        horizontalSpeedText.text = "Horizontal Speed" + " " + (Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.x * 100f))).ToString();
     }
     private void UpdateFuelInfos()
     {
@@ -111,8 +106,8 @@ public class InGameCanvas : MonoBehaviour
                 mainPlayerMessageText.text = "Landing Successful !";
                 secondaryPlayerMessageText.text = "You managed to land the ship without incident";
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
-                
-                if (SceneManager.sceneCountInBuildSettings > (gameManagerRef.levelManagerRef.currentScene.buildIndex + 0))
+
+                if (!(SceneManager.sceneCountInBuildSettings > (gameManagerRef.levelManagerRef.currentScene.buildIndex + 1)))
                 {
                     playerInstructiontext.text = "Space to go back to Main menu !";
                     secondaryPlayerMessageText.text = "You completed all the landings ! Congratulations";
