@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,51 +9,114 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] GameManager gameManagerRef;
     public LevelConditionner levelConditionnerRef;
-    public Scene currentScene { get; set; }
+    public Scene currentLoadedLevelScene { get; set; }
+    public List<Scene> listOfCurrentlyLoadedScenes;
+    public Scene emptyScene;
+
     void Awake()
     {
-        SetCurrentSceneValue();
-        
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        levelConditionnerRef = GameObject.FindGameObjectWithTag("LevelConditionManager").GetComponent<LevelConditionner>();
 
-        if (!(currentScene.buildIndex == 0))
-        {
-            levelConditionnerRef = GameObject.FindGameObjectWithTag("LevelConditionManager").GetComponent<LevelConditionner>();
-        }
+        listOfCurrentlyLoadedScenes = new List<Scene>();
+        listOfCurrentlyLoadedScenes.Add(SceneManager.GetActiveScene());
     }
     #region Level Loading Tools
-    public void LaunchNewGame()
+    public IEnumerator StartNewGame()
     {
-        SceneManager.LoadSceneAsync("Level 1 Scene", LoadSceneMode.Single);
+        AsyncOperation currentAsyncOp = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+
+        while (!(currentAsyncOp.isDone)) //while the scene is still loading/unloading
+        {
+            yield return null; //keep checking 
+        }
+
+        listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
+
+        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
     }
-    public void RestartCurrentLevel()
+
+    public IEnumerator GoBackToMainMenu()
     {
-        SceneManager.LoadSceneAsync(currentScene.buildIndex);
+
+        AsyncOperation currentAsyncOp = SceneManager.UnloadSceneAsync(listOfCurrentlyLoadedScenes[1]);
+
+        while (!(currentAsyncOp.isDone)) //while the scene is still loaded
+        {
+            yield return null; //keep checking 
+        }
+
+        listOfCurrentlyLoadedScenes.Remove(listOfCurrentlyLoadedScenes[1]);
+
+        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
     }
+    public IEnumerator RestartLevel()
+    {
+        int buildIndex = listOfCurrentlyLoadedScenes[1].buildIndex;
+
+        AsyncOperation unloadingAsyncOp = SceneManager.UnloadSceneAsync(listOfCurrentlyLoadedScenes[1]);
+
+        while (!(unloadingAsyncOp.isDone)) //while the scene is still unloading
+        {
+            yield return null; //keep checking 
+        }
+
+        listOfCurrentlyLoadedScenes.Remove(listOfCurrentlyLoadedScenes[1]);
+
+        AsyncOperation loadingAsyncOp = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
+
+        while (!(loadingAsyncOp.isDone)) //while the scene is still loading
+        {
+            yield return null; //keep checking 
+        }
+
+        listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
+
+        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
+
+    }
+
     public void LoadNextLevel()
     {
-        if (SceneManager.sceneCountInBuildSettings > (currentScene.buildIndex + 1)) //If a "next level" exists
+        int sceneBuildIndex = currentLoadedLevelScene.buildIndex;
+
+        SceneManager.UnloadSceneAsync(sceneBuildIndex); //unload current level
+
+        if (SceneManager.sceneCountInBuildSettings >= sceneBuildIndex + 1)
         {
-            SceneManager.LoadSceneAsync(currentScene.buildIndex + 1);
+            SceneManager.LoadScene(sceneBuildIndex + 1, LoadSceneMode.Additive);
+            currentLoadedLevelScene = SceneManager.GetSceneByBuildIndex(sceneBuildIndex + 1);
+            //load next level.
         }
-        else GoBackToMainMenu();
+
+        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
     }
-    public void GoBackToMainMenu()
-    {
-        SceneManager.LoadSceneAsync(0);
-    }
-    public void SetCurrentSceneValue()
-    {
-        currentScene = SceneManager.GetActiveScene();
-    }
+
+    /* public IEnumerator GoBackToMainMenu()
+     {
+         int sceneCount = SceneManager.sceneCount;
+         if (sceneCount > 1)
+         {
+             Scene scene = SceneManager.GetSceneAt(sceneCount - 1);
+             SceneManager.UnloadSceneAsync(scene);
+
+             while (scene.isLoaded == true)
+             {
+                 yield return null;
+             }
+
+             gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
+         }
+     } */
+
     #endregion
     #region Level Setup
     public void DefaultLevelSetupRoutine()
     {
-        switch (currentScene.buildIndex)
+        switch (currentLoadedLevelScene.buildIndex)
         {
             case 1:
-                InitializePlanetState(2, 0, 0);
+                InitializePlanetState(2, 2, 0);
                 break;
 
             case 2:
@@ -74,68 +140,31 @@ public class LevelManager : MonoBehaviour
                 break;
         }
     }
-
     private void InitializePlanetState(int _WindPresetValue, int _GravityPresetValue, int _CometPresetValue)
     {
-        /*
-        #Wind represents the presence and strengh of the wind in the level.
-     
-         0 : No wind.
-         1 :
-         2 :
-         3 :
-
-        */
-
         InitializePlanetWind(_WindPresetValue);
-
-        /*
-        #Gravity represent the gravity scale of the ship's rigidbody
-
-         0 : Default gravity scale value.
-         1 :
-         2 :
-         3 :
-         */
-
         InitializePlanetGravity(_GravityPresetValue);
-
-        /*
-        #Comet Represents the frequency and number of comets falling in the level.
-        0 : No comets falling.
-        1 :
-        2 :
-        3 :     
-        */
-
         InitializePlanetComets(_CometPresetValue);
-
     }
-
     private void InitializePlanetWind(int __WindPresetValue)
     {
         switch (__WindPresetValue)
         {
             case 0:
-                levelConditionnerRef.SetWindForce(0);
+                levelConditionnerRef.SetWindForce(0f);
                 break;
-
             case 1:
-                levelConditionnerRef.SetWindForce(100);
+                levelConditionnerRef.SetWindForce(0.10f);
                 break;
-
             case 2:
-                levelConditionnerRef.SetWindForce(200);
+                levelConditionnerRef.SetWindForce(0.15f);
                 break;
-
             case 3:
-                levelConditionnerRef.SetWindForce(300);
+                levelConditionnerRef.SetWindForce(0.20f);
                 break;
-
         }
 
     }
-
     private void InitializePlanetGravity(int _GravityPresetValue)
     {
         switch (_GravityPresetValue)
@@ -159,7 +188,6 @@ public class LevelManager : MonoBehaviour
         }
 
     }
-
     private void InitializePlanetComets(int _CometPresetValue)
     {
         switch (_CometPresetValue)

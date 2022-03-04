@@ -107,7 +107,7 @@ public class InGameCanvas : MonoBehaviour
                 secondaryPlayerMessageText.text = "You managed to land the ship without incident";
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
 
-                if (!(SceneManager.sceneCountInBuildSettings > (gameManagerRef.levelManagerRef.currentScene.buildIndex + 1)))
+                if (!(SceneManager.sceneCountInBuildSettings > (gameManagerRef.levelManagerRef.currentLoadedLevelScene.buildIndex + 1)))
                 {
                     playerInstructiontext.text = "Space to go back to Main menu !";
                     secondaryPlayerMessageText.text = "You completed all the landings ! Congratulations";

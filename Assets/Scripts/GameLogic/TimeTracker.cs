@@ -12,15 +12,11 @@ public class TimeTracker : MonoBehaviour
 
     float miliseconds, seconds, minutes;
 
-    void Awake()
-    {
-        if (!(SceneManager.GetActiveScene().buildIndex == 0))
-        {
-            TimeTrackerText = GameObject.FindGameObjectWithTag("TimeTracker").GetComponent<TextMeshProUGUI>();
-        }
-    }
+ 
     public IEnumerator TrackAndDisplayGameTime()
     {
+        TimeTrackerText = GameObject.FindGameObjectWithTag("TimeTracker").GetComponent<TextMeshProUGUI>();
+
         while (this.gameObject.GetComponent<GameManager>().currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             if (miliseconds <= 99)

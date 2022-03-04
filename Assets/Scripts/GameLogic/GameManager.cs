@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GamePhase currentGamePhase { get; private set; }
     public LevelManager levelManagerRef { get; private set; }
     public InGameCanvas inGameCanvasComponent { get; private set; }
+    public GameObject mainMenuCanvasObject;
     public TimeTracker timeTrackerComponent { get; private set; }
     private ScoreCalculator scoreCalculatorRef;
     private Coroutine timeCoroutine;
@@ -29,6 +30,16 @@ public class GameManager : MonoBehaviour
     #region Init & Update
     void Start()
     {
+        spawnPosition = new Vector3(-2.5f, 2.2f, 3f);
+
+        GetScoreCalculatorComponent();
+
+        GetTimeTrackerComponent();
+
+        GetLevelManagerComponent();
+
+        mainMenuCanvasObject = GameObject.FindGameObjectWithTag("MainMenuCanvas");
+
         SwitchOnGamePhase(GamePhase.Setup);
     }
     void FixedUpdate()
@@ -128,14 +139,19 @@ public class GameManager : MonoBehaviour
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
-        spawnPosition = new Vector3(-2.5f, 2.2f, 3f);
-        GetLevelManagerComponent();
-        if (levelManagerRef.currentScene.buildIndex > 0)
+        Debug.Log("Current Scene Count is " + levelManagerRef.listOfCurrentlyLoadedScenes.Count);
+
+        switch (levelManagerRef.listOfCurrentlyLoadedScenes.Count)
         {
-            GetInGameCanvasComponent();
-            GetScoreCalculatorComponent();
-            GetTimeTrackerComponent();
-            SwitchOnGamePhase(GamePhase.GameWaitingToStart);
+            case 1: //Only the main menu scene is loaded.
+                mainMenuCanvasObject.SetActive(true);
+                break;
+
+            case 2: //The main menu scene + a level scene are loaded.
+                GetInGameCanvasComponent();
+                mainMenuCanvasObject.SetActive(false);
+                SwitchOnGamePhase(GamePhase.GameWaitingToStart);
+                break;
         }
     }
     private void GameWaitingToStart()
@@ -148,6 +164,7 @@ public class GameManager : MonoBehaviour
     private void GamePlaying()
     {
         inGameCanvasComponent.DisplayMessageInfos(false, currentGamePhase);
+
         timeCoroutine = StartCoroutine(timeTrackerComponent.TrackAndDisplayGameTime());
 
         if (!(levelManagerRef.levelConditionnerRef.windManagerRef.windForceValue == 0))
@@ -208,7 +225,7 @@ public class GameManager : MonoBehaviour
     {
         StopCoroutine(timeCoroutine);
         StopCoroutine(fuelConsumptionComponent.shipConsumptionCoroutine);
-        StopCoroutine(windCoroutine);
+
     }
 
 

@@ -79,7 +79,8 @@ public class ShipController : MonoBehaviour
                     this.GetComponent<EPropulsor>().PropellShip();
                     break;
                 case GameManager.GamePhase.GameLost:
-                    gameManagerRef.levelManagerRef.RestartCurrentLevel();
+                    StartCoroutine(gameManagerRef.levelManagerRef.RestartLevel());
+                    Debug.Log("I pressed fucking space");
                     break;
                 case GameManager.GamePhase.GameWon:
                     gameManagerRef.levelManagerRef.LoadNextLevel();

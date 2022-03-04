@@ -12,14 +12,6 @@ public class MainMenuCanvasManager : MonoBehaviour
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
-
     public void ManageClickedButton(GameObject _buttonClicked)
     {
         SwitchOnButtonClicked(_buttonClicked);
@@ -35,7 +27,8 @@ public class MainMenuCanvasManager : MonoBehaviour
         {
             case "NewGameButton":
 
-                gameManagerRef.levelManagerRef.LaunchNewGame(); //The game manager handle's the scene switch.
+               StartCoroutine(gameManagerRef.levelManagerRef.StartNewGame()); //The game manager handle's the scene switch.
+            
                 break;
 
             case "LoadGameButton":
