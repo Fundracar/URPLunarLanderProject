@@ -21,7 +21,7 @@ public class TimeTracker : MonoBehaviour
         {
             if (miliseconds <= 99)
             {
-                miliseconds += 01f;
+                miliseconds += 1f;
             }
             else //A second has passed.
             {
@@ -59,7 +59,6 @@ public class TimeTracker : MonoBehaviour
     public float CalculateTimeInSecondsFromTimeTracker()
     {
         float timeInSecond = (((minutes * 60) + seconds + (miliseconds / 100)));
-        Debug.Log("TIME TRACKER : Conversion in seconds = " + " " + timeInSecond);
         return timeInSecond;
     }
 

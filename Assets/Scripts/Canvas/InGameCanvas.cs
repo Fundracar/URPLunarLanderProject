@@ -26,7 +26,6 @@ public class InGameCanvas : MonoBehaviour
     void Start()
     {
         InitializeInGameCanvas();
-        SetCurrentLevelInfo();
     }
     void FixedUpdate()
     {
@@ -50,9 +49,9 @@ public class InGameCanvas : MonoBehaviour
     {
         fuelText.text = "FUEL" + " " + Mathf.Round(playerShipController.fuelValue).ToString();
     }
-    private void SetCurrentLevelInfo()
+    public void SetCurrentLevelInfo()
     {
-        levelText.text = "Level" + " " + SceneManager.GetActiveScene().buildIndex.ToString();
+        levelText.text = "Level" + " " +  gameManagerRef.levelManagerRef.listOfCurrentlyLoadedScenes[1].buildIndex.ToString();
     }
     public void FindPlayerInScene()
     {
@@ -94,20 +93,29 @@ public class InGameCanvas : MonoBehaviour
 
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
 
-                if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.WentAway) secondaryPlayerMessageText.text = "Station Control lost your ship, as a result landing procedure was denied.";
+                if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.WentAway)
+                {
+                    secondaryPlayerMessageText.text = "Station Control lost your ship, as a result landing procedure was denied.";
+                }
+                else if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Terrain)
+                {
+                    secondaryPlayerMessageText.text = "You crashed the ship into terrain";
 
-                else if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Terrain) secondaryPlayerMessageText.text = "You crashed the ship into terrain";
+                }
 
-                else if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Speed) secondaryPlayerMessageText.text = "Your speed was too high, as a result the ship crashed on landing.";
-
+                else if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Speed)
+                {
+                    secondaryPlayerMessageText.text = "Your speed was too high, as a result the ship crashed on landing.";
+                }
                 break;
 
             case GameManager.GamePhase.GameWon:
+
                 mainPlayerMessageText.text = "Landing Successful !";
                 secondaryPlayerMessageText.text = "You managed to land the ship without incident";
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
 
-                if (!(SceneManager.sceneCountInBuildSettings > (gameManagerRef.levelManagerRef.currentLoadedLevelScene.buildIndex + 1)))
+                if (gameManagerRef.levelManagerRef.listOfCurrentlyLoadedScenes[1].buildIndex < gameManagerRef.levelManagerRef.numberOfScenes - 1)
                 {
                     playerInstructiontext.text = "Space to go back to Main menu !";
                     secondaryPlayerMessageText.text = "You completed all the landings ! Congratulations";

@@ -33,7 +33,7 @@ public class ShipController : MonoBehaviour
     #region Input System Events
     public void OnZKeyPressed(InputAction.CallbackContext context)
     {
-        if (shipRigidbody2D.gameObject.activeInHierarchy == true)
+        if (shipRigidbody2D.gameObject.activeInHierarchy)
         {
             if (context.performed && fuelValue > 0)
             {
@@ -49,7 +49,7 @@ public class ShipController : MonoBehaviour
     }
     public void OnQDKeysPressed(InputAction.CallbackContext context)
     {
-        if (shipRigidbody2D.gameObject.activeInHierarchy == true)
+        if (shipRigidbody2D.gameObject.activeInHierarchy)
         {
             if (context.performed && fuelValue > 0)
             {
@@ -66,8 +66,9 @@ public class ShipController : MonoBehaviour
     }
     public void OnReadyKeyPressed(InputAction.CallbackContext context)
     {
-        //Ready key (Spacebar) can be pressed on level start (to launch the game) and on Lost/Won level (to retry/Go to next Level)
-        if (context.performed == true)
+        //Ready key (Spacebar) can be pressed on level start (to launch the game) and on Lost/Won level (to retry/Go to next Level) and while playing to propell the ship upward.
+
+        if (context.performed)
         {
             switch (gameManagerRef.currentGamePhase)
             {
@@ -78,13 +79,15 @@ public class ShipController : MonoBehaviour
                 case GameManager.GamePhase.GamePlaying:
                     this.GetComponent<EPropulsor>().PropellShip();
                     break;
+
                 case GameManager.GamePhase.GameLost:
                     StartCoroutine(gameManagerRef.levelManagerRef.RestartLevel());
-                    Debug.Log("I pressed fucking space");
                     break;
+
                 case GameManager.GamePhase.GameWon:
-                    gameManagerRef.levelManagerRef.LoadNextLevel();
+                    StartCoroutine(gameManagerRef.levelManagerRef.LoadNextLevel());
                     break;
+
                 default:
                     break;
             }
@@ -136,6 +139,7 @@ public class ShipController : MonoBehaviour
         if (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             string coltag = col.gameObject.tag;
+            
             switch (coltag)
             {
                 case "Terrain":

@@ -139,8 +139,6 @@ public class GameManager : MonoBehaviour
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
-        Debug.Log("Current Scene Count is " + levelManagerRef.listOfCurrentlyLoadedScenes.Count);
-
         switch (levelManagerRef.listOfCurrentlyLoadedScenes.Count)
         {
             case 1: //Only the main menu scene is loaded.
@@ -149,6 +147,7 @@ public class GameManager : MonoBehaviour
 
             case 2: //The main menu scene + a level scene are loaded.
                 GetInGameCanvasComponent();
+                inGameCanvasComponent.SetCurrentLevelInfo();
                 mainMenuCanvasObject.SetActive(false);
                 SwitchOnGamePhase(GamePhase.GameWaitingToStart);
                 break;
@@ -225,7 +224,6 @@ public class GameManager : MonoBehaviour
     {
         StopCoroutine(timeCoroutine);
         StopCoroutine(fuelConsumptionComponent.shipConsumptionCoroutine);
-
     }
 
 
@@ -301,5 +299,10 @@ public class GameManager : MonoBehaviour
     {
         timeTrackerComponent = GetComponent<TimeTracker>();
     }
+
+
+
+
+ 
     #endregion
 }

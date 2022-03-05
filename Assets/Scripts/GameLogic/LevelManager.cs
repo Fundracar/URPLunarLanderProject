@@ -9,19 +9,19 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] GameManager gameManagerRef;
     public LevelConditionner levelConditionnerRef;
-    public Scene currentLoadedLevelScene { get; set; }
-    public List<Scene> listOfCurrentlyLoadedScenes;
-    public Scene emptyScene;
 
+    public List<Scene> listOfCurrentlyLoadedScenes;
+
+    public int numberOfScenes;
     void Awake()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         levelConditionnerRef = GameObject.FindGameObjectWithTag("LevelConditionManager").GetComponent<LevelConditionner>();
-
         listOfCurrentlyLoadedScenes = new List<Scene>();
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetActiveScene());
+        numberOfScenes = SceneManager.sceneCountInBuildSettings;
     }
-    #region Level Loading Tools
+    #region Scene Management Coroutines
     public IEnumerator StartNewGame()
     {
         AsyncOperation currentAsyncOp = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
@@ -76,46 +76,44 @@ public class LevelManager : MonoBehaviour
 
     }
 
-    public void LoadNextLevel()
+    public IEnumerator LoadNextLevel()
     {
-        int sceneBuildIndex = currentLoadedLevelScene.buildIndex;
-
-        SceneManager.UnloadSceneAsync(sceneBuildIndex); //unload current level
-
-        if (SceneManager.sceneCountInBuildSettings >= sceneBuildIndex + 1)
+        if (listOfCurrentlyLoadedScenes[1].buildIndex < numberOfScenes - 1) //There IS a next level to be loaded.
         {
-            SceneManager.LoadScene(sceneBuildIndex + 1, LoadSceneMode.Additive);
-            currentLoadedLevelScene = SceneManager.GetSceneByBuildIndex(sceneBuildIndex + 1);
-            //load next level.
+            int buildIndex = listOfCurrentlyLoadedScenes[1].buildIndex;
+
+            AsyncOperation unloadingAsyncOp = SceneManager.UnloadSceneAsync(listOfCurrentlyLoadedScenes[1]);
+
+            while (!(unloadingAsyncOp.isDone)) //while the scene is still unloading
+            {
+                yield return null; //keep checking 
+            }
+
+            listOfCurrentlyLoadedScenes.Remove(listOfCurrentlyLoadedScenes[1]);
+
+            AsyncOperation loadingAsyncOp = SceneManager.LoadSceneAsync((buildIndex + 1), LoadSceneMode.Additive);
+
+            while (!(loadingAsyncOp.isDone)) //while the scene is still loading
+            {
+                yield return null; //keep checking 
+            }
+
+            listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
+
+            gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
         }
-
-        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
+        else
+        {
+            StartCoroutine(GoBackToMainMenu());
+        } //No Next Level to be loaded, proceeding to main menu.
     }
-
-    /* public IEnumerator GoBackToMainMenu()
-     {
-         int sceneCount = SceneManager.sceneCount;
-         if (sceneCount > 1)
-         {
-             Scene scene = SceneManager.GetSceneAt(sceneCount - 1);
-             SceneManager.UnloadSceneAsync(scene);
-
-             while (scene.isLoaded == true)
-             {
-                 yield return null;
-             }
-
-             gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
-         }
-     } */
-
     #endregion
     #region Level Setup
     public void DefaultLevelSetupRoutine()
     {
-        switch (currentLoadedLevelScene.buildIndex)
+        switch (listOfCurrentlyLoadedScenes[1].buildIndex)
         {
-            case 1:
+            case 1: //Level 1 
                 InitializePlanetState(2, 2, 0);
                 break;
 
