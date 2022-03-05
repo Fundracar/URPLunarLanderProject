@@ -7,7 +7,7 @@ public class ScoreCalculator : MonoBehaviour
     public float CalculateScoreForCurrentLevel(float _TimeElapsedInSeconds, float _FuelLeft, float _PlateformBonus)
     {
         float calculatedScore = ((_FuelLeft * 5) * _PlateformBonus) / _TimeElapsedInSeconds;
-        Debug.Log(calculatedScore);
+        Debug.Log("MyScore is" + " " + calculatedScore);
         return calculatedScore;
     }
 }

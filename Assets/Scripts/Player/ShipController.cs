@@ -13,9 +13,10 @@ public class ShipController : MonoBehaviour
     public GameManager gameManagerRef;
     public Rigidbody2D shipRigidbody2D { get; private set; }
 
+    public EPropulsor shipPropulsorComponent { get; private set; }
 
-    public enum CauseOfDeath { WentAway, Terrain, Speed }
-    public CauseOfDeath causeOfDeath;
+    public enum CauseOfDeath { None, WentAway, Terrain, Speed }
+    public CauseOfDeath causeOfDeath = CauseOfDeath.None;
 
     [Header("Movement Variables")]
     public float UpThurstInputValue, LateralThrustInputValue, accelerationFactor, UpAccelerationDuration, LatAccelerationDuration, fuelValue;
@@ -25,6 +26,7 @@ public class ShipController : MonoBehaviour
     void Awake()
     {
         shipRigidbody2D = GetComponent<Rigidbody2D>();
+        shipPropulsorComponent = GetComponent<EPropulsor>();
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         UpAccelerationDuration = 0.5f;
         LatAccelerationDuration = UpAccelerationDuration;
@@ -77,7 +79,7 @@ public class ShipController : MonoBehaviour
                     break;
 
                 case GameManager.GamePhase.GamePlaying:
-                    this.GetComponent<EPropulsor>().PropellShip();
+                    shipPropulsorComponent.PropellShip();
                     break;
 
                 case GameManager.GamePhase.GameLost:
@@ -139,16 +141,14 @@ public class ShipController : MonoBehaviour
         if (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             string coltag = col.gameObject.tag;
-            
+
             switch (coltag)
             {
                 case "Terrain":
-                    Debug.Log("Terrain");
                     causeOfDeath = CauseOfDeath.Terrain;
                     gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
                     break;
                 case "Plateform":
-                    Debug.Log("I collided a plateform");
                     gameManagerRef.VerifyShipSpeedOnLanding();
                     break;
 

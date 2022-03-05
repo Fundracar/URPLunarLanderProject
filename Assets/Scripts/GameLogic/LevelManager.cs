@@ -9,17 +9,17 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] GameManager gameManagerRef;
     public LevelConditionner levelConditionnerRef;
-
     public List<Scene> listOfCurrentlyLoadedScenes;
-
-    public int numberOfScenes;
+    public int numberOfScenesInBuild;
     void Awake()
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         levelConditionnerRef = GameObject.FindGameObjectWithTag("LevelConditionManager").GetComponent<LevelConditionner>();
+
+
         listOfCurrentlyLoadedScenes = new List<Scene>();
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetActiveScene());
-        numberOfScenes = SceneManager.sceneCountInBuildSettings;
+        numberOfScenesInBuild = SceneManager.sceneCountInBuildSettings;
     }
     #region Scene Management Coroutines
     public IEnumerator StartNewGame()
@@ -78,7 +78,7 @@ public class LevelManager : MonoBehaviour
 
     public IEnumerator LoadNextLevel()
     {
-        if (listOfCurrentlyLoadedScenes[1].buildIndex < numberOfScenes - 1) //There IS a next level to be loaded.
+        if (listOfCurrentlyLoadedScenes[1].buildIndex < numberOfScenesInBuild - 1) //There IS a next level to be loaded.
         {
             int buildIndex = listOfCurrentlyLoadedScenes[1].buildIndex;
 
@@ -114,19 +114,19 @@ public class LevelManager : MonoBehaviour
         switch (listOfCurrentlyLoadedScenes[1].buildIndex)
         {
             case 1: //Level 1 
-                InitializePlanetState(2, 2, 0);
+                InitializePlanetState(0, 0, 0);
                 break;
 
             case 2:
-                InitializePlanetState(3, 3, 0);
+                InitializePlanetState(0, 0, 0);
                 break;
 
             case 3:
-                InitializePlanetState(1, 1, 0);
+                InitializePlanetState(0, 0, 0);
                 break;
 
             case 4:
-                InitializePlanetState(2, 0, 1);
+                InitializePlanetState(0, 0, 0);
                 break;
 
             case 5:
@@ -191,6 +191,7 @@ public class LevelManager : MonoBehaviour
         switch (_CometPresetValue)
         {
             case 0:
+            //Comet frequency, size, speed
                 break;
 
             case 1:

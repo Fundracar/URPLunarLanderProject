@@ -14,8 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject mainMenuCanvasObject;
     public TimeTracker timeTrackerComponent { get; private set; }
     private ScoreCalculator scoreCalculatorRef;
-    private Coroutine timeCoroutine;
-    private Coroutine windCoroutine;
+    private Coroutine timeCoroutine, windCoroutine;
 
     [Header("Ship Data")]
     [SerializeField] GameObject shipPrefab, instanciatedShip;
@@ -24,22 +23,14 @@ public class GameManager : MonoBehaviour
     public ShipController shipControllerRef { get; private set; }
     public EdgeCollider2D instanciatedShipCollider { get; set; }
     public FuelConsumption fuelConsumptionComponent { get; set; }
-    private bool shipIsFrozen = false;
+    private bool shipIsFrozen = false; //The ship may be "frozen" by the game manager in order to keep it from being able to move in certain contexts (game won, ect).
 
     #endregion
     #region Init & Update
     void Start()
     {
-        spawnPosition = new Vector3(-2.5f, 2.2f, 3f);
 
-        GetScoreCalculatorComponent();
-
-        GetTimeTrackerComponent();
-
-        GetLevelManagerComponent();
-
-        mainMenuCanvasObject = GameObject.FindGameObjectWithTag("MainMenuCanvas");
-
+        InitializeGameManager();
         SwitchOnGamePhase(GamePhase.Setup);
     }
     void FixedUpdate()
@@ -92,11 +83,11 @@ public class GameManager : MonoBehaviour
     private void ManageShipState()
     {
         /* 
-        #WHAT THIS DOES : This methods conditions what behaviors are avalaible to the player's Ship according to the current game phase.
-        #This should be called "OnFixedUpdate"  
-        #Example : While "Playing", the ship's movement are not constrained ect.
-        #CASE GUARD : For each case this methods should check, we take into account when the "ConstraintShipMovements"
-        has already been fired in order not to fire it everyframe. */
+        #This methods conditions what behaviors are avalaible to the player's Ship according to the current game phase.
+        #This should be called "OnFixedUpdate" to better follow the actual physics behavior of the ship.  
+        #Usefulness Example : While in the "Playing" GameState, the ship's movement are not constrained ect.
+        #CASE GUARDS : For each case this methods should check, we take into account when the "ConstraintShipMovements"
+        has already been fired in order not to fire it everyframe, since we already know every case is evaluated anyway in a switch() statement */
         switch (currentGamePhase)
         {
             case GamePhase.GameWaitingToStart when shipIsFrozen == true:
@@ -146,7 +137,6 @@ public class GameManager : MonoBehaviour
                 break;
 
             case 2: //The main menu scene + a level scene are loaded.
-                GetInGameCanvasComponent();
                 inGameCanvasComponent.SetCurrentLevelInfo();
                 mainMenuCanvasObject.SetActive(false);
                 SwitchOnGamePhase(GamePhase.GameWaitingToStart);
@@ -283,26 +273,18 @@ public class GameManager : MonoBehaviour
     }
     #endregion
     #region Valuable Components Tools
-    private void GetLevelManagerComponent()
-    {
-        levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
-    }
     private void GetInGameCanvasComponent()
     {
         inGameCanvasComponent = GameObject.FindGameObjectWithTag("GameCanvas").GetComponent<InGameCanvas>();
     }
-    private void GetScoreCalculatorComponent()
+    private void InitializeGameManager()
     {
         scoreCalculatorRef = GetComponent<ScoreCalculator>();
-    }
-    private void GetTimeTrackerComponent()
-    {
         timeTrackerComponent = GetComponent<TimeTracker>();
+        levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
+        mainMenuCanvasObject = GameObject.FindGameObjectWithTag("MainMenuCanvas");
+        inGameCanvasComponent = GameObject.FindGameObjectWithTag("GameCanvas").GetComponent<InGameCanvas>();
+        spawnPosition = new Vector3(-2.5f, 2.2f, 3f);
     }
-
-
-
-
- 
     #endregion
 }
