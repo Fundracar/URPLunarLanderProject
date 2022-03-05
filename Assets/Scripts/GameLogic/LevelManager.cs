@@ -25,11 +25,7 @@ public class LevelManager : MonoBehaviour
     public IEnumerator StartNewGame()
     {
         AsyncOperation currentAsyncOp = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-
-        while (!(currentAsyncOp.isDone)) //while the scene is still loading/unloading
-        {
-            yield return null; //keep checking 
-        }
+        yield return currentAsyncOp;
 
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
 
@@ -38,13 +34,8 @@ public class LevelManager : MonoBehaviour
 
     public IEnumerator GoBackToMainMenu()
     {
-
         AsyncOperation currentAsyncOp = SceneManager.UnloadSceneAsync(listOfCurrentlyLoadedScenes[1]);
-
-        while (!(currentAsyncOp.isDone)) //while the scene is still loaded
-        {
-            yield return null; //keep checking 
-        }
+        yield return currentAsyncOp; //keep checking 
 
         listOfCurrentlyLoadedScenes.Remove(listOfCurrentlyLoadedScenes[1]);
 
@@ -55,20 +46,12 @@ public class LevelManager : MonoBehaviour
         int buildIndex = listOfCurrentlyLoadedScenes[1].buildIndex;
 
         AsyncOperation unloadingAsyncOp = SceneManager.UnloadSceneAsync(listOfCurrentlyLoadedScenes[1]);
-
-        while (!(unloadingAsyncOp.isDone)) //while the scene is still unloading
-        {
-            yield return null; //keep checking 
-        }
+        yield return unloadingAsyncOp;
 
         listOfCurrentlyLoadedScenes.Remove(listOfCurrentlyLoadedScenes[1]);
 
         AsyncOperation loadingAsyncOp = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
-
-        while (!(loadingAsyncOp.isDone)) //while the scene is still loading
-        {
-            yield return null; //keep checking 
-        }
+        yield return loadingAsyncOp;
 
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
 
@@ -83,20 +66,12 @@ public class LevelManager : MonoBehaviour
             int buildIndex = listOfCurrentlyLoadedScenes[1].buildIndex;
 
             AsyncOperation unloadingAsyncOp = SceneManager.UnloadSceneAsync(listOfCurrentlyLoadedScenes[1]);
-
-            while (!(unloadingAsyncOp.isDone)) //while the scene is still unloading
-            {
-                yield return null; //keep checking 
-            }
+            yield return unloadingAsyncOp;
 
             listOfCurrentlyLoadedScenes.Remove(listOfCurrentlyLoadedScenes[1]);
 
             AsyncOperation loadingAsyncOp = SceneManager.LoadSceneAsync((buildIndex + 1), LoadSceneMode.Additive);
-
-            while (!(loadingAsyncOp.isDone)) //while the scene is still loading
-            {
-                yield return null; //keep checking 
-            }
+            yield return loadingAsyncOp;
 
             listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
 
@@ -191,7 +166,7 @@ public class LevelManager : MonoBehaviour
         switch (_CometPresetValue)
         {
             case 0:
-            //Comet frequency, size, speed
+                //Comet frequency, size, speed
                 break;
 
             case 1:

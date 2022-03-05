@@ -6,10 +6,11 @@ using UnityEngine.SceneManagement;
 public class MainMenuCanvasManager : MonoBehaviour
 {
 
-    [SerializeField] GameManager gameManagerRef;
+
+    private NewProfileNameCanvas newProfileNameCanvasRef;
     void Awake()
     {
-        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        newProfileNameCanvasRef = GameObject.FindGameObjectWithTag("NewProfileNameCanvas").GetComponent<NewProfileNameCanvas>();
     }
 
     public void ManageClickedButton(GameObject _buttonClicked)
@@ -27,20 +28,20 @@ public class MainMenuCanvasManager : MonoBehaviour
         {
             case "NewGameButton":
 
-               StartCoroutine(gameManagerRef.levelManagerRef.StartNewGame()); //The game manager handle's the scene switch.
-            
+                newProfileNameCanvasRef.gameObject.SetActive(true);//The game manager handle's the scene switch.
+
                 break;
 
             case "LoadGameButton":
-                
+
                 break;
 
             case "OptionsButton":
-                
+
                 break;
 
             case "QuitGameButton":
-                
+
                 break;
 
             default:
@@ -50,5 +51,5 @@ public class MainMenuCanvasManager : MonoBehaviour
 
     }
 
-    
+
 }

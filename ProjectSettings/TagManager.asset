@@ -23,6 +23,9 @@ TagManager:
   - TimeTracker
   - CurrentLevelTextBox
   - LevelConditionManager
+  - NewProfileNameCanvas
+  - NewProfileBack
+  - NewProfileConfirmButton
   layers:
   - Default
   - TransparentFX

@@ -7,12 +7,10 @@ public class MainMenuButtonScript : MonoBehaviour
 
     private MainMenuCanvasManager mainMenuCanvasManagerRef;
 
-    
-    void Awake()
-    {
-        GameObject mainMenuCanvasReference = GameObject.FindGameObjectWithTag("MainMenuCanvas");
 
-        mainMenuCanvasManagerRef = mainMenuCanvasReference.GetComponent<MainMenuCanvasManager>();
+    void Start()
+    {
+        mainMenuCanvasManagerRef = GameObject.FindGameObjectWithTag("MainMenuCanvas").GetComponent<MainMenuCanvasManager>();
     }
     public void OnClickRegistered()
     {
