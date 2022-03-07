@@ -15,8 +15,6 @@ public class LevelManager : MonoBehaviour
     {
         gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         levelConditionnerRef = GameObject.FindGameObjectWithTag("LevelConditionManager").GetComponent<LevelConditionner>();
-
-
         listOfCurrentlyLoadedScenes = new List<Scene>();
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetActiveScene());
         numberOfScenesInBuild = SceneManager.sceneCountInBuildSettings;

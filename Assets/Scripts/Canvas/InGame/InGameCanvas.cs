@@ -19,7 +19,8 @@ public class InGameCanvas : MonoBehaviour
     [SerializeField] TextMeshProUGUI verticalSpeedText, horizontalSpeedText, fuelText, levelText;
 
     [Header("Text Objects & Components for the player")]
-    [SerializeField] TextMeshProUGUI mainPlayerMessageText, secondaryPlayerMessageText, playerInstructiontext;
+    [SerializeField] TextMeshProUGUI mainPlayerMessageText, secondaryPlayerMessageText, playerInstructiontext, playerScore;
+    public int updatedPlayerScore;
 
     #endregion
     #region Init&Update
@@ -51,7 +52,7 @@ public class InGameCanvas : MonoBehaviour
     }
     public void SetCurrentLevelInfo()
     {
-        levelText.text = "Level" + " " +  gameManagerRef.levelManagerRef.listOfCurrentlyLoadedScenes[1].buildIndex.ToString();
+        levelText.text = "Level" + " " + gameManagerRef.levelManagerRef.listOfCurrentlyLoadedScenes[1].buildIndex.ToString();
     }
     public void FindPlayerInScene()
     {
@@ -69,6 +70,7 @@ public class InGameCanvas : MonoBehaviour
         playerInstructiontext = GameObject.FindGameObjectWithTag("PlayerInstructionsTextBox").GetComponent<TextMeshProUGUI>();
         fuelText = GameObject.FindGameObjectWithTag("FuelValueTextBox").GetComponent<TextMeshProUGUI>();
         levelText = GameObject.FindGameObjectWithTag("CurrentLevelTextBox").GetComponent<TextMeshProUGUI>();
+        playerScore = GameObject.FindGameObjectWithTag("ScorePlayerInfoTextBox").GetComponent<TextMeshProUGUI>();
     }
     #endregion
     #region UI Message display
@@ -84,12 +86,15 @@ public class InGameCanvas : MonoBehaviour
             case GameManager.GamePhase.GameWaitingToStart:
                 mainPlayerMessageText.text = "Prepare for landing";
                 secondaryPlayerMessageText.text = null;
+                playerScore.text = null;
                 playerInstructiontext.text = "Press SPACE to start landing procedure";
                 break;
 
             case GameManager.GamePhase.GameLost:
 
                 mainPlayerMessageText.text = "Landing Failed";
+
+                playerScore.text = "SCORE : 0";
 
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
 
@@ -112,6 +117,7 @@ public class InGameCanvas : MonoBehaviour
             case GameManager.GamePhase.GameWon:
 
                 mainPlayerMessageText.text = "Landing Successful !";
+                playerScore.text = updatedPlayerScore.ToString();
                 secondaryPlayerMessageText.text = "You managed to land the ship without incident";
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
 
@@ -125,6 +131,7 @@ public class InGameCanvas : MonoBehaviour
             case GameManager.GamePhase.GamePlaying:
                 //No text should be displayed when the game phase equals "GamePlaying"
                 mainPlayerMessageText.text = null;
+                playerScore.text = null;
                 secondaryPlayerMessageText.text = null;
                 playerInstructiontext.text = null;
                 break;

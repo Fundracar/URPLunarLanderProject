@@ -26,6 +26,9 @@ TagManager:
   - NewProfileNameCanvas
   - NewProfileBack
   - NewProfileConfirmButton
+  - ProfileNameErrorText
+  - PlayerNameInputField
+  - ProfileName
   layers:
   - Default
   - TransparentFX

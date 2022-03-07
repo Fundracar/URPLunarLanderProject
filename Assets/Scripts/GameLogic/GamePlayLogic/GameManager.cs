@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public GamePhase currentGamePhase { get; private set; }
     public LevelManager levelManagerRef { get; private set; }
     public InGameCanvas inGameCanvasComponent { get; private set; }
-    public GameObject mainMenuCanvasObject;
+    public GameObject mainMenuCanvasObject, newProfileCanvasObject;
     public TimeTracker timeTrackerComponent { get; private set; }
     private ScoreCalculator scoreCalculatorRef;
     private Coroutine timeCoroutine, windCoroutine;
@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviour
     #region Init & Update
     void Start()
     {
-
         InitializeGameManager();
         SwitchOnGamePhase(GamePhase.Setup);
     }
@@ -134,11 +133,15 @@ public class GameManager : MonoBehaviour
         {
             case 1: //Only the main menu scene is loaded.
                 mainMenuCanvasObject.SetActive(true);
+            
+                newProfileCanvasObject.SetActive(false);
                 break;
 
             case 2: //The main menu scene + a level scene are loaded.
-                inGameCanvasComponent.SetCurrentLevelInfo();
+          
                 mainMenuCanvasObject.SetActive(false);
+                inGameCanvasComponent.SetCurrentLevelInfo();
+
                 SwitchOnGamePhase(GamePhase.GameWaitingToStart);
                 break;
         }
@@ -171,14 +174,17 @@ public class GameManager : MonoBehaviour
     {
         inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
         StopInGameCoroutines();
-        ScoreUpdateRoutine();
+        inGameCanvasComponent.updatedPlayerScore = ((int)ScoreUpdateRoutine());
+
     }
-    private void ScoreUpdateRoutine()
+    private float ScoreUpdateRoutine()
     {
         float calculatedTimeInSeconds = timeTrackerComponent.CalculateTimeInSecondsFromTimeTracker();
         float fuelLeft = shipControllerRef.fuelValue;
         // + way to get the plateforme bonus hit
         float calculatedScore = scoreCalculatorRef.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft, 1f /* hitplateform bonus */);
+
+        return calculatedScore;
     }
     #endregion
 
@@ -284,6 +290,7 @@ public class GameManager : MonoBehaviour
         levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
         mainMenuCanvasObject = GameObject.FindGameObjectWithTag("MainMenuCanvas");
         inGameCanvasComponent = GameObject.FindGameObjectWithTag("GameCanvas").GetComponent<InGameCanvas>();
+        newProfileCanvasObject = GameObject.FindGameObjectWithTag("NewProfileNameCanvas");
         spawnPosition = new Vector3(-2.5f, 2.2f, 3f);
     }
     #endregion
