@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class WindManager : MonoBehaviour
 {
-
-    public GameManager gameManagerRef;
     public float windForceValue;
     void Start()
     {
@@ -14,12 +12,12 @@ public class WindManager : MonoBehaviour
 
     private void InitializeWindManager()
     {
-        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+
     }
 
     public IEnumerator WindforceCoroutine(ShipController _ShipControllerRef, float _Parameter)
     {
-        while (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
+        while (GameManager.gameManager.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             ApplyWindForce(_ShipControllerRef, _Parameter);
 

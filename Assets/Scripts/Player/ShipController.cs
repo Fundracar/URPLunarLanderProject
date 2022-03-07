@@ -8,11 +8,7 @@ public class ShipController : MonoBehaviour
 {
 
     #region Variables
-
-    [Header("Game Manager & Other components of interest")]
-    public GameManager gameManagerRef;
     public Rigidbody2D shipRigidbody2D { get; private set; }
-
     public EPropulsor shipPropulsorComponent { get; private set; }
 
     public enum CauseOfDeath { None, WentAway, Terrain, Speed }
@@ -27,7 +23,6 @@ public class ShipController : MonoBehaviour
     {
         shipRigidbody2D = GetComponent<Rigidbody2D>();
         shipPropulsorComponent = GetComponent<EPropulsor>();
-        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         UpAccelerationDuration = 0.5f;
         LatAccelerationDuration = UpAccelerationDuration;
     }
@@ -72,10 +67,10 @@ public class ShipController : MonoBehaviour
 
         if (context.performed)
         {
-            switch (gameManagerRef.currentGamePhase)
+            switch (GameManager.gameManager.currentGamePhase)
             {
                 case GameManager.GamePhase.GameWaitingToStart:
-                    gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GamePlaying);
+                    GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.GamePlaying);
                     break;
 
                 case GameManager.GamePhase.GamePlaying:
@@ -83,11 +78,11 @@ public class ShipController : MonoBehaviour
                     break;
 
                 case GameManager.GamePhase.GameLost:
-                    StartCoroutine(gameManagerRef.levelManagerRef.RestartLevel());
+                    StartCoroutine(LevelManager.levelManager.RestartLevel());
                     break;
 
                 case GameManager.GamePhase.GameWon:
-                    StartCoroutine(gameManagerRef.levelManagerRef.LoadNextLevel());
+                    StartCoroutine(LevelManager.levelManager.LoadNextLevel());
                     break;
 
                 default:
@@ -138,7 +133,7 @@ public class ShipController : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D col)
     {
-        if (gameManagerRef.currentGamePhase == GameManager.GamePhase.GamePlaying)
+        if (GameManager.gameManager.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             string coltag = col.gameObject.tag;
 
@@ -146,10 +141,10 @@ public class ShipController : MonoBehaviour
             {
                 case "Terrain":
                     causeOfDeath = CauseOfDeath.Terrain;
-                    gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
+                    GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
                     break;
                 case "Plateform":
-                    gameManagerRef.VerifyShipSpeedOnLanding();
+                    GameManager.gameManager.VerifyShipSpeedOnLanding();
                     break;
 
                 default:

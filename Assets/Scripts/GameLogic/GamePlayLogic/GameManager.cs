@@ -7,29 +7,24 @@ public class GameManager : MonoBehaviour
 {
     #region Variables
 
+    public static GameManager gameManager;
     public enum GamePhase { Setup, GameWaitingToStart, GamePlaying, GameLost, GameWon };
     public GamePhase currentGamePhase { get; private set; }
-    public LevelManager levelManagerRef { get; private set; }
-    public InGameCanvas inGameCanvasComponent { get; private set; }
-    public GameObject mainMenuCanvasObject, newProfileCanvasObject;
-    public TimeTracker timeTrackerComponent { get; private set; }
-    private ScoreCalculator scoreCalculatorRef;
     private Coroutine timeCoroutine, windCoroutine;
 
     [Header("Ship Data")]
     [SerializeField] GameObject shipPrefab, instanciatedShip;
-    private Vector3 spawnPosition;
+    private Vector3 spawnPosition = new Vector3(-2.5f, 2.2f, 3f);
+    private bool shipIsFrozen = false;
     public Rigidbody2D instanciatedRigidbody2D { get; set; }
-    public ShipController shipControllerRef { get; private set; }
     public EdgeCollider2D instanciatedShipCollider { get; set; }
+    public ShipController shipControllerRef { get; private set; }
     public FuelConsumption fuelConsumptionComponent { get; set; }
-    private bool shipIsFrozen = false; //The ship may be "frozen" by the game manager in order to keep it from being able to move in certain contexts (game won, ect).
-
     #endregion
     #region Init & Update
     void Start()
     {
-        InitializeGameManager();
+        gameManager = this;
         SwitchOnGamePhase(GamePhase.Setup);
     }
     void FixedUpdate()
@@ -129,18 +124,18 @@ public class GameManager : MonoBehaviour
     //All the following methods are firing thanks to the "SwitchOnGamePhase()" method
     private void Setup()
     {
-        switch (levelManagerRef.listOfCurrentlyLoadedScenes.Count)
+        switch (LevelManager.levelManager.listOfCurrentlyLoadedScenes.Count)
         {
             case 1: //Only the main menu scene is loaded.
-                mainMenuCanvasObject.SetActive(true);
-            
-                newProfileCanvasObject.SetActive(false);
+                MainMenuCanvasManager.mainMenuCanvasManager.gameObject.SetActive(true);
+
+                NewProfileNameCanvas.newProfileNameCanvas.gameObject.SetActive(false);
                 break;
 
             case 2: //The main menu scene + a level scene are loaded.
-          
-                mainMenuCanvasObject.SetActive(false);
-                inGameCanvasComponent.SetCurrentLevelInfo();
+
+                MainMenuCanvasManager.mainMenuCanvasManager.gameObject.SetActive(false);
+                InGameCanvas.inGameCanvas.SetCurrentLevelInfo();
 
                 SwitchOnGamePhase(GamePhase.GameWaitingToStart);
                 break;
@@ -148,41 +143,41 @@ public class GameManager : MonoBehaviour
     }
     private void GameWaitingToStart()
     {
-        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
+        InGameCanvas.inGameCanvas.DisplayMessageInfos(true, currentGamePhase);
         PlaceShipController();
-        levelManagerRef.DefaultLevelSetupRoutine();
+        LevelManager.levelManager.DefaultLevelSetupRoutine();
         //The switch to "GamePlaying" is made by the player on ReadyKeyPressed (shipcontroller.cs)
     }
     private void GamePlaying()
     {
-        inGameCanvasComponent.DisplayMessageInfos(false, currentGamePhase);
+        InGameCanvas.inGameCanvas.DisplayMessageInfos(false, currentGamePhase);
 
-        timeCoroutine = StartCoroutine(timeTrackerComponent.TrackAndDisplayGameTime());
+        timeCoroutine = StartCoroutine(TimeTracker.timeTracker.TrackAndDisplayGameTime());
 
-        if (!(levelManagerRef.levelConditionnerRef.windManagerRef.windForceValue == 0))
+        if (!(LevelConditionner.levelConditionner.windManagerRef.windForceValue == 0))
         {
-            windCoroutine = StartCoroutine(levelManagerRef.levelConditionnerRef.windManagerRef.WindforceCoroutine(shipControllerRef, levelManagerRef.levelConditionnerRef.windManagerRef.windForceValue));
+            windCoroutine = StartCoroutine(LevelConditionner.levelConditionner.windManagerRef.WindforceCoroutine(shipControllerRef, LevelConditionner.levelConditionner.windManagerRef.windForceValue));
         }
         fuelConsumptionComponent.shipConsumptionCoroutine = StartCoroutine(fuelConsumptionComponent.ShipFuelConsumptionCoroutine());
     }
     private void GameLost()
     {
-        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
+        InGameCanvas.inGameCanvas.DisplayMessageInfos(true, currentGamePhase);
         StopInGameCoroutines();
     }
     public void GameWon()
     {
-        inGameCanvasComponent.DisplayMessageInfos(true, currentGamePhase);
+        InGameCanvas.inGameCanvas.DisplayMessageInfos(true, currentGamePhase);
         StopInGameCoroutines();
-        inGameCanvasComponent.updatedPlayerScore = ((int)ScoreUpdateRoutine());
+        InGameCanvas.inGameCanvas.updatedPlayerScore = ((int)ScoreUpdateRoutine());
 
     }
     private float ScoreUpdateRoutine()
     {
-        float calculatedTimeInSeconds = timeTrackerComponent.CalculateTimeInSecondsFromTimeTracker();
+        float calculatedTimeInSeconds = TimeTracker.timeTracker.CalculateTimeInSecondsFromTimeTracker();
         float fuelLeft = shipControllerRef.fuelValue;
         // + way to get the plateforme bonus hit
-        float calculatedScore = scoreCalculatorRef.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft, 1f /* hitplateform bonus */);
+        float calculatedScore = ScoreCalculator.scoreCalculator.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft, 1f /* hitplateform bonus */);
 
         return calculatedScore;
     }
@@ -204,7 +199,7 @@ public class GameManager : MonoBehaviour
         if (instanciatedShip == null) //If the ship doesn't exist in the scene, spawns it and references its valuable components.
         {
             InstantiateAndReferencePlayerShip();
-            inGameCanvasComponent.FindPlayerInScene();
+            InGameCanvas.inGameCanvas.FindPlayerInScene();
         }
         else RestartShipInitialState();
 
@@ -215,13 +210,11 @@ public class GameManager : MonoBehaviour
         shipIsFrozen = false;
         shipControllerRef.fuelValue = 1000f;
     }
-
     private void StopInGameCoroutines()
     {
         StopCoroutine(timeCoroutine);
         StopCoroutine(fuelConsumptionComponent.shipConsumptionCoroutine);
     }
-
 
     #endregion
     #region Ship Instance Management
@@ -276,22 +269,6 @@ public class GameManager : MonoBehaviour
             instanciatedRigidbody2D.constraints = RigidbodyConstraints2D.None;
             shipIsFrozen = _Instruction;
         }
-    }
-    #endregion
-    #region Valuable Components Tools
-    private void GetInGameCanvasComponent()
-    {
-        inGameCanvasComponent = GameObject.FindGameObjectWithTag("GameCanvas").GetComponent<InGameCanvas>();
-    }
-    private void InitializeGameManager()
-    {
-        scoreCalculatorRef = GetComponent<ScoreCalculator>();
-        timeTrackerComponent = GetComponent<TimeTracker>();
-        levelManagerRef = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
-        mainMenuCanvasObject = GameObject.FindGameObjectWithTag("MainMenuCanvas");
-        inGameCanvasComponent = GameObject.FindGameObjectWithTag("GameCanvas").GetComponent<InGameCanvas>();
-        newProfileCanvasObject = GameObject.FindGameObjectWithTag("NewProfileNameCanvas");
-        spawnPosition = new Vector3(-2.5f, 2.2f, 3f);
     }
     #endregion
 }

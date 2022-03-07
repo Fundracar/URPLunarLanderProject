@@ -5,19 +5,17 @@ using TMPro;
 
 public class NewProfileNameCanvas : MonoBehaviour
 {
-
-    [SerializeField] GameManager gameManagerRef;
+public static NewProfileNameCanvas newProfileNameCanvas;
     public TMP_InputField playerNameInputField;
     public string submittedName;
     void Start()
     {
+        newProfileNameCanvas = this;
         StartCoroutine(InitializeNewProfileNameCanvas());
     }
 
     public IEnumerator InitializeNewProfileNameCanvas()
     {
-        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-
         playerNameInputField = GameObject.FindGameObjectWithTag("PlayerNameInputField").GetComponent<TMP_InputField>();
 
         yield return playerNameInputField;
@@ -58,10 +56,10 @@ public class NewProfileNameCanvas : MonoBehaviour
                 /*if(And that it doesn't already exist) 
 
                 { */
-                
+
                 //Register the name somewhere
 
-                StartCoroutine(gameManagerRef.levelManagerRef.StartNewGame());
+                StartCoroutine(LevelManager.levelManager.StartNewGame());
 
                 /* } 
 

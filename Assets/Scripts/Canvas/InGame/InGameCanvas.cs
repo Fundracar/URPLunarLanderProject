@@ -8,9 +8,10 @@ using TMPro;
 public class InGameCanvas : MonoBehaviour
 {
     #region  Variables
-    public GameManager gameManagerRef { get; private set; }
 
     [Header("Player Object & Components References")]
+
+    public static InGameCanvas inGameCanvas;
     private GameObject playerReference;
     [SerializeField] Rigidbody2D playerRigidbodyReference;
     [SerializeField] ShipController playerShipController;
@@ -26,6 +27,7 @@ public class InGameCanvas : MonoBehaviour
     #region Init&Update
     void Start()
     {
+        inGameCanvas = this;
         InitializeInGameCanvas();
     }
     void FixedUpdate()
@@ -52,7 +54,7 @@ public class InGameCanvas : MonoBehaviour
     }
     public void SetCurrentLevelInfo()
     {
-        levelText.text = "Level" + " " + gameManagerRef.levelManagerRef.listOfCurrentlyLoadedScenes[1].buildIndex.ToString();
+        levelText.text = "Level" + " " + LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex.ToString();
     }
     public void FindPlayerInScene()
     {
@@ -62,7 +64,6 @@ public class InGameCanvas : MonoBehaviour
     }
     private void InitializeInGameCanvas()
     {
-        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         verticalSpeedText = GameObject.FindGameObjectWithTag("VerticalSpeedTextBox").GetComponent<TextMeshProUGUI>();
         horizontalSpeedText = GameObject.FindGameObjectWithTag("HorizontalSpeedTextBox").GetComponent<TextMeshProUGUI>();
         mainPlayerMessageText = GameObject.FindGameObjectWithTag("MainPlayerInfoTextBox").GetComponent<TextMeshProUGUI>();
@@ -98,17 +99,17 @@ public class InGameCanvas : MonoBehaviour
 
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
 
-                if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.WentAway)
+                if (GameManager.gameManager.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.WentAway)
                 {
                     secondaryPlayerMessageText.text = "Station Control lost your ship, as a result landing procedure was denied.";
                 }
-                else if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Terrain)
+                else if (GameManager.gameManager.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Terrain)
                 {
                     secondaryPlayerMessageText.text = "You crashed the ship into terrain";
 
                 }
 
-                else if (gameManagerRef.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Speed)
+                else if (GameManager.gameManager.shipControllerRef.causeOfDeath == ShipController.CauseOfDeath.Speed)
                 {
                     secondaryPlayerMessageText.text = "Your speed was too high, as a result the ship crashed on landing.";
                 }
@@ -121,7 +122,7 @@ public class InGameCanvas : MonoBehaviour
                 secondaryPlayerMessageText.text = "You managed to land the ship without incident";
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
 
-                if (gameManagerRef.levelManagerRef.listOfCurrentlyLoadedScenes[1].buildIndex < gameManagerRef.levelManagerRef.numberOfScenesInBuild - 1)
+                if (LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex < LevelManager.levelManager.numberOfScenesInBuild - 1)
                 {
                     playerInstructiontext.text = "Space to go back to Main menu !";
                     secondaryPlayerMessageText.text = "You completed all the landings ! Congratulations";

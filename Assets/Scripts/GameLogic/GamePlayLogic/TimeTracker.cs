@@ -7,17 +7,20 @@ using TMPro;
 
 public class TimeTracker : MonoBehaviour
 {
+    public static TimeTracker timeTracker;
     private GameObject TimeTrackerTextObject;
     private TextMeshProUGUI TimeTrackerText;
-
     float miliseconds, seconds, minutes;
 
- 
+    void Start()
+    {
+        timeTracker = this;
+    }
     public IEnumerator TrackAndDisplayGameTime()
     {
         TimeTrackerText = GameObject.FindGameObjectWithTag("TimeTracker").GetComponent<TextMeshProUGUI>();
 
-        while (this.gameObject.GetComponent<GameManager>().currentGamePhase == GameManager.GamePhase.GamePlaying)
+        while (GameManager.gameManager.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             if (miliseconds <= 99)
             {

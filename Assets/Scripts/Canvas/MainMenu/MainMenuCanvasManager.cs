@@ -5,12 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuCanvasManager : MonoBehaviour
 {
-
-
-    private NewProfileNameCanvas newProfileNameCanvasRef;
+    public static MainMenuCanvasManager mainMenuCanvasManager;
     void Awake()
     {
-        newProfileNameCanvasRef = GameObject.FindGameObjectWithTag("NewProfileNameCanvas").GetComponent<NewProfileNameCanvas>();
+        mainMenuCanvasManager = this;
+
     }
 
     public void ManageClickedButton(GameObject _buttonClicked)
@@ -28,7 +27,7 @@ public class MainMenuCanvasManager : MonoBehaviour
         {
             case "NewGameButton":
 
-                newProfileNameCanvasRef.gameObject.SetActive(true);//The game manager handle's the scene switch.
+                NewProfileNameCanvas.newProfileNameCanvas.gameObject.SetActive(true);
 
                 break;
 

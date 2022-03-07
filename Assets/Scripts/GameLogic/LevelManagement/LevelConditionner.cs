@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class LevelConditionner : MonoBehaviour
 {
-
-    public GameManager gameManagerRef;
+    public static LevelConditionner levelConditionner;
     public CometDispenser cometDispenserRef;
     public WindManager windManagerRef;
 
@@ -13,11 +12,11 @@ public class LevelConditionner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        levelConditionner = this;
         InitialiazeLevelConditionner();
     }
     private void InitialiazeLevelConditionner()
     {
-        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         cometDispenserRef = GetComponent<CometDispenser>();
         windManagerRef = GetComponent<WindManager>();
     }

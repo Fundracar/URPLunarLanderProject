@@ -7,14 +7,12 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField] GameManager gameManagerRef;
-    public LevelConditionner levelConditionnerRef;
+    public static LevelManager levelManager;
     public List<Scene> listOfCurrentlyLoadedScenes;
     public int numberOfScenesInBuild;
     void Awake()
     {
-        gameManagerRef = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-        levelConditionnerRef = GameObject.FindGameObjectWithTag("LevelConditionManager").GetComponent<LevelConditionner>();
+        levelManager = this;
         listOfCurrentlyLoadedScenes = new List<Scene>();
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetActiveScene());
         numberOfScenesInBuild = SceneManager.sceneCountInBuildSettings;
@@ -27,7 +25,7 @@ public class LevelManager : MonoBehaviour
 
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
 
-        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
+        GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.Setup);
     }
 
     public IEnumerator GoBackToMainMenu()
@@ -37,7 +35,7 @@ public class LevelManager : MonoBehaviour
 
         listOfCurrentlyLoadedScenes.Remove(listOfCurrentlyLoadedScenes[1]);
 
-        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
+        GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.Setup);
     }
     public IEnumerator RestartLevel()
     {
@@ -53,7 +51,7 @@ public class LevelManager : MonoBehaviour
 
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
 
-        gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
+        GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.Setup);
 
     }
 
@@ -73,7 +71,7 @@ public class LevelManager : MonoBehaviour
 
             listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
 
-            gameManagerRef.SwitchOnGamePhase(GameManager.GamePhase.Setup);
+            GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.Setup);
         }
         else
         {
@@ -122,16 +120,19 @@ public class LevelManager : MonoBehaviour
         switch (__WindPresetValue)
         {
             case 0:
-                levelConditionnerRef.SetWindForce(0f);
+                LevelConditionner.levelConditionner.SetWindForce(0f);
                 break;
+
             case 1:
-                levelConditionnerRef.SetWindForce(0.10f);
+                LevelConditionner.levelConditionner.SetWindForce(0.10f);
                 break;
+
             case 2:
-                levelConditionnerRef.SetWindForce(0.15f);
+                LevelConditionner.levelConditionner.SetWindForce(0.15f);
                 break;
+                
             case 3:
-                levelConditionnerRef.SetWindForce(0.20f);
+                LevelConditionner.levelConditionner.SetWindForce(0.20f);
                 break;
         }
 
@@ -141,19 +142,19 @@ public class LevelManager : MonoBehaviour
         switch (_GravityPresetValue)
         {
             case 0:
-                levelConditionnerRef.SetShipGravityScaleValue(gameManagerRef.shipControllerRef, 0.025f);
+                LevelConditionner.levelConditionner.SetShipGravityScaleValue(GameManager.gameManager.shipControllerRef, 0.025f);
                 break;
 
             case 1:
-                levelConditionnerRef.SetShipGravityScaleValue(gameManagerRef.shipControllerRef, 0.050f);
+                LevelConditionner.levelConditionner.SetShipGravityScaleValue(GameManager.gameManager.shipControllerRef, 0.050f);
                 break;
 
             case 2:
-                levelConditionnerRef.SetShipGravityScaleValue(gameManagerRef.shipControllerRef, 0.075f);
+                LevelConditionner.levelConditionner.SetShipGravityScaleValue(GameManager.gameManager.shipControllerRef, 0.075f);
                 break;
 
             case 3:
-                levelConditionnerRef.SetShipGravityScaleValue(gameManagerRef.shipControllerRef, 0.1f);
+                LevelConditionner.levelConditionner.SetShipGravityScaleValue(GameManager.gameManager.shipControllerRef, 0.1f);
                 break;
 
         }
