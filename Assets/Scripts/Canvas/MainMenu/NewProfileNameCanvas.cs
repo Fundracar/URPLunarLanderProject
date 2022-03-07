@@ -5,7 +5,7 @@ using TMPro;
 
 public class NewProfileNameCanvas : MonoBehaviour
 {
-public static NewProfileNameCanvas newProfileNameCanvas;
+    public static NewProfileNameCanvas newProfileNameCanvas;
     public TMP_InputField playerNameInputField;
     public string submittedName;
     void Start()

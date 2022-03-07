@@ -10,11 +10,10 @@ public class InGameCanvas : MonoBehaviour
     #region  Variables
 
     [Header("Player Object & Components References")]
-
     public static InGameCanvas inGameCanvas;
-    private GameObject playerReference;
-    [SerializeField] Rigidbody2D playerRigidbodyReference;
-    [SerializeField] ShipController playerShipController;
+    [SerializeField] GameObject playerReference;
+    private Rigidbody2D playerRigidbodyReference;
+    private ShipController playerShipController;
 
     [Header("Text Objects & Components for the ship")]
     [SerializeField] TextMeshProUGUI verticalSpeedText, horizontalSpeedText, fuelText, levelText;
