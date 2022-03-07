@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     #region Variables
 
+    public static GameManager gameManager;
     public enum GamePhase { Setup, GameWaitingToStart, GamePlaying, GameLost, GameWon };
     public GamePhase currentGamePhase { get; private set; }
     public LevelManager levelManagerRef { get; private set; }
@@ -29,6 +30,7 @@ public class GameManager : MonoBehaviour
     #region Init & Update
     void Start()
     {
+        gameManager = this;
         InitializeGameManager();
         SwitchOnGamePhase(GamePhase.Setup);
     }
@@ -133,12 +135,12 @@ public class GameManager : MonoBehaviour
         {
             case 1: //Only the main menu scene is loaded.
                 mainMenuCanvasObject.SetActive(true);
-            
+
                 newProfileCanvasObject.SetActive(false);
                 break;
 
             case 2: //The main menu scene + a level scene are loaded.
-          
+
                 mainMenuCanvasObject.SetActive(false);
                 inGameCanvasComponent.SetCurrentLevelInfo();
 
