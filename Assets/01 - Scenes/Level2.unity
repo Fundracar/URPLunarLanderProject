@@ -192,6 +192,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2074941717}
     m_Modifications:
+    - target: {fileID: 855700582679635377, guid: a19d905cf61fee44e94f5b347d5a3aff, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.771
+      objectReference: {fileID: 0}
+    - target: {fileID: 855700582679635377, guid: a19d905cf61fee44e94f5b347d5a3aff, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.52
+      objectReference: {fileID: 0}
     - target: {fileID: 3373914862832320080, guid: a19d905cf61fee44e94f5b347d5a3aff, type: 3}
       propertyPath: m_Name
       value: PlateformPrefab
