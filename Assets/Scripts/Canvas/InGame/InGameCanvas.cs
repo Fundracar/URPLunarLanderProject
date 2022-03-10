@@ -44,8 +44,8 @@ public class InGameCanvas : MonoBehaviour
         /* Should this be done on Update or FixedUpdate ?
               I figured that since this script is supposed to track velocity values that are highly physics based, 
               it would be more accurate to track them 'OnFixedUpdate' */
-        verticalSpeedText.text = "Vertical Speed" + " " + (Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.y * 100f))).ToString();
-        horizontalSpeedText.text = "Horizontal Speed" + " " + (Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.x * 100f))).ToString();
+        verticalSpeedText.text = "V.Speed" + " " + (Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.y * 100f))).ToString();
+        horizontalSpeedText.text = "H.Speed" + " " + (Mathf.Round(Mathf.Abs(playerRigidbodyReference.velocity.x * 100f))).ToString();
     }
     private void UpdateFuelInfos()
     {
