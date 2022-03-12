@@ -168,8 +168,9 @@ public class GameManager : MonoBehaviour
     public void GameWon()
     {
         StopInGameCoroutines();
-        InGameCanvas.inGameCanvas.DisplayMessageInfos(true, currentGamePhase);
+
         InGameCanvas.inGameCanvas.updatedPlayerScore = ((int)ScoreUpdateRoutine());
+        InGameCanvas.inGameCanvas.DisplayMessageInfos(true, currentGamePhase);
     }
     private float ScoreUpdateRoutine()
     {
