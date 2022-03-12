@@ -518,7 +518,7 @@ PrefabInstance:
     - target: {fileID: 6007288771035515771, guid: cd4cc9eaafcd902489d51e209da836b4, type: 3}
       propertyPath: m_FontData.m_Font
       value: 
-      objectReference: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
+      objectReference: {fileID: 12800000, guid: 8221e2492f642b24380cec62b4d55183, type: 3}
     - target: {fileID: 6007288771035515771, guid: cd4cc9eaafcd902489d51e209da836b4, type: 3}
       propertyPath: m_FontData.m_MaxSize
       value: 50
@@ -1129,6 +1129,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2044357574730520663, guid: d780ecbb832ef3342926a27a9166d9c7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5692876683799664405, guid: d780ecbb832ef3342926a27a9166d9c7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5692876683799664405, guid: d780ecbb832ef3342926a27a9166d9c7, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -53,7 +53,28 @@ public class InGameCanvas : MonoBehaviour
     }
     public void SetCurrentLevelInfo()
     {
-        levelText.text = "Level" + " " + LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex.ToString();
+        switch (LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex)
+        {
+            case 1:
+                levelText.text = "Level" + " " + LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex.ToString() + " : " + " Training Facility ";
+                break;
+            case 2:
+                levelText.text = "Level" + " " + LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex.ToString() + " : " + " Planet 2 ";
+                break;
+            case 3:
+                levelText.text = "Level" + " " + LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex.ToString() + " : " + " Planet 3 ";
+                break;
+            case 4:
+                levelText.text = "Level" + " " + LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex.ToString() + " : " + "Planet 4 ";
+                break;
+            case 5:
+                levelText.text = "Level" + " " + LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex.ToString() + " : " + " Planet 5 ";
+                break;
+            case 6:
+                levelText.text = "Level" + " " + LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex.ToString() + " : " + " Planet 6";
+                break;
+        }
+
     }
     public void FindPlayerInScene()
     {
@@ -121,7 +142,7 @@ public class InGameCanvas : MonoBehaviour
                 secondaryPlayerMessageText.text = "You managed to land the ship without incident";
                 playerInstructiontext.text = "SPACE to continue, Escape to save & quit !";
 
-                if (LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex < LevelManager.levelManager.numberOfScenesInBuild - 1)
+                if (LevelManager.levelManager.listOfCurrentlyLoadedScenes[1].buildIndex == LevelManager.levelManager.numberOfScenesInBuild - 1)
                 {
                     playerInstructiontext.text = "Space to go back to Main menu !";
                     secondaryPlayerMessageText.text = "You completed all the landings ! Congratulations";

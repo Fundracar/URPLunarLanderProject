@@ -167,10 +167,9 @@ public class GameManager : MonoBehaviour
     }
     public void GameWon()
     {
-        InGameCanvas.inGameCanvas.DisplayMessageInfos(true, currentGamePhase);
         StopInGameCoroutines();
+        InGameCanvas.inGameCanvas.DisplayMessageInfos(true, currentGamePhase);
         InGameCanvas.inGameCanvas.updatedPlayerScore = ((int)ScoreUpdateRoutine());
-
     }
     private float ScoreUpdateRoutine()
     {
@@ -237,25 +236,11 @@ public class GameManager : MonoBehaviour
     }
     private void UpdateShipSpeed()
     {
-        /*This checks wether the ship is within the defined constraints and if so, adds a calculated force to it.
-        The BOTTOM limit is not considered by this method, as it will be represented by Terrain with its own rigidbody. */
-        if (IsShipPositionWithinBound() == true)
-        {
-            shipControllerRef.AddForceToShip();
-        }
+
+        shipControllerRef.AddForceToShip();
+
     }
-    private bool IsShipPositionWithinBound()
-    {
-        if (instanciatedShip.gameObject.transform.position.x > -3f && instanciatedShip.gameObject.transform.position.x < 3f && !(instanciatedShip.gameObject.transform.position.y > 2.8f))
-        {
-            return true;
-        }
-        else
-        {
-            SwitchOnGamePhase(GamePhase.GameLost);
-            return false;
-        }
-    }
+
     private void ConstraintShipMovements(bool _Instruction)
     {
         //This methods freezes or unfreezes the rigidbody2D constraints at will.

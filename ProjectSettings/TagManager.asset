@@ -29,6 +29,8 @@ TagManager:
   - ProfileNameErrorText
   - PlayerNameInputField
   - ProfileName
+  - ScorePlayerInfoTextBox
+  - LevelBound
   layers:
   - Default
   - TransparentFX

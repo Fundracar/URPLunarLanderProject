@@ -128,7 +128,7 @@ public class ShipController : MonoBehaviour
         float xSpeed = LateralThrustInputValue * accelerationFactor;
         float ySpeed = UpThurstInputValue * accelerationFactor;
 
-        shipRigidbody2D.AddForce(new Vector2(xSpeed, ySpeed), ForceMode2D.Force);
+        shipRigidbody2D.AddRelativeForce(new Vector2(xSpeed, ySpeed), ForceMode2D.Force);
     }
 
     public void OnCollisionEnter2D(Collision2D col)
@@ -143,10 +143,14 @@ public class ShipController : MonoBehaviour
                     causeOfDeath = CauseOfDeath.Terrain;
                     GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
                     break;
+
+                case "LevelBound":
+                    causeOfDeath = CauseOfDeath.WentAway;
+                    GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
+                    break;
                 case "Plateform":
                     GameManager.gameManager.VerifyShipSpeedOnLanding();
                     break;
-
                 default:
                     break;
             }
