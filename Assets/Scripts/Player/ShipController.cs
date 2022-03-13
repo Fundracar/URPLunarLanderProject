@@ -13,6 +13,7 @@ public class ShipController : MonoBehaviour
 
     public enum CauseOfDeath { None, WentAway, Terrain, Speed }
     public CauseOfDeath causeOfDeath = CauseOfDeath.None;
+    public int plateformMultiplier = 1;
 
     [Header("Movement Variables")]
     public float UpThurstInputValue, LateralThrustInputValue, accelerationFactor, UpAccelerationDuration, LatAccelerationDuration, fuelValue;
@@ -149,6 +150,7 @@ public class ShipController : MonoBehaviour
                     GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
                     break;
                 case "Plateform":
+                    plateformMultiplier = col.gameObject.GetComponent<Plateform>().scoreMultiplierValue;
                     GameManager.gameManager.VerifyShipSpeedOnLanding();
                     break;
                 default:

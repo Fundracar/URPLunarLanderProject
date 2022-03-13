@@ -151,13 +151,12 @@ public class GameManager : MonoBehaviour
     private void GamePlaying()
     {
         InGameCanvas.inGameCanvas.DisplayMessageInfos(false, currentGamePhase);
-
         timeCoroutine = StartCoroutine(TimeTracker.timeTracker.TrackAndDisplayGameTime());
-
         if (!(LevelConditionner.levelConditionner.windManagerRef.windForceValue == 0))
         {
             windCoroutine = StartCoroutine(LevelConditionner.levelConditionner.windManagerRef.WindforceCoroutine(shipControllerRef, LevelConditionner.levelConditionner.windManagerRef.windForceValue));
         }
+
         fuelConsumptionComponent.shipConsumptionCoroutine = StartCoroutine(fuelConsumptionComponent.ShipFuelConsumptionCoroutine());
     }
     private void GameLost()
@@ -168,7 +167,6 @@ public class GameManager : MonoBehaviour
     public void GameWon()
     {
         StopInGameCoroutines();
-
         InGameCanvas.inGameCanvas.updatedPlayerScore = ((int)ScoreUpdateRoutine());
         InGameCanvas.inGameCanvas.DisplayMessageInfos(true, currentGamePhase);
     }
@@ -176,8 +174,9 @@ public class GameManager : MonoBehaviour
     {
         float calculatedTimeInSeconds = TimeTracker.timeTracker.CalculateTimeInSecondsFromTimeTracker();
         float fuelLeft = shipControllerRef.fuelValue;
+        int plateformBonus = shipControllerRef.plateformMultiplier;
         // + way to get the plateforme bonus hit
-        float calculatedScore = ScoreCalculator.scoreCalculator.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft, 1f /* hitplateform bonus */);
+        float calculatedScore = ScoreCalculator.scoreCalculator.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft,plateformBonus);
 
         return calculatedScore;
     }
@@ -209,6 +208,7 @@ public class GameManager : MonoBehaviour
         instanciatedShip.transform.position = spawnPosition;
         shipIsFrozen = false;
         shipControllerRef.fuelValue = 1000f;
+        shipControllerRef.plateformMultiplier = 1;
     }
     private void StopInGameCoroutines()
     {
