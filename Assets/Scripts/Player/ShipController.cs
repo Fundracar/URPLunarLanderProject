@@ -134,6 +134,8 @@ public class ShipController : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D col)
     {
+        Debug.Log(col.relativeVelocity);
+        
         if (GameManager.gameManager.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             string coltag = col.gameObject.tag;

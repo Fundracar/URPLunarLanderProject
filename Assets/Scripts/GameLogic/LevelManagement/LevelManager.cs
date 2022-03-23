@@ -28,7 +28,6 @@ public class LevelManager : MonoBehaviour
 
         GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.Setup);
     }
-
     public IEnumerator GoBackToMainMenu()
     {
         TimeTracker.timeTracker.ResetTime();
@@ -57,7 +56,6 @@ public class LevelManager : MonoBehaviour
         GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.Setup);
 
     }
-
     public IEnumerator LoadNextLevel()
     {
         TimeTracker.timeTracker.ResetTime();

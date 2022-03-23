@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
-    #region Variables
     public static GameManager gameManager;
     public enum GamePhase { Setup, GameWaitingToStart, GamePlaying, GameLost, GameWon };
     public GamePhase currentGamePhase { get; private set; }
@@ -19,7 +17,7 @@ public class GameManager : MonoBehaviour
     public EdgeCollider2D instanciatedShipCollider { get; set; }
     public ShipController shipControllerRef { get; private set; }
     public FuelConsumption fuelConsumptionComponent { get; set; }
-    #endregion
+
     #region Init & Update
     void Start()
     {
@@ -176,7 +174,7 @@ public class GameManager : MonoBehaviour
         float fuelLeft = shipControllerRef.fuelValue;
         int plateformBonus = shipControllerRef.plateformMultiplier;
         // + way to get the plateforme bonus hit
-        float calculatedScore = ScoreCalculator.scoreCalculator.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft,plateformBonus);
+        float calculatedScore = ScoreCalculator.scoreCalculator.CalculateScoreForCurrentLevel(calculatedTimeInSeconds, fuelLeft, plateformBonus);
 
         return calculatedScore;
     }

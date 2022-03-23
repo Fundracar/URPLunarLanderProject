@@ -6,10 +6,7 @@ public class PlayerProfile
 {
     public  string playerName;
     Dictionary<int, int> dictionnaryOfPlayerHighscores;
-
     Dictionary<int, float> dictionnaryOfPlayerBestTimes;
-
-
     public PlayerProfile(string _playerName, Dictionary<int, int> _dictOfHighScores,  Dictionary<int, float> _dictionnaryOfPlayerBestTimes)
     {
         playerName = _playerName;
