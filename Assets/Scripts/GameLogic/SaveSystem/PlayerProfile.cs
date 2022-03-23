@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class PlayerProfile
 {
-    string playerName;
-    int playerCurrentLevelBuildIndex;
+    public  string playerName;
     Dictionary<int, int> dictionnaryOfPlayerHighscores;
 
+    Dictionary<int, float> dictionnaryOfPlayerBestTimes;
 
-    public PlayerProfile(string _playerName, Dictionary<int, int> _dictOfHighScores, int _CurrentLevelBuildIndex)
+
+    public PlayerProfile(string _playerName, Dictionary<int, int> _dictOfHighScores,  Dictionary<int, float> _dictionnaryOfPlayerBestTimes)
     {
         playerName = _playerName;
+        
         dictionnaryOfPlayerHighscores = new Dictionary<int, int>();
         dictionnaryOfPlayerHighscores = _dictOfHighScores;
-        playerCurrentLevelBuildIndex = _CurrentLevelBuildIndex;
+
+        dictionnaryOfPlayerBestTimes = new Dictionary<int, float>();
+        dictionnaryOfPlayerBestTimes = _dictionnaryOfPlayerBestTimes;
     }
 }

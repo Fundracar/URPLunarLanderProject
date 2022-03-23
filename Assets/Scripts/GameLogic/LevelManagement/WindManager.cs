@@ -20,6 +20,7 @@ public class WindManager : MonoBehaviour
         while (GameManager.gameManager.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             ApplyWindForce(_ShipControllerRef, _Parameter);
+            Debug.Log("Wind Strengh is " + _Parameter);
 
             yield return null;
         }

@@ -128,7 +128,6 @@ public class GameManager : MonoBehaviour
         {
             case 1: //Only the main menu scene is loaded.
                 MainMenuCanvasManager.mainMenuCanvasManager.gameObject.SetActive(true);
-
                 NewProfileNameCanvas.newProfileNameCanvas.gameObject.SetActive(false);
                 break;
 
@@ -136,7 +135,6 @@ public class GameManager : MonoBehaviour
 
                 MainMenuCanvasManager.mainMenuCanvasManager.gameObject.SetActive(false);
                 InGameCanvas.inGameCanvas.SetCurrentLevelInfo();
-
                 SwitchOnGamePhase(GamePhase.GameWaitingToStart);
                 break;
         }
@@ -237,9 +235,7 @@ public class GameManager : MonoBehaviour
     }
     private void UpdateShipSpeed()
     {
-
         shipControllerRef.AddForceToShip();
-
     }
 
     private void ConstraintShipMovements(bool _Instruction)
