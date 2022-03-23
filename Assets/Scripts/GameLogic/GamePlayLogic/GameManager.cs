@@ -150,6 +150,7 @@ public class GameManager : MonoBehaviour
     {
         InGameCanvas.inGameCanvas.DisplayMessageInfos(false, currentGamePhase);
         timeCoroutine = StartCoroutine(TimeTracker.timeTracker.TrackAndDisplayGameTime());
+
         if (!(LevelConditionner.levelConditionner.windManagerRef.windForceValue == 0))
         {
             windCoroutine = StartCoroutine(LevelConditionner.levelConditionner.windManagerRef.WindforceCoroutine(shipControllerRef, LevelConditionner.levelConditionner.windManagerRef.windForceValue));
@@ -219,7 +220,7 @@ public class GameManager : MonoBehaviour
     //The following methods combine each other and are tools for the ship controller supervision.
     public void VerifyShipSpeedOnLanding()
     {
-        //OBSELETE : The velocity of the ship is already close to 0 when this event is fired (since, by definition, a collision occured)
+        //OBSELETE : The velocity of the ship is already close to 0 when this event is fired (since, by definition, a blocking collision occured)
 
         if (shipControllerRef.shipRigidbody2D.velocity.y * 100f < 50f && shipControllerRef.shipRigidbody2D.velocity.y * 10f > -50f)
         {
@@ -231,7 +232,6 @@ public class GameManager : MonoBehaviour
             SwitchOnGamePhase(GamePhase.GameLost);
         }
         //In the case of a collision with a landing plateform, this method will be performed to verify the ship of the speed.
-        //This will help us determine 
     }
     private void UpdateShipSpeed()
     {

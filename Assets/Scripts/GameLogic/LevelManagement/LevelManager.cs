@@ -22,7 +22,9 @@ public class LevelManager : MonoBehaviour
     {
         AsyncOperation currentAsyncOp = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         yield return currentAsyncOp;
+
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
+        
         GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.Setup);
     }
 
@@ -83,7 +85,7 @@ public class LevelManager : MonoBehaviour
         switch (listOfCurrentlyLoadedScenes[1].buildIndex)
         {
             case 1: //Level 1 
-                InitializePlanetState(0, 2, 0);
+                InitializePlanetState(0, 0, 0);
                 break;
 
             case 2:
