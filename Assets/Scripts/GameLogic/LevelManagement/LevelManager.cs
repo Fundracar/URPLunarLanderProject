@@ -1,4 +1,4 @@
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,16 +20,18 @@ public class LevelManager : MonoBehaviour
     #region Scene Management Coroutines
     public IEnumerator StartNewGame()
     {
+
         AsyncOperation currentAsyncOp = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         yield return currentAsyncOp;
 
         listOfCurrentlyLoadedScenes.Add(SceneManager.GetSceneAt(1));
-        
+
         GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.Setup);
     }
 
     public IEnumerator GoBackToMainMenu()
     {
+        TimeTracker.timeTracker.ResetTime();
         AsyncOperation currentAsyncOp = SceneManager.UnloadSceneAsync(listOfCurrentlyLoadedScenes[1]);
         yield return currentAsyncOp; //keep checking 
 
@@ -39,6 +41,7 @@ public class LevelManager : MonoBehaviour
     }
     public IEnumerator RestartLevel()
     {
+        TimeTracker.timeTracker.ResetTime();
         int buildIndex = listOfCurrentlyLoadedScenes[1].buildIndex;
 
         AsyncOperation unloadingAsyncOp = SceneManager.UnloadSceneAsync(listOfCurrentlyLoadedScenes[1]);
@@ -57,6 +60,7 @@ public class LevelManager : MonoBehaviour
 
     public IEnumerator LoadNextLevel()
     {
+        TimeTracker.timeTracker.ResetTime();
         if (listOfCurrentlyLoadedScenes[1].buildIndex < numberOfScenesInBuild - 1) //There IS a next level to be loaded.
         {
             int buildIndex = listOfCurrentlyLoadedScenes[1].buildIndex;
@@ -82,6 +86,7 @@ public class LevelManager : MonoBehaviour
     #region Level Setup
     public void DefaultLevelSetupRoutine()
     {
+        //The use of structs may come in handy in the following user cases.
         switch (listOfCurrentlyLoadedScenes[1].buildIndex)
         {
             case 1: //Level 1 
@@ -130,7 +135,7 @@ public class LevelManager : MonoBehaviour
             case 2:
                 LevelConditionner.levelConditionner.SetWindForce(0.15f);
                 break;
-                
+
             case 3:
                 LevelConditionner.levelConditionner.SetWindForce(0.20f);
                 break;

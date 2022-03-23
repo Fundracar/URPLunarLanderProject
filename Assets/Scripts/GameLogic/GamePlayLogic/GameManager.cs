@@ -79,13 +79,13 @@ public class GameManager : MonoBehaviour
         /* 
         #This methods conditions what behaviors are avalaible to the player's Ship according to the current game phase.
         #This should be called "OnFixedUpdate" to better follow the actual physics behavior of the ship.  
-        #Usefulness Example : While in the "Playing" GameState, the ship's movement are not constrained ect.
+        #User case Example : While in the "Playing" GameState, the ship's movement are not constrained ect.
         #CASE GUARDS : For each case this methods should check, we take into account when the "ConstraintShipMovements"
         has already been fired in order not to fire it everyframe, since we already know every case is evaluated anyway in a switch() statement */
+
         switch (currentGamePhase)
         {
             case GamePhase.GameWaitingToStart when shipIsFrozen == true:
-                ConstraintShipMovements(true);
                 break;
 
             case GamePhase.GameWaitingToStart:

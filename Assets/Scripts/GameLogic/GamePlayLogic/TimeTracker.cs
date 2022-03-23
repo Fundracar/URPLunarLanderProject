@@ -1,7 +1,5 @@
 
 using System.Collections;
-using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -20,7 +18,7 @@ public class TimeTracker : MonoBehaviour
     {
         TimeTrackerText = GameObject.FindGameObjectWithTag("TimeTracker").GetComponent<TextMeshProUGUI>();
 
-        while (GameManager.gameManager.currentGamePhase == GameManager.GamePhase.GamePlaying)
+        while (GameManager.gameManager.currentGamePhase == GameManager.GamePhase.GamePlaying) //While the game is playing, the values are updated.
         {
             if (miliseconds <= 99)
             {
@@ -37,12 +35,18 @@ public class TimeTracker : MonoBehaviour
                     minutes += 1f;
                 }
             }
-            DisplayTimeTracker();
+
+            DisplayTimeTracker(); 
+
             yield return new WaitForSeconds(0.01f);
         }
     }
     private void DisplayTimeTracker()
     {
+          /*This conditions the appearance of a raw "0" string besides the values, in regard of wether they are composed of two numbers of one.
+        If "minutes" or "seconds" are composed of only 1 number, "0" will appear besides them in the UI. It will not otherwise.
+        Maybe it could be replaced by a switch or redesigned entirely */
+        
         if (seconds <= 9)
         {
             if (minutes <= 9)
@@ -55,14 +59,23 @@ public class TimeTracker : MonoBehaviour
         else if (minutes <= 9 && seconds > 9)
         {
             TimeTrackerText.text = "0" + minutes + ":" + seconds + ":" + miliseconds;
+
         }
-        /*This conditions the appearance of a raw "0" string besides the values, in regard of wether they are composed of two numbers of one.
-        If "minutes" or "seconds" are composed of only 1 number, "0" will appear besides them in the UI. It will not otherwise. */
+      
     }
     public float CalculateTimeInSecondsFromTimeTracker()
     {
         float timeInSecond = (((minutes * 60) + seconds + (miliseconds / 100)));
         return timeInSecond;
+    }
+
+    public void ResetTime()
+    {
+        miliseconds = 0;
+        seconds = 0;
+        minutes = 0;
+
+        DisplayTimeTracker();
     }
 
     public void RegisterLevelGameTime()
