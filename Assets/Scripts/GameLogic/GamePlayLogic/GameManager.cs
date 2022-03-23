@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     #region Variables
-
     public static GameManager gameManager;
     public enum GamePhase { Setup, GameWaitingToStart, GamePlaying, GameLost, GameWon };
     public GamePhase currentGamePhase { get; private set; }
@@ -73,6 +72,8 @@ public class GameManager : MonoBehaviour
             default:
                 break;
         }
+
+        // One of the downside of the current situation is that this implies the existence of many methods below in this script that could be further divided in sub behaviors.
     }
     private void ManageShipState()
     {
@@ -180,10 +181,11 @@ public class GameManager : MonoBehaviour
         return calculatedScore;
     }
     #endregion
-
     #region Ship Instantiation
     private void InstantiateAndReferencePlayerShip()
     {
+        //Used to instantiate and reference the ship and all of its valuable component.
+
         instanciatedShip = Instantiate(shipPrefab, spawnPosition, Quaternion.identity);
         instanciatedRigidbody2D = instanciatedShip.GetComponent<Rigidbody2D>();
         instanciatedShipCollider = instanciatedShip.GetComponent<EdgeCollider2D>();
