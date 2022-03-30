@@ -135,13 +135,14 @@ public class ShipController : MonoBehaviour
     public void OnCollisionEnter2D(Collision2D col)
     {
         Debug.Log(col.relativeVelocity);
-        
+
         if (GameManager.gameManager.currentGamePhase == GameManager.GamePhase.GamePlaying)
         {
             string coltag = col.gameObject.tag;
 
             switch (coltag)
             {
+                //We should derive these behaviors in the specific terrain objects in order to avoid the switch statement (which is overkill in this context)
                 case "Terrain":
                     causeOfDeath = CauseOfDeath.Terrain;
                     GameManager.gameManager.SwitchOnGamePhase(GameManager.GamePhase.GameLost);
